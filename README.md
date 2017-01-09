@@ -12,12 +12,14 @@
 
 * **Dépendances**
 	- bash
-	- default-jdk 				(Java Development Kit)
-	- antlr-3.3-complete.jar		(fourni dans le git)
+	- default-jdk 				      (Java Development Kit)
+	- antlr-3.3-complete.jar		     (fourni dans le git)
 
 * **Build & execute**
 	- à venir ...
 
+* **Forge TNCY**
+	- Le projet est également présent sur la forge de TELECOM Nancy sous *Projets Divers >> COMPILATION_2A >> garcia62* (accès autorisé seulement pour les développeurs pour le moment)
 
 ## TPs d'initiation
 
