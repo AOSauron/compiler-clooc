@@ -1,31 +1,28 @@
 grammar Arbre_Liste;
 
-@header {
-import java.util.HashMap;
+options {
+k=1;
 }
 
-@members {
-/** Map variable name to Integer object holding value */
-HashMap<String,Integer>  memory = new HashMap<String,Integer>();
-}
+prog:   a ;
+       
+a : v 
+  |'(' a x 
+  ;
 
-a:   v 
-	| '(' a x
-	;
-                
-x:   '.' a ')'
-    | s ')'
-    ;
 
-s:   ',' a s
-	| 
-    ;
+x : '.' a ')'
+  |s ')'
+  ;
 
-v:   INT {}
-	| 'n' 'i' 'l'
-    ; 
 
+s : '.' a s
+  |
+  ;
+
+v : INT 
+  | 'nil'
+  ;
 
 INT :   '0'..'9'+ ;
-
-
+WS  :   (' '|'\t'|'\n'|'\r')+ {$channel=HIDDEN;};
