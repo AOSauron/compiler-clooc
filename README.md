@@ -19,7 +19,7 @@
 	- à venir ...
 
 * **Forge TNCY**
-	- Le projet est également présent sur la forge de TELECOM Nancy sous *Projets Divers >> COMPILATION_2A >> garcia62* (accès autorisé seulement pour les développeurs pour le moment)
+	- Un dépôt du projet est également présent sur la forge de TELECOM Nancy sous *Projets Divers >> COMPILATION_2A >> garcia62* (accès autorisé seulement pour les développeurs pour le moment)
 
 ## TPs d'initiation
 
