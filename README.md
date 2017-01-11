@@ -1,6 +1,6 @@
 # PCL TNCY 2017
 
-**Compilateur du langage PLIC (Petit Langage d'Initiation à la Compilation) produisant du code assembleur microPIUP/ASM**
+**Compilateur du langage LOOC (Langage Orienté Objet pour la Compilation) produisant du code assembleur microPIUP/ASM**
 
 *Projet de Compilation TELECOM Nancy 2016-2017*
 
@@ -19,7 +19,7 @@
 	- à venir ...
 
 * **Forge TNCY**
-	- Un dépôt du projet est également présent sur la forge de TELECOM Nancy sous *Projets Divers >> COMPILATION_2A >> garcia62* (accès autorisé seulement pour les développeurs pour le moment)
+	- Un dépôt du projet est également présent sur la forge de TELECOM Nancy sous *Projets Divers >> COMPILATION_2A >> garcia62u* (accès autorisé seulement pour les développeurs pour le moment)
 
 ## TPs d'initiation
 
