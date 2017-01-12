@@ -20,6 +20,7 @@
 
 * **Forge TNCY**
 	- Un dépôt du projet est également présent sur la forge de TELECOM Nancy sous *Projets Divers >> COMPILATION_2A >> garcia62u* (accès autorisé seulement pour les développeurs pour le moment)
+	- L'adresse du dépôt local sur le réseau de l'école est : /var/git/garcia62u/trunk
 
 ## TPs d'initiation
 
