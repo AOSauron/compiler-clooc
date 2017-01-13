@@ -46,3 +46,13 @@
 
 	- Test reconnait des expressions de calculs simples telles que x=1 ou x*y. TestArbre reconnait des arbres, vus en TD de TRAD, tels que (1.2) ou (1,5,(1.8)).
 	- Pour utiliser ces tests, rentrer les mots à tester avec un retour à la ligne à chaque fois, puis appuyer sur Ctrl+D pour lancer la vérification. Si l'un des mots n'appartient pas à la grammaire, Test/TestArbre renverra une erreur pointée.
+
+## ROADMAP
+
+* **Demander aux profs pour la ligne "for ..." dans la grammaire, elle est étrange (expression..expression)**
+
+* **Rendre la règle expression non-récursive gauche**
+
+* **Préparer le terrain pour analyse syntatixe (analyse lexical presque OK)**
+
+* **Enfin, faire la construction de l'AST**
