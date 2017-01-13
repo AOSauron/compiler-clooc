@@ -56,3 +56,5 @@
 * **Préparer le terrain pour analyse syntatixe (analyse lexical presque OK)**
 
 * **Enfin, faire la construction de l'AST**
+
+* **Demander aux profs où est ce git local (l'adresse locale donnée n'existe pas)**
