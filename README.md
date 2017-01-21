@@ -49,9 +49,11 @@
 
 ## ROADMAP
 
-* **Demander aux profs pour la ligne "for ..." dans la grammaire, elle est étrange (expression..expression)**
+* ~~**Demander aux profs pour la ligne "for ..." dans la grammaire, elle est étrange (expression..expression)**~~
+	=> Réglé. 
 
-* **Rendre la règle expression non-récursive gauche**
+* ~~**Rendre la règle expression non-récursive gauche**~~
+	=> Réglé. Voir pour corriger les deux warning restant.
 
 * **Préparer le terrain pour analyse syntatixe (analyse lexical presque OK)**
 
