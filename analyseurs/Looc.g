@@ -28,7 +28,7 @@ method_args:   IDF ':' type (',' IDF ':' type)* ;
 
 instruction:   IDF ':=' affectation ';'
            |   'if' expression 'then' instruction ('else' instruction)? 'fi'
-           |   'for' IDF 'in' expression 'do' (instruction)+ 'end'   /* DEMANDER AU PROF, LIGNE ETRANGE */
+           |   'for' IDF 'in' expression '..' expression 'do' (instruction)+ 'end'   /* DEMANDER AU PROF, LIGNE ETRANGE */
            |   '{' (var_decl)* (instruction)+ '}'
            |   'do' expression '.' IDF '(' expression (',' expression)* ')' ';'
            |   print
