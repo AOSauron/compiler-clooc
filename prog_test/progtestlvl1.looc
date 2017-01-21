@@ -7,7 +7,7 @@ total := 0;
 
 for i in 0 .. n
 do
-  total :+ total + i * i;
+  total := total + i * i;
 end
 
 write total;

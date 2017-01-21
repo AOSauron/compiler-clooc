@@ -19,7 +19,7 @@ class Math =
     retval := 1;
     for i in 1 .. b
     do
-      retval :+ retval * a;
+      retval := retval * a;
     end
 
     return (retval);

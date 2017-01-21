@@ -1,12 +1,12 @@
 /*  GRAMMAIRE POUR LE LANGAGE LOOC POUR PROJET DE COMPILATION TELECOM NANCY 2016-2017
 Authors : GARCIA Guillaume
-Maj : 13/01/17   3:03  */
+Maj : 21/01/17   14:39  */
 
  grammar Looc;
 
  options {
  k=1;  /* Pour forcer LL(?) => LL(1) */
- /*buildAST =true;*/   /* Construction de l'Arbre Syntaxique Descendant */
+ /*buildAST =true;*/   /* Construction de l'Arbre Syntaxique */
  }
 
 program:   (class_decl)* (var_decl)* (instruction)+ ;
@@ -30,10 +30,10 @@ instruction:   IDF ':=' affectation ';'
            |   'if' expression 'then' instruction ('else' instruction)? 'fi'
            |   'for' IDF 'in' expression '..' expression 'do' (instruction)+ 'end'   /* DEMANDER AU PROF, LIGNE ETRANGE */
            |   '{' (var_decl)* (instruction)+ '}'
-           |   'do' expression '.' IDF '(' expression (',' expression)* ')' ';'
+           |   'do' expression '.' IDF '(' (expression)? (',' expression)* ')' ';'
            |   print
            |   read
-           |   return
+           |   returnstate
            ;
 
 affectation:   expression
@@ -48,7 +48,7 @@ strprint:   expression
 
 read:   'read' IDF ';' ;
 
-return:   'return' '(' expression ')' ';' ;
+returnstate:   'return' '(' expression ')' ';' ;
 
 /* expression a dû être dérecursivée gauche. */
 
@@ -62,7 +62,7 @@ expression:   IDF expression_bis
           ;
 
 expression_bis:   '.' IDF '(' expression (',' expression)* ')' expression_bis
-              |    oper expression expression_bis
+              |   oper expression expression_bis
               |   /*Le mot vide*/
               ;
 
