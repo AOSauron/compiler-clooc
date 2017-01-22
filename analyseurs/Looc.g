@@ -30,7 +30,7 @@ instruction:   IDF ':=' affectation ';'
            |   'if' expression 'then' instruction ('else' instruction)? 'fi'
            |   'for' IDF 'in' expression '..' expression 'do' (instruction)+ 'end'   /* DEMANDER AU PROF, LIGNE ETRANGE */
            |   '{' (var_decl)* (instruction)+ '}'
-           |   'do' expression '.' IDF '(' (expression)? (',' expression)* ')' ';'
+           |   'do' expression ('.' IDF '(' (expression)? (',' expression)* ')')? ';'
            |   print
            |   read
            |   returnstate
@@ -61,7 +61,7 @@ expression:   IDF expression_bis
           |   '-' expression expression_bis
           ;
 
-expression_bis:   '.' IDF '(' expression (',' expression)* ')' expression_bis
+expression_bis:   '.' IDF '(' (expression)? (',' expression)* ')' expression_bis
               |   oper expression expression_bis
               |   /*Le mot vide*/
               ;

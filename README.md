@@ -19,7 +19,7 @@
 	- à venir ...
 
 * **Forge TNCY**
-	- Un dépôt du projet est également présent sur la forge de TELECOM Nancy sous *Projets Divers >> COMPILATION_2A >> garcia62u* (accès autorisé seulement pour les développeurs pour le moment)
+	- Un dépôt du projet est également présent sur la forge de TELECOM Nancy sous *Projets Divers >> COMPIL 2017 >> garcia62* (accès autorisé seulement pour les développeurs pour le moment)
 	- L'adresse du dépôt local sur le réseau de l'école est : /var/git/garcia62u/trunk
 
 ## TPs d'initiation
@@ -50,7 +50,7 @@
 ## ROADMAP
 
 * ~~**Demander aux profs pour la ligne "for ..." dans la grammaire, elle est étrange (expression..expression)**~~
-	=> Réglé. 
+	=> Réglé.
 
 * ~~**Rendre la règle expression non-récursive gauche**~~
 	=> Réglé. Voir pour corriger les deux warning restant.
