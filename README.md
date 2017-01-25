@@ -7,7 +7,7 @@
 * **Auteurs**
 	- DUBOIS Nicolas
 	- GARCIA Guillaume
-	- HINSBERGER Laure
+	- HINSBERGER Laure 
 	- ZAMBAUX Gauthier
 
 * **Dépendances**
