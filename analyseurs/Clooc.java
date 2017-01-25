@@ -1,4 +1,6 @@
 import org.antlr.runtime.*;
+import org.antlr.runtime.tree.*;
+import org.antlr.stringtemplate.*;
 import java.io.InputStream;
 import java.io.FileInputStream;
 import java.io.File;
@@ -12,7 +14,16 @@ public class Clooc {
           LoocLexer lexer = new LoocLexer(input);
           CommonTokenStream tokens = new CommonTokenStream(lexer);
           LoocParser parser = new LoocParser(tokens);
-          parser.program();
+          /*
+          CommonTree tree = (CommonTree) parser.parse().getTree();
+          DOTTreeGenerator gen = new DOTTreeGenerator();
+          StringTemplate st = gen.toDOT(tree);
+          System.out.println(st);
+          */
+          LoocParser.program_return result = parser.program();
+          Tree t = (Tree) result.getTree();
+          System.out.println(t.toStringTree());
+        //  parser.program();
         }
         catch (ArrayIndexOutOfBoundsException e) {
           System.out.println("Passez un fichier en paremètre");
