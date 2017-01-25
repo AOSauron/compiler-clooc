@@ -9,6 +9,59 @@ Maj : 21/01/17   14:39  */
  /*buildAST =true;*/   /* Construction de l'Arbre Syntaxique */
  }
 
+ @members {
+  /* AST */
+  class Arbre {
+    private String noeud;
+    private Arbre gauche, droite;
+    private static final int ind = 4;
+
+    public Arbre(String n) {
+      noeud = n;
+      droite = gauche = null;
+    }
+    public Arbre(String n, Arbre g, Arbre d) {
+      noeud= n;
+      gauche = g;
+      droite = d;
+    }
+    public Arbre setGauche(Arbre g) {
+      gauche = g;
+      return this;
+    }
+    public Arbre setDroite(Arbre d) {
+      droite = d;
+      return this;
+    }
+    public String toString() {
+      if (gauche == null && droite == null) {
+        return " " + noeud;
+      }
+      StringBuffer s = new StringBuffer("("+noeud);
+      s.append(gauche == null ? "()" : gauche.toString());
+      s.append(droite == null ? "()" : droite.toString());
+      s.append(")");
+      return s.toString();
+    }
+    private void idente(StringBuffer s, int lvl) {
+      for (int i = 0; i<ind*lvl; i++) {
+        s.append(" ");
+      }
+    }
+    public String prettyPrint(int lvl) {
+      StringBuffer s = new StringBuffer();
+      idente(s, lvl);
+      s.append(noeud+"\n");
+      if (gauche == null && droite == null) {
+        return s.toString();
+      }
+      s.append(gauche == null ? "\n" : gauche.prettyPrint(lvl+1));
+      s.append(droite == null ? "\n" : droite.prettyPrint(lvl+1));
+      return s.toString();
+    }
+  }
+ }
+
 program:   (class_decl)* (var_decl)* (instruction)+ ;
 
 class_decl:   'class' IDFC ('inherit' IDFC)? '=' '(' class_item_decl ')' ;
@@ -17,9 +70,9 @@ class_item_decl:   (var_decl)* (method_decl)* ;
 
 var_decl:   'var' IDF ':' type ';' ;
 
-type:   IDFC
-    |   'int'
-    |   'string'
+type:   IDFC        //{ $arbre = new Arbre($IDFC.text); }
+    |   'int'       //{ $arbre = new Arbre("int"); }
+    |   'string'    //{ $arbre = new Arbre("string"); }
     ;
 
 method_decl:   'method' IDF '(' (method_args)* ')' (':' type)? '{' (var_decl)* (instruction)+ '}' ;
@@ -63,18 +116,18 @@ expression:   IDF expression_bis
 
 expression_bis:   '.' IDF '(' (expression)? (',' expression)* ')' expression_bis
               |   oper expression expression_bis
-              |   /*Le mot vide*/
+              |   /*Le mot vide*/                   //{ $arbre = null;}
               ;
 
-oper:   '+'
-    |   '-'
-    |   '*'
-    |   '<'
-    |   '<='
-    |   '>'
-    |   '>='
-    |   '=='
-    |   '!='
+oper:   '+'     //{ $arbre = new Arbre("+"); }
+    |   '-'     //{ $arbre = new Arbre("-"); }
+    |   '*'     //{ $arbre = new Arbre("*"); }
+    |   '<'     //{ $arbre = new Arbre("<"); }
+    |   '<='    //{ $arbre = new Arbre("<="); }
+    |   '>'     //{ $arbre = new Arbre(">"); }
+    |   '>='    //{ $arbre = new Arbre(">="); }
+    |   '=='    //{ $arbre = new Arbre("=="); }
+    |   '!='    //{ $arbre = new Arbre("!="); }
     ;
 
 IDFC:   ('A'..'Z') ('a'..'z'|'A'..'Z'|'0'..'9'|'_')* ;

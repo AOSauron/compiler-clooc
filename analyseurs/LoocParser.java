@@ -1,4 +1,4 @@
-// $ANTLR 3.3 Nov 30, 2010 12:50:56 Looc.g 2017-01-21 16:31:13
+// $ANTLR 3.3 Nov 30, 2010 12:50:56 Looc.g 2017-01-25 11:42:03
 
 import org.antlr.runtime.*;
 import java.util.Stack;
@@ -79,15 +79,67 @@ public class LoocParser extends Parser {
     public String getGrammarFileName() { return "Looc.g"; }
 
 
+      /* AST */
+      class Arbre {
+        private String noeud;
+        private Arbre gauche, droite;
+        private static final int ind = 4;
+
+        public Arbre(String n) {
+          noeud = n;
+          droite = gauche = null;
+        }
+        public Arbre(String n, Arbre g, Arbre d) {
+          noeud= n;
+          gauche = g;
+          droite = d;
+        }
+        public Arbre setGauche(Arbre g) {
+          gauche = g;
+          return this;
+        }
+        public Arbre setDroite(Arbre d) {
+          droite = d;
+          return this;
+        }
+        public String toString() {
+          if (gauche == null && droite == null) {
+            return " " + noeud;
+          }
+          StringBuffer s = new StringBuffer("("+noeud);
+          s.append(gauche == null ? "()" : gauche.toString());
+          s.append(droite == null ? "()" : droite.toString());
+          s.append(")");
+          return s.toString();
+        }
+        private void idente(StringBuffer s, int lvl) {
+          for (int i = 0; i<ind*lvl; i++) {
+            s.append(" ");
+          }
+        }
+        public String prettyPrint(int lvl) {
+          StringBuffer s = new StringBuffer();
+          idente(s, lvl);
+          s.append(noeud+"\n");
+          if (gauche == null && droite == null) {
+            return s.toString();
+          }
+          s.append(gauche == null ? "\n" : gauche.prettyPrint(lvl+1));
+          s.append(droite == null ? "\n" : droite.prettyPrint(lvl+1));
+          return s.toString();
+        }
+      }
+     
+
 
     // $ANTLR start "program"
-    // Looc.g:12:1: program : ( class_decl )* ( var_decl )* ( instruction )+ ;
+    // Looc.g:65:1: program : ( class_decl )* ( var_decl )* ( instruction )+ ;
     public final void program() throws RecognitionException {
         try {
-            // Looc.g:12:8: ( ( class_decl )* ( var_decl )* ( instruction )+ )
-            // Looc.g:12:12: ( class_decl )* ( var_decl )* ( instruction )+
+            // Looc.g:65:8: ( ( class_decl )* ( var_decl )* ( instruction )+ )
+            // Looc.g:65:12: ( class_decl )* ( var_decl )* ( instruction )+
             {
-            // Looc.g:12:12: ( class_decl )*
+            // Looc.g:65:12: ( class_decl )*
             loop1:
             do {
                 int alt1=2;
@@ -100,9 +152,9 @@ public class LoocParser extends Parser {
 
                 switch (alt1) {
             	case 1 :
-            	    // Looc.g:12:13: class_decl
+            	    // Looc.g:65:13: class_decl
             	    {
-            	    pushFollow(FOLLOW_class_decl_in_program39);
+            	    pushFollow(FOLLOW_class_decl_in_program46);
             	    class_decl();
 
             	    state._fsp--;
@@ -116,7 +168,7 @@ public class LoocParser extends Parser {
                 }
             } while (true);
 
-            // Looc.g:12:26: ( var_decl )*
+            // Looc.g:65:26: ( var_decl )*
             loop2:
             do {
                 int alt2=2;
@@ -129,9 +181,9 @@ public class LoocParser extends Parser {
 
                 switch (alt2) {
             	case 1 :
-            	    // Looc.g:12:27: var_decl
+            	    // Looc.g:65:27: var_decl
             	    {
-            	    pushFollow(FOLLOW_var_decl_in_program44);
+            	    pushFollow(FOLLOW_var_decl_in_program51);
             	    var_decl();
 
             	    state._fsp--;
@@ -145,7 +197,7 @@ public class LoocParser extends Parser {
                 }
             } while (true);
 
-            // Looc.g:12:38: ( instruction )+
+            // Looc.g:65:38: ( instruction )+
             int cnt3=0;
             loop3:
             do {
@@ -159,9 +211,9 @@ public class LoocParser extends Parser {
 
                 switch (alt3) {
             	case 1 :
-            	    // Looc.g:12:39: instruction
+            	    // Looc.g:65:39: instruction
             	    {
-            	    pushFollow(FOLLOW_instruction_in_program49);
+            	    pushFollow(FOLLOW_instruction_in_program56);
             	    instruction();
 
             	    state._fsp--;
@@ -195,15 +247,15 @@ public class LoocParser extends Parser {
 
 
     // $ANTLR start "class_decl"
-    // Looc.g:14:1: class_decl : 'class' IDFC ( 'inherit' IDFC )? '=' '(' class_item_decl ')' ;
+    // Looc.g:67:1: class_decl : 'class' IDFC ( 'inherit' IDFC )? '=' '(' class_item_decl ')' ;
     public final void class_decl() throws RecognitionException {
         try {
-            // Looc.g:14:11: ( 'class' IDFC ( 'inherit' IDFC )? '=' '(' class_item_decl ')' )
-            // Looc.g:14:15: 'class' IDFC ( 'inherit' IDFC )? '=' '(' class_item_decl ')'
+            // Looc.g:67:11: ( 'class' IDFC ( 'inherit' IDFC )? '=' '(' class_item_decl ')' )
+            // Looc.g:67:15: 'class' IDFC ( 'inherit' IDFC )? '=' '(' class_item_decl ')'
             {
-            match(input,14,FOLLOW_14_in_class_decl61); 
-            match(input,IDFC,FOLLOW_IDFC_in_class_decl63); 
-            // Looc.g:14:28: ( 'inherit' IDFC )?
+            match(input,14,FOLLOW_14_in_class_decl68); 
+            match(input,IDFC,FOLLOW_IDFC_in_class_decl70); 
+            // Looc.g:67:28: ( 'inherit' IDFC )?
             int alt4=2;
             int LA4_0 = input.LA(1);
 
@@ -212,24 +264,24 @@ public class LoocParser extends Parser {
             }
             switch (alt4) {
                 case 1 :
-                    // Looc.g:14:29: 'inherit' IDFC
+                    // Looc.g:67:29: 'inherit' IDFC
                     {
-                    match(input,15,FOLLOW_15_in_class_decl66); 
-                    match(input,IDFC,FOLLOW_IDFC_in_class_decl68); 
+                    match(input,15,FOLLOW_15_in_class_decl73); 
+                    match(input,IDFC,FOLLOW_IDFC_in_class_decl75); 
 
                     }
                     break;
 
             }
 
-            match(input,16,FOLLOW_16_in_class_decl72); 
-            match(input,17,FOLLOW_17_in_class_decl74); 
-            pushFollow(FOLLOW_class_item_decl_in_class_decl76);
+            match(input,16,FOLLOW_16_in_class_decl79); 
+            match(input,17,FOLLOW_17_in_class_decl81); 
+            pushFollow(FOLLOW_class_item_decl_in_class_decl83);
             class_item_decl();
 
             state._fsp--;
 
-            match(input,18,FOLLOW_18_in_class_decl78); 
+            match(input,18,FOLLOW_18_in_class_decl85); 
 
             }
 
@@ -246,13 +298,13 @@ public class LoocParser extends Parser {
 
 
     // $ANTLR start "class_item_decl"
-    // Looc.g:16:1: class_item_decl : ( var_decl )* ( method_decl )* ;
+    // Looc.g:69:1: class_item_decl : ( var_decl )* ( method_decl )* ;
     public final void class_item_decl() throws RecognitionException {
         try {
-            // Looc.g:16:16: ( ( var_decl )* ( method_decl )* )
-            // Looc.g:16:20: ( var_decl )* ( method_decl )*
+            // Looc.g:69:16: ( ( var_decl )* ( method_decl )* )
+            // Looc.g:69:20: ( var_decl )* ( method_decl )*
             {
-            // Looc.g:16:20: ( var_decl )*
+            // Looc.g:69:20: ( var_decl )*
             loop5:
             do {
                 int alt5=2;
@@ -265,9 +317,9 @@ public class LoocParser extends Parser {
 
                 switch (alt5) {
             	case 1 :
-            	    // Looc.g:16:21: var_decl
+            	    // Looc.g:69:21: var_decl
             	    {
-            	    pushFollow(FOLLOW_var_decl_in_class_item_decl89);
+            	    pushFollow(FOLLOW_var_decl_in_class_item_decl96);
             	    var_decl();
 
             	    state._fsp--;
@@ -281,7 +333,7 @@ public class LoocParser extends Parser {
                 }
             } while (true);
 
-            // Looc.g:16:32: ( method_decl )*
+            // Looc.g:69:32: ( method_decl )*
             loop6:
             do {
                 int alt6=2;
@@ -294,9 +346,9 @@ public class LoocParser extends Parser {
 
                 switch (alt6) {
             	case 1 :
-            	    // Looc.g:16:33: method_decl
+            	    // Looc.g:69:33: method_decl
             	    {
-            	    pushFollow(FOLLOW_method_decl_in_class_item_decl94);
+            	    pushFollow(FOLLOW_method_decl_in_class_item_decl101);
             	    method_decl();
 
             	    state._fsp--;
@@ -326,21 +378,21 @@ public class LoocParser extends Parser {
 
 
     // $ANTLR start "var_decl"
-    // Looc.g:18:1: var_decl : 'var' IDF ':' type ';' ;
+    // Looc.g:71:1: var_decl : 'var' IDF ':' type ';' ;
     public final void var_decl() throws RecognitionException {
         try {
-            // Looc.g:18:9: ( 'var' IDF ':' type ';' )
-            // Looc.g:18:13: 'var' IDF ':' type ';'
+            // Looc.g:71:9: ( 'var' IDF ':' type ';' )
+            // Looc.g:71:13: 'var' IDF ':' type ';'
             {
-            match(input,19,FOLLOW_19_in_var_decl106); 
-            match(input,IDF,FOLLOW_IDF_in_var_decl108); 
-            match(input,20,FOLLOW_20_in_var_decl110); 
-            pushFollow(FOLLOW_type_in_var_decl112);
+            match(input,19,FOLLOW_19_in_var_decl113); 
+            match(input,IDF,FOLLOW_IDF_in_var_decl115); 
+            match(input,20,FOLLOW_20_in_var_decl117); 
+            pushFollow(FOLLOW_type_in_var_decl119);
             type();
 
             state._fsp--;
 
-            match(input,21,FOLLOW_21_in_var_decl114); 
+            match(input,21,FOLLOW_21_in_var_decl121); 
 
             }
 
@@ -357,10 +409,10 @@ public class LoocParser extends Parser {
 
 
     // $ANTLR start "type"
-    // Looc.g:20:1: type : ( IDFC | 'int' | 'string' );
+    // Looc.g:73:1: type : ( IDFC | 'int' | 'string' );
     public final void type() throws RecognitionException {
         try {
-            // Looc.g:20:5: ( IDFC | 'int' | 'string' )
+            // Looc.g:73:5: ( IDFC | 'int' | 'string' )
             // Looc.g:
             {
             if ( input.LA(1)==IDFC||(input.LA(1)>=22 && input.LA(1)<=23) ) {
@@ -388,16 +440,16 @@ public class LoocParser extends Parser {
 
 
     // $ANTLR start "method_decl"
-    // Looc.g:25:1: method_decl : 'method' IDF '(' ( method_args )* ')' ( ':' type )? '{' ( var_decl )* ( instruction )+ '}' ;
+    // Looc.g:78:1: method_decl : 'method' IDF '(' ( method_args )* ')' ( ':' type )? '{' ( var_decl )* ( instruction )+ '}' ;
     public final void method_decl() throws RecognitionException {
         try {
-            // Looc.g:25:12: ( 'method' IDF '(' ( method_args )* ')' ( ':' type )? '{' ( var_decl )* ( instruction )+ '}' )
-            // Looc.g:25:16: 'method' IDF '(' ( method_args )* ')' ( ':' type )? '{' ( var_decl )* ( instruction )+ '}'
+            // Looc.g:78:12: ( 'method' IDF '(' ( method_args )* ')' ( ':' type )? '{' ( var_decl )* ( instruction )+ '}' )
+            // Looc.g:78:16: 'method' IDF '(' ( method_args )* ')' ( ':' type )? '{' ( var_decl )* ( instruction )+ '}'
             {
-            match(input,24,FOLLOW_24_in_method_decl158); 
-            match(input,IDF,FOLLOW_IDF_in_method_decl160); 
-            match(input,17,FOLLOW_17_in_method_decl162); 
-            // Looc.g:25:33: ( method_args )*
+            match(input,24,FOLLOW_24_in_method_decl184); 
+            match(input,IDF,FOLLOW_IDF_in_method_decl186); 
+            match(input,17,FOLLOW_17_in_method_decl188); 
+            // Looc.g:78:33: ( method_args )*
             loop7:
             do {
                 int alt7=2;
@@ -410,9 +462,9 @@ public class LoocParser extends Parser {
 
                 switch (alt7) {
             	case 1 :
-            	    // Looc.g:25:34: method_args
+            	    // Looc.g:78:34: method_args
             	    {
-            	    pushFollow(FOLLOW_method_args_in_method_decl165);
+            	    pushFollow(FOLLOW_method_args_in_method_decl191);
             	    method_args();
 
             	    state._fsp--;
@@ -426,8 +478,8 @@ public class LoocParser extends Parser {
                 }
             } while (true);
 
-            match(input,18,FOLLOW_18_in_method_decl169); 
-            // Looc.g:25:52: ( ':' type )?
+            match(input,18,FOLLOW_18_in_method_decl195); 
+            // Looc.g:78:52: ( ':' type )?
             int alt8=2;
             int LA8_0 = input.LA(1);
 
@@ -436,10 +488,10 @@ public class LoocParser extends Parser {
             }
             switch (alt8) {
                 case 1 :
-                    // Looc.g:25:53: ':' type
+                    // Looc.g:78:53: ':' type
                     {
-                    match(input,20,FOLLOW_20_in_method_decl172); 
-                    pushFollow(FOLLOW_type_in_method_decl174);
+                    match(input,20,FOLLOW_20_in_method_decl198); 
+                    pushFollow(FOLLOW_type_in_method_decl200);
                     type();
 
                     state._fsp--;
@@ -450,8 +502,8 @@ public class LoocParser extends Parser {
 
             }
 
-            match(input,25,FOLLOW_25_in_method_decl178); 
-            // Looc.g:25:68: ( var_decl )*
+            match(input,25,FOLLOW_25_in_method_decl204); 
+            // Looc.g:78:68: ( var_decl )*
             loop9:
             do {
                 int alt9=2;
@@ -464,9 +516,9 @@ public class LoocParser extends Parser {
 
                 switch (alt9) {
             	case 1 :
-            	    // Looc.g:25:69: var_decl
+            	    // Looc.g:78:69: var_decl
             	    {
-            	    pushFollow(FOLLOW_var_decl_in_method_decl181);
+            	    pushFollow(FOLLOW_var_decl_in_method_decl207);
             	    var_decl();
 
             	    state._fsp--;
@@ -480,7 +532,7 @@ public class LoocParser extends Parser {
                 }
             } while (true);
 
-            // Looc.g:25:80: ( instruction )+
+            // Looc.g:78:80: ( instruction )+
             int cnt10=0;
             loop10:
             do {
@@ -494,9 +546,9 @@ public class LoocParser extends Parser {
 
                 switch (alt10) {
             	case 1 :
-            	    // Looc.g:25:81: instruction
+            	    // Looc.g:78:81: instruction
             	    {
-            	    pushFollow(FOLLOW_instruction_in_method_decl186);
+            	    pushFollow(FOLLOW_instruction_in_method_decl212);
             	    instruction();
 
             	    state._fsp--;
@@ -514,7 +566,7 @@ public class LoocParser extends Parser {
                 cnt10++;
             } while (true);
 
-            match(input,26,FOLLOW_26_in_method_decl190); 
+            match(input,26,FOLLOW_26_in_method_decl216); 
 
             }
 
@@ -531,20 +583,20 @@ public class LoocParser extends Parser {
 
 
     // $ANTLR start "method_args"
-    // Looc.g:27:1: method_args : IDF ':' type ( ',' IDF ':' type )* ;
+    // Looc.g:80:1: method_args : IDF ':' type ( ',' IDF ':' type )* ;
     public final void method_args() throws RecognitionException {
         try {
-            // Looc.g:27:12: ( IDF ':' type ( ',' IDF ':' type )* )
-            // Looc.g:27:16: IDF ':' type ( ',' IDF ':' type )*
+            // Looc.g:80:12: ( IDF ':' type ( ',' IDF ':' type )* )
+            // Looc.g:80:16: IDF ':' type ( ',' IDF ':' type )*
             {
-            match(input,IDF,FOLLOW_IDF_in_method_args200); 
-            match(input,20,FOLLOW_20_in_method_args202); 
-            pushFollow(FOLLOW_type_in_method_args204);
+            match(input,IDF,FOLLOW_IDF_in_method_args226); 
+            match(input,20,FOLLOW_20_in_method_args228); 
+            pushFollow(FOLLOW_type_in_method_args230);
             type();
 
             state._fsp--;
 
-            // Looc.g:27:29: ( ',' IDF ':' type )*
+            // Looc.g:80:29: ( ',' IDF ':' type )*
             loop11:
             do {
                 int alt11=2;
@@ -557,12 +609,12 @@ public class LoocParser extends Parser {
 
                 switch (alt11) {
             	case 1 :
-            	    // Looc.g:27:30: ',' IDF ':' type
+            	    // Looc.g:80:30: ',' IDF ':' type
             	    {
-            	    match(input,27,FOLLOW_27_in_method_args207); 
-            	    match(input,IDF,FOLLOW_IDF_in_method_args209); 
-            	    match(input,20,FOLLOW_20_in_method_args211); 
-            	    pushFollow(FOLLOW_type_in_method_args213);
+            	    match(input,27,FOLLOW_27_in_method_args233); 
+            	    match(input,IDF,FOLLOW_IDF_in_method_args235); 
+            	    match(input,20,FOLLOW_20_in_method_args237); 
+            	    pushFollow(FOLLOW_type_in_method_args239);
             	    type();
 
             	    state._fsp--;
@@ -592,10 +644,10 @@ public class LoocParser extends Parser {
 
 
     // $ANTLR start "instruction"
-    // Looc.g:29:1: instruction : ( IDF ':=' affectation ';' | 'if' expression 'then' instruction ( 'else' instruction )? 'fi' | 'for' IDF 'in' expression '..' expression 'do' ( instruction )+ 'end' | '{' ( var_decl )* ( instruction )+ '}' | 'do' expression ( '.' IDF '(' ( expression )? ( ',' expression )* ')' )? ';' | print | read | returnstate );
+    // Looc.g:82:1: instruction : ( IDF ':=' affectation ';' | 'if' expression 'then' instruction ( 'else' instruction )? 'fi' | 'for' IDF 'in' expression '..' expression 'do' ( instruction )+ 'end' | '{' ( var_decl )* ( instruction )+ '}' | 'do' expression ( '.' IDF '(' ( expression )? ( ',' expression )* ')' )? ';' | print | read | returnstate );
     public final void instruction() throws RecognitionException {
         try {
-            // Looc.g:29:12: ( IDF ':=' affectation ';' | 'if' expression 'then' instruction ( 'else' instruction )? 'fi' | 'for' IDF 'in' expression '..' expression 'do' ( instruction )+ 'end' | '{' ( var_decl )* ( instruction )+ '}' | 'do' expression ( '.' IDF '(' ( expression )? ( ',' expression )* ')' )? ';' | print | read | returnstate )
+            // Looc.g:82:12: ( IDF ':=' affectation ';' | 'if' expression 'then' instruction ( 'else' instruction )? 'fi' | 'for' IDF 'in' expression '..' expression 'do' ( instruction )+ 'end' | '{' ( var_decl )* ( instruction )+ '}' | 'do' expression ( '.' IDF '(' ( expression )? ( ',' expression )* ')' )? ';' | print | read | returnstate )
             int alt19=8;
             switch ( input.LA(1) ) {
             case IDF:
@@ -647,35 +699,35 @@ public class LoocParser extends Parser {
 
             switch (alt19) {
                 case 1 :
-                    // Looc.g:29:16: IDF ':=' affectation ';'
+                    // Looc.g:82:16: IDF ':=' affectation ';'
                     {
-                    match(input,IDF,FOLLOW_IDF_in_instruction225); 
-                    match(input,28,FOLLOW_28_in_instruction227); 
-                    pushFollow(FOLLOW_affectation_in_instruction229);
+                    match(input,IDF,FOLLOW_IDF_in_instruction251); 
+                    match(input,28,FOLLOW_28_in_instruction253); 
+                    pushFollow(FOLLOW_affectation_in_instruction255);
                     affectation();
 
                     state._fsp--;
 
-                    match(input,21,FOLLOW_21_in_instruction231); 
+                    match(input,21,FOLLOW_21_in_instruction257); 
 
                     }
                     break;
                 case 2 :
-                    // Looc.g:30:16: 'if' expression 'then' instruction ( 'else' instruction )? 'fi'
+                    // Looc.g:83:16: 'if' expression 'then' instruction ( 'else' instruction )? 'fi'
                     {
-                    match(input,29,FOLLOW_29_in_instruction248); 
-                    pushFollow(FOLLOW_expression_in_instruction250);
+                    match(input,29,FOLLOW_29_in_instruction274); 
+                    pushFollow(FOLLOW_expression_in_instruction276);
                     expression();
 
                     state._fsp--;
 
-                    match(input,30,FOLLOW_30_in_instruction252); 
-                    pushFollow(FOLLOW_instruction_in_instruction254);
+                    match(input,30,FOLLOW_30_in_instruction278); 
+                    pushFollow(FOLLOW_instruction_in_instruction280);
                     instruction();
 
                     state._fsp--;
 
-                    // Looc.g:30:51: ( 'else' instruction )?
+                    // Looc.g:83:51: ( 'else' instruction )?
                     int alt12=2;
                     int LA12_0 = input.LA(1);
 
@@ -684,10 +736,10 @@ public class LoocParser extends Parser {
                     }
                     switch (alt12) {
                         case 1 :
-                            // Looc.g:30:52: 'else' instruction
+                            // Looc.g:83:52: 'else' instruction
                             {
-                            match(input,31,FOLLOW_31_in_instruction257); 
-                            pushFollow(FOLLOW_instruction_in_instruction259);
+                            match(input,31,FOLLOW_31_in_instruction283); 
+                            pushFollow(FOLLOW_instruction_in_instruction285);
                             instruction();
 
                             state._fsp--;
@@ -698,29 +750,29 @@ public class LoocParser extends Parser {
 
                     }
 
-                    match(input,32,FOLLOW_32_in_instruction263); 
+                    match(input,32,FOLLOW_32_in_instruction289); 
 
                     }
                     break;
                 case 3 :
-                    // Looc.g:31:16: 'for' IDF 'in' expression '..' expression 'do' ( instruction )+ 'end'
+                    // Looc.g:84:16: 'for' IDF 'in' expression '..' expression 'do' ( instruction )+ 'end'
                     {
-                    match(input,33,FOLLOW_33_in_instruction280); 
-                    match(input,IDF,FOLLOW_IDF_in_instruction282); 
-                    match(input,34,FOLLOW_34_in_instruction284); 
-                    pushFollow(FOLLOW_expression_in_instruction286);
+                    match(input,33,FOLLOW_33_in_instruction306); 
+                    match(input,IDF,FOLLOW_IDF_in_instruction308); 
+                    match(input,34,FOLLOW_34_in_instruction310); 
+                    pushFollow(FOLLOW_expression_in_instruction312);
                     expression();
 
                     state._fsp--;
 
-                    match(input,35,FOLLOW_35_in_instruction288); 
-                    pushFollow(FOLLOW_expression_in_instruction290);
+                    match(input,35,FOLLOW_35_in_instruction314); 
+                    pushFollow(FOLLOW_expression_in_instruction316);
                     expression();
 
                     state._fsp--;
 
-                    match(input,36,FOLLOW_36_in_instruction292); 
-                    // Looc.g:31:63: ( instruction )+
+                    match(input,36,FOLLOW_36_in_instruction318); 
+                    // Looc.g:84:63: ( instruction )+
                     int cnt13=0;
                     loop13:
                     do {
@@ -734,9 +786,9 @@ public class LoocParser extends Parser {
 
                         switch (alt13) {
                     	case 1 :
-                    	    // Looc.g:31:64: instruction
+                    	    // Looc.g:84:64: instruction
                     	    {
-                    	    pushFollow(FOLLOW_instruction_in_instruction295);
+                    	    pushFollow(FOLLOW_instruction_in_instruction321);
                     	    instruction();
 
                     	    state._fsp--;
@@ -754,15 +806,15 @@ public class LoocParser extends Parser {
                         cnt13++;
                     } while (true);
 
-                    match(input,37,FOLLOW_37_in_instruction299); 
+                    match(input,37,FOLLOW_37_in_instruction325); 
 
                     }
                     break;
                 case 4 :
-                    // Looc.g:32:16: '{' ( var_decl )* ( instruction )+ '}'
+                    // Looc.g:85:16: '{' ( var_decl )* ( instruction )+ '}'
                     {
-                    match(input,25,FOLLOW_25_in_instruction320); 
-                    // Looc.g:32:20: ( var_decl )*
+                    match(input,25,FOLLOW_25_in_instruction346); 
+                    // Looc.g:85:20: ( var_decl )*
                     loop14:
                     do {
                         int alt14=2;
@@ -775,9 +827,9 @@ public class LoocParser extends Parser {
 
                         switch (alt14) {
                     	case 1 :
-                    	    // Looc.g:32:21: var_decl
+                    	    // Looc.g:85:21: var_decl
                     	    {
-                    	    pushFollow(FOLLOW_var_decl_in_instruction323);
+                    	    pushFollow(FOLLOW_var_decl_in_instruction349);
                     	    var_decl();
 
                     	    state._fsp--;
@@ -791,7 +843,7 @@ public class LoocParser extends Parser {
                         }
                     } while (true);
 
-                    // Looc.g:32:32: ( instruction )+
+                    // Looc.g:85:32: ( instruction )+
                     int cnt15=0;
                     loop15:
                     do {
@@ -805,9 +857,9 @@ public class LoocParser extends Parser {
 
                         switch (alt15) {
                     	case 1 :
-                    	    // Looc.g:32:33: instruction
+                    	    // Looc.g:85:33: instruction
                     	    {
-                    	    pushFollow(FOLLOW_instruction_in_instruction328);
+                    	    pushFollow(FOLLOW_instruction_in_instruction354);
                     	    instruction();
 
                     	    state._fsp--;
@@ -825,20 +877,20 @@ public class LoocParser extends Parser {
                         cnt15++;
                     } while (true);
 
-                    match(input,26,FOLLOW_26_in_instruction332); 
+                    match(input,26,FOLLOW_26_in_instruction358); 
 
                     }
                     break;
                 case 5 :
-                    // Looc.g:33:16: 'do' expression ( '.' IDF '(' ( expression )? ( ',' expression )* ')' )? ';'
+                    // Looc.g:86:16: 'do' expression ( '.' IDF '(' ( expression )? ( ',' expression )* ')' )? ';'
                     {
-                    match(input,36,FOLLOW_36_in_instruction349); 
-                    pushFollow(FOLLOW_expression_in_instruction351);
+                    match(input,36,FOLLOW_36_in_instruction375); 
+                    pushFollow(FOLLOW_expression_in_instruction377);
                     expression();
 
                     state._fsp--;
 
-                    // Looc.g:33:32: ( '.' IDF '(' ( expression )? ( ',' expression )* ')' )?
+                    // Looc.g:86:32: ( '.' IDF '(' ( expression )? ( ',' expression )* ')' )?
                     int alt18=2;
                     int LA18_0 = input.LA(1);
 
@@ -847,12 +899,12 @@ public class LoocParser extends Parser {
                     }
                     switch (alt18) {
                         case 1 :
-                            // Looc.g:33:33: '.' IDF '(' ( expression )? ( ',' expression )* ')'
+                            // Looc.g:86:33: '.' IDF '(' ( expression )? ( ',' expression )* ')'
                             {
-                            match(input,38,FOLLOW_38_in_instruction354); 
-                            match(input,IDF,FOLLOW_IDF_in_instruction356); 
-                            match(input,17,FOLLOW_17_in_instruction358); 
-                            // Looc.g:33:45: ( expression )?
+                            match(input,38,FOLLOW_38_in_instruction380); 
+                            match(input,IDF,FOLLOW_IDF_in_instruction382); 
+                            match(input,17,FOLLOW_17_in_instruction384); 
+                            // Looc.g:86:45: ( expression )?
                             int alt16=2;
                             int LA16_0 = input.LA(1);
 
@@ -861,9 +913,9 @@ public class LoocParser extends Parser {
                             }
                             switch (alt16) {
                                 case 1 :
-                                    // Looc.g:33:46: expression
+                                    // Looc.g:86:46: expression
                                     {
-                                    pushFollow(FOLLOW_expression_in_instruction361);
+                                    pushFollow(FOLLOW_expression_in_instruction387);
                                     expression();
 
                                     state._fsp--;
@@ -874,7 +926,7 @@ public class LoocParser extends Parser {
 
                             }
 
-                            // Looc.g:33:59: ( ',' expression )*
+                            // Looc.g:86:59: ( ',' expression )*
                             loop17:
                             do {
                                 int alt17=2;
@@ -887,10 +939,10 @@ public class LoocParser extends Parser {
 
                                 switch (alt17) {
                             	case 1 :
-                            	    // Looc.g:33:60: ',' expression
+                            	    // Looc.g:86:60: ',' expression
                             	    {
-                            	    match(input,27,FOLLOW_27_in_instruction366); 
-                            	    pushFollow(FOLLOW_expression_in_instruction368);
+                            	    match(input,27,FOLLOW_27_in_instruction392); 
+                            	    pushFollow(FOLLOW_expression_in_instruction394);
                             	    expression();
 
                             	    state._fsp--;
@@ -904,21 +956,21 @@ public class LoocParser extends Parser {
                                 }
                             } while (true);
 
-                            match(input,18,FOLLOW_18_in_instruction372); 
+                            match(input,18,FOLLOW_18_in_instruction398); 
 
                             }
                             break;
 
                     }
 
-                    match(input,21,FOLLOW_21_in_instruction376); 
+                    match(input,21,FOLLOW_21_in_instruction402); 
 
                     }
                     break;
                 case 6 :
-                    // Looc.g:34:16: print
+                    // Looc.g:87:16: print
                     {
-                    pushFollow(FOLLOW_print_in_instruction393);
+                    pushFollow(FOLLOW_print_in_instruction419);
                     print();
 
                     state._fsp--;
@@ -927,9 +979,9 @@ public class LoocParser extends Parser {
                     }
                     break;
                 case 7 :
-                    // Looc.g:35:16: read
+                    // Looc.g:88:16: read
                     {
-                    pushFollow(FOLLOW_read_in_instruction410);
+                    pushFollow(FOLLOW_read_in_instruction436);
                     read();
 
                     state._fsp--;
@@ -938,9 +990,9 @@ public class LoocParser extends Parser {
                     }
                     break;
                 case 8 :
-                    // Looc.g:36:16: returnstate
+                    // Looc.g:89:16: returnstate
                     {
-                    pushFollow(FOLLOW_returnstate_in_instruction427);
+                    pushFollow(FOLLOW_returnstate_in_instruction453);
                     returnstate();
 
                     state._fsp--;
@@ -963,10 +1015,10 @@ public class LoocParser extends Parser {
 
 
     // $ANTLR start "affectation"
-    // Looc.g:39:1: affectation : ( expression | 'nil' );
+    // Looc.g:92:1: affectation : ( expression | 'nil' );
     public final void affectation() throws RecognitionException {
         try {
-            // Looc.g:39:12: ( expression | 'nil' )
+            // Looc.g:92:12: ( expression | 'nil' )
             int alt20=2;
             int LA20_0 = input.LA(1);
 
@@ -984,9 +1036,9 @@ public class LoocParser extends Parser {
             }
             switch (alt20) {
                 case 1 :
-                    // Looc.g:39:16: expression
+                    // Looc.g:92:16: expression
                     {
-                    pushFollow(FOLLOW_expression_in_affectation448);
+                    pushFollow(FOLLOW_expression_in_affectation474);
                     expression();
 
                     state._fsp--;
@@ -995,9 +1047,9 @@ public class LoocParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // Looc.g:40:16: 'nil'
+                    // Looc.g:93:16: 'nil'
                     {
-                    match(input,39,FOLLOW_39_in_affectation465); 
+                    match(input,39,FOLLOW_39_in_affectation491); 
 
                     }
                     break;
@@ -1016,19 +1068,19 @@ public class LoocParser extends Parser {
 
 
     // $ANTLR start "print"
-    // Looc.g:43:1: print : 'write' strprint ';' ;
+    // Looc.g:96:1: print : 'write' strprint ';' ;
     public final void print() throws RecognitionException {
         try {
-            // Looc.g:43:6: ( 'write' strprint ';' )
-            // Looc.g:43:10: 'write' strprint ';'
+            // Looc.g:96:6: ( 'write' strprint ';' )
+            // Looc.g:96:10: 'write' strprint ';'
             {
-            match(input,40,FOLLOW_40_in_print486); 
-            pushFollow(FOLLOW_strprint_in_print488);
+            match(input,40,FOLLOW_40_in_print512); 
+            pushFollow(FOLLOW_strprint_in_print514);
             strprint();
 
             state._fsp--;
 
-            match(input,21,FOLLOW_21_in_print490); 
+            match(input,21,FOLLOW_21_in_print516); 
 
             }
 
@@ -1045,10 +1097,10 @@ public class LoocParser extends Parser {
 
 
     // $ANTLR start "strprint"
-    // Looc.g:45:1: strprint : ( expression | CSTE_CHAINE );
+    // Looc.g:98:1: strprint : ( expression | CSTE_CHAINE );
     public final void strprint() throws RecognitionException {
         try {
-            // Looc.g:45:9: ( expression | CSTE_CHAINE )
+            // Looc.g:98:9: ( expression | CSTE_CHAINE )
             int alt21=2;
             int LA21_0 = input.LA(1);
 
@@ -1066,9 +1118,9 @@ public class LoocParser extends Parser {
             }
             switch (alt21) {
                 case 1 :
-                    // Looc.g:45:13: expression
+                    // Looc.g:98:13: expression
                     {
-                    pushFollow(FOLLOW_expression_in_strprint500);
+                    pushFollow(FOLLOW_expression_in_strprint526);
                     expression();
 
                     state._fsp--;
@@ -1077,9 +1129,9 @@ public class LoocParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // Looc.g:46:13: CSTE_CHAINE
+                    // Looc.g:99:13: CSTE_CHAINE
                     {
-                    match(input,CSTE_CHAINE,FOLLOW_CSTE_CHAINE_in_strprint514); 
+                    match(input,CSTE_CHAINE,FOLLOW_CSTE_CHAINE_in_strprint540); 
 
                     }
                     break;
@@ -1098,15 +1150,15 @@ public class LoocParser extends Parser {
 
 
     // $ANTLR start "read"
-    // Looc.g:49:1: read : 'read' IDF ';' ;
+    // Looc.g:102:1: read : 'read' IDF ';' ;
     public final void read() throws RecognitionException {
         try {
-            // Looc.g:49:5: ( 'read' IDF ';' )
-            // Looc.g:49:9: 'read' IDF ';'
+            // Looc.g:102:5: ( 'read' IDF ';' )
+            // Looc.g:102:9: 'read' IDF ';'
             {
-            match(input,41,FOLLOW_41_in_read532); 
-            match(input,IDF,FOLLOW_IDF_in_read534); 
-            match(input,21,FOLLOW_21_in_read536); 
+            match(input,41,FOLLOW_41_in_read558); 
+            match(input,IDF,FOLLOW_IDF_in_read560); 
+            match(input,21,FOLLOW_21_in_read562); 
 
             }
 
@@ -1123,21 +1175,21 @@ public class LoocParser extends Parser {
 
 
     // $ANTLR start "returnstate"
-    // Looc.g:51:1: returnstate : 'return' '(' expression ')' ';' ;
+    // Looc.g:104:1: returnstate : 'return' '(' expression ')' ';' ;
     public final void returnstate() throws RecognitionException {
         try {
-            // Looc.g:51:12: ( 'return' '(' expression ')' ';' )
-            // Looc.g:51:16: 'return' '(' expression ')' ';'
+            // Looc.g:104:12: ( 'return' '(' expression ')' ';' )
+            // Looc.g:104:16: 'return' '(' expression ')' ';'
             {
-            match(input,42,FOLLOW_42_in_returnstate546); 
-            match(input,17,FOLLOW_17_in_returnstate548); 
-            pushFollow(FOLLOW_expression_in_returnstate550);
+            match(input,42,FOLLOW_42_in_returnstate572); 
+            match(input,17,FOLLOW_17_in_returnstate574); 
+            pushFollow(FOLLOW_expression_in_returnstate576);
             expression();
 
             state._fsp--;
 
-            match(input,18,FOLLOW_18_in_returnstate552); 
-            match(input,21,FOLLOW_21_in_returnstate554); 
+            match(input,18,FOLLOW_18_in_returnstate578); 
+            match(input,21,FOLLOW_21_in_returnstate580); 
 
             }
 
@@ -1154,10 +1206,10 @@ public class LoocParser extends Parser {
 
 
     // $ANTLR start "expression"
-    // Looc.g:55:1: expression : ( IDF expression_bis | 'this' expression_bis | 'super' expression_bis | CSTE_ENT expression_bis | 'new' IDFC expression_bis | '(' expression ')' expression_bis | '-' expression expression_bis );
+    // Looc.g:108:1: expression : ( IDF expression_bis | 'this' expression_bis | 'super' expression_bis | CSTE_ENT expression_bis | 'new' IDFC expression_bis | '(' expression ')' expression_bis | '-' expression expression_bis );
     public final void expression() throws RecognitionException {
         try {
-            // Looc.g:55:11: ( IDF expression_bis | 'this' expression_bis | 'super' expression_bis | CSTE_ENT expression_bis | 'new' IDFC expression_bis | '(' expression ')' expression_bis | '-' expression expression_bis )
+            // Looc.g:108:11: ( IDF expression_bis | 'this' expression_bis | 'super' expression_bis | CSTE_ENT expression_bis | 'new' IDFC expression_bis | '(' expression ')' expression_bis | '-' expression expression_bis )
             int alt22=7;
             switch ( input.LA(1) ) {
             case IDF:
@@ -1204,10 +1256,10 @@ public class LoocParser extends Parser {
 
             switch (alt22) {
                 case 1 :
-                    // Looc.g:55:15: IDF expression_bis
+                    // Looc.g:108:15: IDF expression_bis
                     {
-                    match(input,IDF,FOLLOW_IDF_in_expression567); 
-                    pushFollow(FOLLOW_expression_bis_in_expression569);
+                    match(input,IDF,FOLLOW_IDF_in_expression593); 
+                    pushFollow(FOLLOW_expression_bis_in_expression595);
                     expression_bis();
 
                     state._fsp--;
@@ -1216,10 +1268,10 @@ public class LoocParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // Looc.g:56:15: 'this' expression_bis
+                    // Looc.g:109:15: 'this' expression_bis
                     {
-                    match(input,43,FOLLOW_43_in_expression585); 
-                    pushFollow(FOLLOW_expression_bis_in_expression587);
+                    match(input,43,FOLLOW_43_in_expression611); 
+                    pushFollow(FOLLOW_expression_bis_in_expression613);
                     expression_bis();
 
                     state._fsp--;
@@ -1228,10 +1280,10 @@ public class LoocParser extends Parser {
                     }
                     break;
                 case 3 :
-                    // Looc.g:57:15: 'super' expression_bis
+                    // Looc.g:110:15: 'super' expression_bis
                     {
-                    match(input,44,FOLLOW_44_in_expression603); 
-                    pushFollow(FOLLOW_expression_bis_in_expression605);
+                    match(input,44,FOLLOW_44_in_expression629); 
+                    pushFollow(FOLLOW_expression_bis_in_expression631);
                     expression_bis();
 
                     state._fsp--;
@@ -1240,10 +1292,10 @@ public class LoocParser extends Parser {
                     }
                     break;
                 case 4 :
-                    // Looc.g:58:15: CSTE_ENT expression_bis
+                    // Looc.g:111:15: CSTE_ENT expression_bis
                     {
-                    match(input,CSTE_ENT,FOLLOW_CSTE_ENT_in_expression621); 
-                    pushFollow(FOLLOW_expression_bis_in_expression623);
+                    match(input,CSTE_ENT,FOLLOW_CSTE_ENT_in_expression647); 
+                    pushFollow(FOLLOW_expression_bis_in_expression649);
                     expression_bis();
 
                     state._fsp--;
@@ -1252,11 +1304,11 @@ public class LoocParser extends Parser {
                     }
                     break;
                 case 5 :
-                    // Looc.g:59:15: 'new' IDFC expression_bis
+                    // Looc.g:112:15: 'new' IDFC expression_bis
                     {
-                    match(input,45,FOLLOW_45_in_expression639); 
-                    match(input,IDFC,FOLLOW_IDFC_in_expression641); 
-                    pushFollow(FOLLOW_expression_bis_in_expression643);
+                    match(input,45,FOLLOW_45_in_expression665); 
+                    match(input,IDFC,FOLLOW_IDFC_in_expression667); 
+                    pushFollow(FOLLOW_expression_bis_in_expression669);
                     expression_bis();
 
                     state._fsp--;
@@ -1265,16 +1317,16 @@ public class LoocParser extends Parser {
                     }
                     break;
                 case 6 :
-                    // Looc.g:60:15: '(' expression ')' expression_bis
+                    // Looc.g:113:15: '(' expression ')' expression_bis
                     {
-                    match(input,17,FOLLOW_17_in_expression659); 
-                    pushFollow(FOLLOW_expression_in_expression661);
+                    match(input,17,FOLLOW_17_in_expression685); 
+                    pushFollow(FOLLOW_expression_in_expression687);
                     expression();
 
                     state._fsp--;
 
-                    match(input,18,FOLLOW_18_in_expression663); 
-                    pushFollow(FOLLOW_expression_bis_in_expression665);
+                    match(input,18,FOLLOW_18_in_expression689); 
+                    pushFollow(FOLLOW_expression_bis_in_expression691);
                     expression_bis();
 
                     state._fsp--;
@@ -1283,15 +1335,15 @@ public class LoocParser extends Parser {
                     }
                     break;
                 case 7 :
-                    // Looc.g:61:15: '-' expression expression_bis
+                    // Looc.g:114:15: '-' expression expression_bis
                     {
-                    match(input,46,FOLLOW_46_in_expression681); 
-                    pushFollow(FOLLOW_expression_in_expression683);
+                    match(input,46,FOLLOW_46_in_expression707); 
+                    pushFollow(FOLLOW_expression_in_expression709);
                     expression();
 
                     state._fsp--;
 
-                    pushFollow(FOLLOW_expression_bis_in_expression685);
+                    pushFollow(FOLLOW_expression_bis_in_expression711);
                     expression_bis();
 
                     state._fsp--;
@@ -1314,10 +1366,10 @@ public class LoocParser extends Parser {
 
 
     // $ANTLR start "expression_bis"
-    // Looc.g:64:1: expression_bis : ( '.' IDF '(' ( expression )? ( ',' expression )* ')' expression_bis | oper expression expression_bis | );
+    // Looc.g:117:1: expression_bis : ( '.' IDF '(' ( expression )? ( ',' expression )* ')' expression_bis | oper expression expression_bis | );
     public final void expression_bis() throws RecognitionException {
         try {
-            // Looc.g:64:15: ( '.' IDF '(' ( expression )? ( ',' expression )* ')' expression_bis | oper expression expression_bis | )
+            // Looc.g:117:15: ( '.' IDF '(' ( expression )? ( ',' expression )* ')' expression_bis | oper expression expression_bis | )
             int alt25=3;
             switch ( input.LA(1) ) {
             case 38:
@@ -1357,12 +1409,12 @@ public class LoocParser extends Parser {
 
             switch (alt25) {
                 case 1 :
-                    // Looc.g:64:19: '.' IDF '(' ( expression )? ( ',' expression )* ')' expression_bis
+                    // Looc.g:117:19: '.' IDF '(' ( expression )? ( ',' expression )* ')' expression_bis
                     {
-                    match(input,38,FOLLOW_38_in_expression_bis705); 
-                    match(input,IDF,FOLLOW_IDF_in_expression_bis707); 
-                    match(input,17,FOLLOW_17_in_expression_bis709); 
-                    // Looc.g:64:31: ( expression )?
+                    match(input,38,FOLLOW_38_in_expression_bis731); 
+                    match(input,IDF,FOLLOW_IDF_in_expression_bis733); 
+                    match(input,17,FOLLOW_17_in_expression_bis735); 
+                    // Looc.g:117:31: ( expression )?
                     int alt23=2;
                     int LA23_0 = input.LA(1);
 
@@ -1371,9 +1423,9 @@ public class LoocParser extends Parser {
                     }
                     switch (alt23) {
                         case 1 :
-                            // Looc.g:64:32: expression
+                            // Looc.g:117:32: expression
                             {
-                            pushFollow(FOLLOW_expression_in_expression_bis712);
+                            pushFollow(FOLLOW_expression_in_expression_bis738);
                             expression();
 
                             state._fsp--;
@@ -1384,7 +1436,7 @@ public class LoocParser extends Parser {
 
                     }
 
-                    // Looc.g:64:45: ( ',' expression )*
+                    // Looc.g:117:45: ( ',' expression )*
                     loop24:
                     do {
                         int alt24=2;
@@ -1397,10 +1449,10 @@ public class LoocParser extends Parser {
 
                         switch (alt24) {
                     	case 1 :
-                    	    // Looc.g:64:46: ',' expression
+                    	    // Looc.g:117:46: ',' expression
                     	    {
-                    	    match(input,27,FOLLOW_27_in_expression_bis717); 
-                    	    pushFollow(FOLLOW_expression_in_expression_bis719);
+                    	    match(input,27,FOLLOW_27_in_expression_bis743); 
+                    	    pushFollow(FOLLOW_expression_in_expression_bis745);
                     	    expression();
 
                     	    state._fsp--;
@@ -1414,8 +1466,8 @@ public class LoocParser extends Parser {
                         }
                     } while (true);
 
-                    match(input,18,FOLLOW_18_in_expression_bis723); 
-                    pushFollow(FOLLOW_expression_bis_in_expression_bis725);
+                    match(input,18,FOLLOW_18_in_expression_bis749); 
+                    pushFollow(FOLLOW_expression_bis_in_expression_bis751);
                     expression_bis();
 
                     state._fsp--;
@@ -1424,19 +1476,19 @@ public class LoocParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // Looc.g:65:19: oper expression expression_bis
+                    // Looc.g:118:19: oper expression expression_bis
                     {
-                    pushFollow(FOLLOW_oper_in_expression_bis745);
+                    pushFollow(FOLLOW_oper_in_expression_bis771);
                     oper();
 
                     state._fsp--;
 
-                    pushFollow(FOLLOW_expression_in_expression_bis747);
+                    pushFollow(FOLLOW_expression_in_expression_bis773);
                     expression();
 
                     state._fsp--;
 
-                    pushFollow(FOLLOW_expression_bis_in_expression_bis749);
+                    pushFollow(FOLLOW_expression_bis_in_expression_bis775);
                     expression_bis();
 
                     state._fsp--;
@@ -1445,7 +1497,7 @@ public class LoocParser extends Parser {
                     }
                     break;
                 case 3 :
-                    // Looc.g:67:15: 
+                    // Looc.g:120:15: 
                     {
                     }
                     break;
@@ -1464,10 +1516,10 @@ public class LoocParser extends Parser {
 
 
     // $ANTLR start "oper"
-    // Looc.g:69:1: oper : ( '+' | '-' | '*' | '<' | '<=' | '>' | '>=' | '==' | '!=' );
+    // Looc.g:122:1: oper : ( '+' | '-' | '*' | '<' | '<=' | '>' | '>=' | '==' | '!=' );
     public final void oper() throws RecognitionException {
         try {
-            // Looc.g:69:5: ( '+' | '-' | '*' | '<' | '<=' | '>' | '>=' | '==' | '!=' )
+            // Looc.g:122:5: ( '+' | '-' | '*' | '<' | '<=' | '>' | '>=' | '==' | '!=' )
             // Looc.g:
             {
             if ( (input.LA(1)>=46 && input.LA(1)<=54) ) {
@@ -1498,124 +1550,124 @@ public class LoocParser extends Parser {
 
  
 
-    public static final BitSet FOLLOW_class_decl_in_program39 = new BitSet(new long[]{0x0000071222084020L});
-    public static final BitSet FOLLOW_var_decl_in_program44 = new BitSet(new long[]{0x0000071222080020L});
-    public static final BitSet FOLLOW_instruction_in_program49 = new BitSet(new long[]{0x0000071222080022L});
-    public static final BitSet FOLLOW_14_in_class_decl61 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_IDFC_in_class_decl63 = new BitSet(new long[]{0x0000000000018000L});
-    public static final BitSet FOLLOW_15_in_class_decl66 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_IDFC_in_class_decl68 = new BitSet(new long[]{0x0000000000010000L});
-    public static final BitSet FOLLOW_16_in_class_decl72 = new BitSet(new long[]{0x0000000000020000L});
-    public static final BitSet FOLLOW_17_in_class_decl74 = new BitSet(new long[]{0x00000000010C0000L});
-    public static final BitSet FOLLOW_class_item_decl_in_class_decl76 = new BitSet(new long[]{0x0000000000040000L});
-    public static final BitSet FOLLOW_18_in_class_decl78 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_var_decl_in_class_item_decl89 = new BitSet(new long[]{0x0000000001080002L});
-    public static final BitSet FOLLOW_method_decl_in_class_item_decl94 = new BitSet(new long[]{0x0000000001000002L});
-    public static final BitSet FOLLOW_19_in_var_decl106 = new BitSet(new long[]{0x0000000000000020L});
-    public static final BitSet FOLLOW_IDF_in_var_decl108 = new BitSet(new long[]{0x0000000000100000L});
-    public static final BitSet FOLLOW_20_in_var_decl110 = new BitSet(new long[]{0x0000000000C00010L});
-    public static final BitSet FOLLOW_type_in_var_decl112 = new BitSet(new long[]{0x0000000000200000L});
-    public static final BitSet FOLLOW_21_in_var_decl114 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_class_decl_in_program46 = new BitSet(new long[]{0x0000071222084020L});
+    public static final BitSet FOLLOW_var_decl_in_program51 = new BitSet(new long[]{0x0000071222080020L});
+    public static final BitSet FOLLOW_instruction_in_program56 = new BitSet(new long[]{0x0000071222080022L});
+    public static final BitSet FOLLOW_14_in_class_decl68 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_IDFC_in_class_decl70 = new BitSet(new long[]{0x0000000000018000L});
+    public static final BitSet FOLLOW_15_in_class_decl73 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_IDFC_in_class_decl75 = new BitSet(new long[]{0x0000000000010000L});
+    public static final BitSet FOLLOW_16_in_class_decl79 = new BitSet(new long[]{0x0000000000020000L});
+    public static final BitSet FOLLOW_17_in_class_decl81 = new BitSet(new long[]{0x00000000010C0000L});
+    public static final BitSet FOLLOW_class_item_decl_in_class_decl83 = new BitSet(new long[]{0x0000000000040000L});
+    public static final BitSet FOLLOW_18_in_class_decl85 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_var_decl_in_class_item_decl96 = new BitSet(new long[]{0x0000000001080002L});
+    public static final BitSet FOLLOW_method_decl_in_class_item_decl101 = new BitSet(new long[]{0x0000000001000002L});
+    public static final BitSet FOLLOW_19_in_var_decl113 = new BitSet(new long[]{0x0000000000000020L});
+    public static final BitSet FOLLOW_IDF_in_var_decl115 = new BitSet(new long[]{0x0000000000100000L});
+    public static final BitSet FOLLOW_20_in_var_decl117 = new BitSet(new long[]{0x0000000000C00010L});
+    public static final BitSet FOLLOW_type_in_var_decl119 = new BitSet(new long[]{0x0000000000200000L});
+    public static final BitSet FOLLOW_21_in_var_decl121 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_set_in_type0 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_24_in_method_decl158 = new BitSet(new long[]{0x0000000000000020L});
-    public static final BitSet FOLLOW_IDF_in_method_decl160 = new BitSet(new long[]{0x0000000000020000L});
-    public static final BitSet FOLLOW_17_in_method_decl162 = new BitSet(new long[]{0x0000000000040020L});
-    public static final BitSet FOLLOW_method_args_in_method_decl165 = new BitSet(new long[]{0x0000000000040020L});
-    public static final BitSet FOLLOW_18_in_method_decl169 = new BitSet(new long[]{0x0000000002100000L});
-    public static final BitSet FOLLOW_20_in_method_decl172 = new BitSet(new long[]{0x0000000000C00010L});
-    public static final BitSet FOLLOW_type_in_method_decl174 = new BitSet(new long[]{0x0000000002000000L});
-    public static final BitSet FOLLOW_25_in_method_decl178 = new BitSet(new long[]{0x0000071222080020L});
-    public static final BitSet FOLLOW_var_decl_in_method_decl181 = new BitSet(new long[]{0x0000071222080020L});
-    public static final BitSet FOLLOW_instruction_in_method_decl186 = new BitSet(new long[]{0x0000071226080020L});
-    public static final BitSet FOLLOW_26_in_method_decl190 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_IDF_in_method_args200 = new BitSet(new long[]{0x0000000000100000L});
-    public static final BitSet FOLLOW_20_in_method_args202 = new BitSet(new long[]{0x0000000000C00010L});
-    public static final BitSet FOLLOW_type_in_method_args204 = new BitSet(new long[]{0x0000000008000002L});
-    public static final BitSet FOLLOW_27_in_method_args207 = new BitSet(new long[]{0x0000000000000020L});
-    public static final BitSet FOLLOW_IDF_in_method_args209 = new BitSet(new long[]{0x0000000000100000L});
-    public static final BitSet FOLLOW_20_in_method_args211 = new BitSet(new long[]{0x0000000000C00010L});
-    public static final BitSet FOLLOW_type_in_method_args213 = new BitSet(new long[]{0x0000000008000002L});
-    public static final BitSet FOLLOW_IDF_in_instruction225 = new BitSet(new long[]{0x0000000010000000L});
-    public static final BitSet FOLLOW_28_in_instruction227 = new BitSet(new long[]{0x00007880000200A0L});
-    public static final BitSet FOLLOW_affectation_in_instruction229 = new BitSet(new long[]{0x0000000000200000L});
-    public static final BitSet FOLLOW_21_in_instruction231 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_29_in_instruction248 = new BitSet(new long[]{0x00007800000200A0L});
-    public static final BitSet FOLLOW_expression_in_instruction250 = new BitSet(new long[]{0x0000000040000000L});
-    public static final BitSet FOLLOW_30_in_instruction252 = new BitSet(new long[]{0x0000071222080020L});
-    public static final BitSet FOLLOW_instruction_in_instruction254 = new BitSet(new long[]{0x0000000180000000L});
-    public static final BitSet FOLLOW_31_in_instruction257 = new BitSet(new long[]{0x0000071222080020L});
-    public static final BitSet FOLLOW_instruction_in_instruction259 = new BitSet(new long[]{0x0000000100000000L});
-    public static final BitSet FOLLOW_32_in_instruction263 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_33_in_instruction280 = new BitSet(new long[]{0x0000000000000020L});
-    public static final BitSet FOLLOW_IDF_in_instruction282 = new BitSet(new long[]{0x0000000400000000L});
-    public static final BitSet FOLLOW_34_in_instruction284 = new BitSet(new long[]{0x00007800000200A0L});
-    public static final BitSet FOLLOW_expression_in_instruction286 = new BitSet(new long[]{0x0000000800000000L});
-    public static final BitSet FOLLOW_35_in_instruction288 = new BitSet(new long[]{0x00007800000200A0L});
-    public static final BitSet FOLLOW_expression_in_instruction290 = new BitSet(new long[]{0x0000001000000000L});
-    public static final BitSet FOLLOW_36_in_instruction292 = new BitSet(new long[]{0x0000071222080020L});
-    public static final BitSet FOLLOW_instruction_in_instruction295 = new BitSet(new long[]{0x0000073222080020L});
-    public static final BitSet FOLLOW_37_in_instruction299 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_25_in_instruction320 = new BitSet(new long[]{0x0000071222080020L});
-    public static final BitSet FOLLOW_var_decl_in_instruction323 = new BitSet(new long[]{0x0000071222080020L});
-    public static final BitSet FOLLOW_instruction_in_instruction328 = new BitSet(new long[]{0x0000071226080020L});
-    public static final BitSet FOLLOW_26_in_instruction332 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_36_in_instruction349 = new BitSet(new long[]{0x00007800000200A0L});
-    public static final BitSet FOLLOW_expression_in_instruction351 = new BitSet(new long[]{0x0000004000200000L});
-    public static final BitSet FOLLOW_38_in_instruction354 = new BitSet(new long[]{0x0000000000000020L});
-    public static final BitSet FOLLOW_IDF_in_instruction356 = new BitSet(new long[]{0x0000000000020000L});
-    public static final BitSet FOLLOW_17_in_instruction358 = new BitSet(new long[]{0x00007800080600A0L});
-    public static final BitSet FOLLOW_expression_in_instruction361 = new BitSet(new long[]{0x0000000008040000L});
-    public static final BitSet FOLLOW_27_in_instruction366 = new BitSet(new long[]{0x00007800000200A0L});
-    public static final BitSet FOLLOW_expression_in_instruction368 = new BitSet(new long[]{0x0000000008040000L});
-    public static final BitSet FOLLOW_18_in_instruction372 = new BitSet(new long[]{0x0000000000200000L});
-    public static final BitSet FOLLOW_21_in_instruction376 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_print_in_instruction393 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_read_in_instruction410 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_returnstate_in_instruction427 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_expression_in_affectation448 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_39_in_affectation465 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_40_in_print486 = new BitSet(new long[]{0x00007800000200E0L});
-    public static final BitSet FOLLOW_strprint_in_print488 = new BitSet(new long[]{0x0000000000200000L});
-    public static final BitSet FOLLOW_21_in_print490 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_expression_in_strprint500 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_CSTE_CHAINE_in_strprint514 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_41_in_read532 = new BitSet(new long[]{0x0000000000000020L});
-    public static final BitSet FOLLOW_IDF_in_read534 = new BitSet(new long[]{0x0000000000200000L});
-    public static final BitSet FOLLOW_21_in_read536 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_42_in_returnstate546 = new BitSet(new long[]{0x0000000000020000L});
-    public static final BitSet FOLLOW_17_in_returnstate548 = new BitSet(new long[]{0x00007800000200A0L});
-    public static final BitSet FOLLOW_expression_in_returnstate550 = new BitSet(new long[]{0x0000000000040000L});
-    public static final BitSet FOLLOW_18_in_returnstate552 = new BitSet(new long[]{0x0000000000200000L});
-    public static final BitSet FOLLOW_21_in_returnstate554 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_IDF_in_expression567 = new BitSet(new long[]{0x007FC04000000000L});
-    public static final BitSet FOLLOW_expression_bis_in_expression569 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_43_in_expression585 = new BitSet(new long[]{0x007FC04000000000L});
-    public static final BitSet FOLLOW_expression_bis_in_expression587 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_44_in_expression603 = new BitSet(new long[]{0x007FC04000000000L});
-    public static final BitSet FOLLOW_expression_bis_in_expression605 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_CSTE_ENT_in_expression621 = new BitSet(new long[]{0x007FC04000000000L});
-    public static final BitSet FOLLOW_expression_bis_in_expression623 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_45_in_expression639 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_IDFC_in_expression641 = new BitSet(new long[]{0x007FC04000000000L});
-    public static final BitSet FOLLOW_expression_bis_in_expression643 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_17_in_expression659 = new BitSet(new long[]{0x00007800000200A0L});
-    public static final BitSet FOLLOW_expression_in_expression661 = new BitSet(new long[]{0x0000000000040000L});
-    public static final BitSet FOLLOW_18_in_expression663 = new BitSet(new long[]{0x007FC04000000000L});
-    public static final BitSet FOLLOW_expression_bis_in_expression665 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_46_in_expression681 = new BitSet(new long[]{0x00007800000200A0L});
-    public static final BitSet FOLLOW_expression_in_expression683 = new BitSet(new long[]{0x007FC04000000000L});
-    public static final BitSet FOLLOW_expression_bis_in_expression685 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_38_in_expression_bis705 = new BitSet(new long[]{0x0000000000000020L});
-    public static final BitSet FOLLOW_IDF_in_expression_bis707 = new BitSet(new long[]{0x0000000000020000L});
-    public static final BitSet FOLLOW_17_in_expression_bis709 = new BitSet(new long[]{0x00007800080600A0L});
-    public static final BitSet FOLLOW_expression_in_expression_bis712 = new BitSet(new long[]{0x0000000008040000L});
-    public static final BitSet FOLLOW_27_in_expression_bis717 = new BitSet(new long[]{0x00007800000200A0L});
-    public static final BitSet FOLLOW_expression_in_expression_bis719 = new BitSet(new long[]{0x0000000008040000L});
-    public static final BitSet FOLLOW_18_in_expression_bis723 = new BitSet(new long[]{0x007FC04000000000L});
-    public static final BitSet FOLLOW_expression_bis_in_expression_bis725 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_oper_in_expression_bis745 = new BitSet(new long[]{0x00007800000200A0L});
-    public static final BitSet FOLLOW_expression_in_expression_bis747 = new BitSet(new long[]{0x007FC04000000000L});
-    public static final BitSet FOLLOW_expression_bis_in_expression_bis749 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_24_in_method_decl184 = new BitSet(new long[]{0x0000000000000020L});
+    public static final BitSet FOLLOW_IDF_in_method_decl186 = new BitSet(new long[]{0x0000000000020000L});
+    public static final BitSet FOLLOW_17_in_method_decl188 = new BitSet(new long[]{0x0000000000040020L});
+    public static final BitSet FOLLOW_method_args_in_method_decl191 = new BitSet(new long[]{0x0000000000040020L});
+    public static final BitSet FOLLOW_18_in_method_decl195 = new BitSet(new long[]{0x0000000002100000L});
+    public static final BitSet FOLLOW_20_in_method_decl198 = new BitSet(new long[]{0x0000000000C00010L});
+    public static final BitSet FOLLOW_type_in_method_decl200 = new BitSet(new long[]{0x0000000002000000L});
+    public static final BitSet FOLLOW_25_in_method_decl204 = new BitSet(new long[]{0x0000071222080020L});
+    public static final BitSet FOLLOW_var_decl_in_method_decl207 = new BitSet(new long[]{0x0000071222080020L});
+    public static final BitSet FOLLOW_instruction_in_method_decl212 = new BitSet(new long[]{0x0000071226080020L});
+    public static final BitSet FOLLOW_26_in_method_decl216 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_IDF_in_method_args226 = new BitSet(new long[]{0x0000000000100000L});
+    public static final BitSet FOLLOW_20_in_method_args228 = new BitSet(new long[]{0x0000000000C00010L});
+    public static final BitSet FOLLOW_type_in_method_args230 = new BitSet(new long[]{0x0000000008000002L});
+    public static final BitSet FOLLOW_27_in_method_args233 = new BitSet(new long[]{0x0000000000000020L});
+    public static final BitSet FOLLOW_IDF_in_method_args235 = new BitSet(new long[]{0x0000000000100000L});
+    public static final BitSet FOLLOW_20_in_method_args237 = new BitSet(new long[]{0x0000000000C00010L});
+    public static final BitSet FOLLOW_type_in_method_args239 = new BitSet(new long[]{0x0000000008000002L});
+    public static final BitSet FOLLOW_IDF_in_instruction251 = new BitSet(new long[]{0x0000000010000000L});
+    public static final BitSet FOLLOW_28_in_instruction253 = new BitSet(new long[]{0x00007880000200A0L});
+    public static final BitSet FOLLOW_affectation_in_instruction255 = new BitSet(new long[]{0x0000000000200000L});
+    public static final BitSet FOLLOW_21_in_instruction257 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_29_in_instruction274 = new BitSet(new long[]{0x00007800000200A0L});
+    public static final BitSet FOLLOW_expression_in_instruction276 = new BitSet(new long[]{0x0000000040000000L});
+    public static final BitSet FOLLOW_30_in_instruction278 = new BitSet(new long[]{0x0000071222080020L});
+    public static final BitSet FOLLOW_instruction_in_instruction280 = new BitSet(new long[]{0x0000000180000000L});
+    public static final BitSet FOLLOW_31_in_instruction283 = new BitSet(new long[]{0x0000071222080020L});
+    public static final BitSet FOLLOW_instruction_in_instruction285 = new BitSet(new long[]{0x0000000100000000L});
+    public static final BitSet FOLLOW_32_in_instruction289 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_33_in_instruction306 = new BitSet(new long[]{0x0000000000000020L});
+    public static final BitSet FOLLOW_IDF_in_instruction308 = new BitSet(new long[]{0x0000000400000000L});
+    public static final BitSet FOLLOW_34_in_instruction310 = new BitSet(new long[]{0x00007800000200A0L});
+    public static final BitSet FOLLOW_expression_in_instruction312 = new BitSet(new long[]{0x0000000800000000L});
+    public static final BitSet FOLLOW_35_in_instruction314 = new BitSet(new long[]{0x00007800000200A0L});
+    public static final BitSet FOLLOW_expression_in_instruction316 = new BitSet(new long[]{0x0000001000000000L});
+    public static final BitSet FOLLOW_36_in_instruction318 = new BitSet(new long[]{0x0000071222080020L});
+    public static final BitSet FOLLOW_instruction_in_instruction321 = new BitSet(new long[]{0x0000073222080020L});
+    public static final BitSet FOLLOW_37_in_instruction325 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_25_in_instruction346 = new BitSet(new long[]{0x0000071222080020L});
+    public static final BitSet FOLLOW_var_decl_in_instruction349 = new BitSet(new long[]{0x0000071222080020L});
+    public static final BitSet FOLLOW_instruction_in_instruction354 = new BitSet(new long[]{0x0000071226080020L});
+    public static final BitSet FOLLOW_26_in_instruction358 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_36_in_instruction375 = new BitSet(new long[]{0x00007800000200A0L});
+    public static final BitSet FOLLOW_expression_in_instruction377 = new BitSet(new long[]{0x0000004000200000L});
+    public static final BitSet FOLLOW_38_in_instruction380 = new BitSet(new long[]{0x0000000000000020L});
+    public static final BitSet FOLLOW_IDF_in_instruction382 = new BitSet(new long[]{0x0000000000020000L});
+    public static final BitSet FOLLOW_17_in_instruction384 = new BitSet(new long[]{0x00007800080600A0L});
+    public static final BitSet FOLLOW_expression_in_instruction387 = new BitSet(new long[]{0x0000000008040000L});
+    public static final BitSet FOLLOW_27_in_instruction392 = new BitSet(new long[]{0x00007800000200A0L});
+    public static final BitSet FOLLOW_expression_in_instruction394 = new BitSet(new long[]{0x0000000008040000L});
+    public static final BitSet FOLLOW_18_in_instruction398 = new BitSet(new long[]{0x0000000000200000L});
+    public static final BitSet FOLLOW_21_in_instruction402 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_print_in_instruction419 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_read_in_instruction436 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_returnstate_in_instruction453 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_expression_in_affectation474 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_39_in_affectation491 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_40_in_print512 = new BitSet(new long[]{0x00007800000200E0L});
+    public static final BitSet FOLLOW_strprint_in_print514 = new BitSet(new long[]{0x0000000000200000L});
+    public static final BitSet FOLLOW_21_in_print516 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_expression_in_strprint526 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_CSTE_CHAINE_in_strprint540 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_41_in_read558 = new BitSet(new long[]{0x0000000000000020L});
+    public static final BitSet FOLLOW_IDF_in_read560 = new BitSet(new long[]{0x0000000000200000L});
+    public static final BitSet FOLLOW_21_in_read562 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_42_in_returnstate572 = new BitSet(new long[]{0x0000000000020000L});
+    public static final BitSet FOLLOW_17_in_returnstate574 = new BitSet(new long[]{0x00007800000200A0L});
+    public static final BitSet FOLLOW_expression_in_returnstate576 = new BitSet(new long[]{0x0000000000040000L});
+    public static final BitSet FOLLOW_18_in_returnstate578 = new BitSet(new long[]{0x0000000000200000L});
+    public static final BitSet FOLLOW_21_in_returnstate580 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_IDF_in_expression593 = new BitSet(new long[]{0x007FC04000000000L});
+    public static final BitSet FOLLOW_expression_bis_in_expression595 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_43_in_expression611 = new BitSet(new long[]{0x007FC04000000000L});
+    public static final BitSet FOLLOW_expression_bis_in_expression613 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_44_in_expression629 = new BitSet(new long[]{0x007FC04000000000L});
+    public static final BitSet FOLLOW_expression_bis_in_expression631 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_CSTE_ENT_in_expression647 = new BitSet(new long[]{0x007FC04000000000L});
+    public static final BitSet FOLLOW_expression_bis_in_expression649 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_45_in_expression665 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_IDFC_in_expression667 = new BitSet(new long[]{0x007FC04000000000L});
+    public static final BitSet FOLLOW_expression_bis_in_expression669 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_17_in_expression685 = new BitSet(new long[]{0x00007800000200A0L});
+    public static final BitSet FOLLOW_expression_in_expression687 = new BitSet(new long[]{0x0000000000040000L});
+    public static final BitSet FOLLOW_18_in_expression689 = new BitSet(new long[]{0x007FC04000000000L});
+    public static final BitSet FOLLOW_expression_bis_in_expression691 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_46_in_expression707 = new BitSet(new long[]{0x00007800000200A0L});
+    public static final BitSet FOLLOW_expression_in_expression709 = new BitSet(new long[]{0x007FC04000000000L});
+    public static final BitSet FOLLOW_expression_bis_in_expression711 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_38_in_expression_bis731 = new BitSet(new long[]{0x0000000000000020L});
+    public static final BitSet FOLLOW_IDF_in_expression_bis733 = new BitSet(new long[]{0x0000000000020000L});
+    public static final BitSet FOLLOW_17_in_expression_bis735 = new BitSet(new long[]{0x00007800080600A0L});
+    public static final BitSet FOLLOW_expression_in_expression_bis738 = new BitSet(new long[]{0x0000000008040000L});
+    public static final BitSet FOLLOW_27_in_expression_bis743 = new BitSet(new long[]{0x00007800000200A0L});
+    public static final BitSet FOLLOW_expression_in_expression_bis745 = new BitSet(new long[]{0x0000000008040000L});
+    public static final BitSet FOLLOW_18_in_expression_bis749 = new BitSet(new long[]{0x007FC04000000000L});
+    public static final BitSet FOLLOW_expression_bis_in_expression_bis751 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_oper_in_expression_bis771 = new BitSet(new long[]{0x00007800000200A0L});
+    public static final BitSet FOLLOW_expression_in_expression_bis773 = new BitSet(new long[]{0x007FC04000000000L});
+    public static final BitSet FOLLOW_expression_bis_in_expression_bis775 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_set_in_oper0 = new BitSet(new long[]{0x0000000000000002L});
 
 }
