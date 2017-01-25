@@ -16,7 +16,9 @@
 	- antlr-3.3-complete.jar		     (fourni dans le git)
 
 * **Build & execute**
-	- à venir ...
+	- Lancez le script analyseurs/createLexParsCompile.sh
+	- cd analyseurs/
+	- java Clooc \<path/du/programme/à/compiler\>
 
 * **Forge TNCY**
 	- Un dépôt du projet est également présent sur la forge de TELECOM Nancy sous *Projets Divers >> COMPIL 2017 >> garcia62* (accès autorisé seulement pour les développeurs pour le moment)
