@@ -1,4 +1,4 @@
-# PCL TNCY 2017 f
+# PCL TNCY 2017
 
 **Compilateur du langage LOOC (Langage Orienté Objet pour la Compilation) produisant du code assembleur microPIUP/ASM**
 
