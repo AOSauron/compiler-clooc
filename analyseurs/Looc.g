@@ -1,6 +1,6 @@
 /*  GRAMMAIRE POUR LE LANGAGE LOOC POUR PROJET DE COMPILATION TELECOM NANCY 2016-2017
 Authors : GARCIA Guillaume
-Maj : 21/01/17   14:39  */
+Maj : 25/01/17   14:40  */
 
  grammar Looc;
 
@@ -129,33 +129,7 @@ oper:   '+'     //{ $arbre = new Arbre("+"); }
 
 IDFC:   ('A'..'Z') ('a'..'z'|'A'..'Z'|'0'..'9'|'_')* ;
 
-IDF:   ('a'..'z') ('a'..'z'|'A'..'Z'|'0'..'9'|'_')*
-   /*|   'this'
-   |   'super'*/
-   ;
-
-/*
-MOT_CLE:   'if'
-       |   'fi'
-       |   'end'
-       |   'then'
-       |   'else'
-       |   'inherit'
-       |   'var'
-       |   'class'
-       |   'class'
-       |   'int'
-       |   'string'
-       |   'method'
-       |   'for'
-       |   'in'
-       |   'do'
-       |   'new'
-       |   'return'
-       |   'read'
-       |   'write'
-       ;
-*/
+IDF:   ('a'..'z') ('a'..'z'|'A'..'Z'|'0'..'9'|'_')* ;
 
 CSTE_ENT:   '0'..'9'+ ;
 

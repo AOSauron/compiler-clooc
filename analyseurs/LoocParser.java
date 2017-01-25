@@ -1,4 +1,4 @@
-// $ANTLR 3.3 Nov 30, 2010 12:50:56 Looc.g 2017-01-25 13:30:56
+// $ANTLR 3.3 Nov 30, 2010 12:50:56 Looc.g 2017-01-25 14:05:46
 
 import org.antlr.runtime.*;
 import java.util.Stack;
@@ -1268,6 +1268,7 @@ public class LoocParser extends Parser {
                 alt21=1;
                 }
                 break;
+            case 45:
             case 47:
             case 48:
             case 49:
@@ -1406,13 +1407,13 @@ public class LoocParser extends Parser {
 
 
     // $ANTLR start "oper"
-    // Looc.g:119:1: oper : ( '+' | '*' | '<' | '<=' | '>' | '>=' | '==' | '!=' );
+    // Looc.g:119:1: oper : ( '+' | '-' | '*' | '<' | '<=' | '>' | '>=' | '==' | '!=' );
     public final void oper() throws RecognitionException {
         try {
-            // Looc.g:119:5: ( '+' | '*' | '<' | '<=' | '>' | '>=' | '==' | '!=' )
+            // Looc.g:119:5: ( '+' | '-' | '*' | '<' | '<=' | '>' | '>=' | '==' | '!=' )
             // Looc.g:
             {
-            if ( (input.LA(1)>=47 && input.LA(1)<=54) ) {
+            if ( input.LA(1)==45||(input.LA(1)>=47 && input.LA(1)<=54) ) {
                 input.consume();
                 state.errorRecovery=false;
             }
@@ -1520,25 +1521,25 @@ public class LoocParser extends Parser {
     public static final BitSet FOLLOW_expression_in_returnstate517 = new BitSet(new long[]{0x0000000000040000L});
     public static final BitSet FOLLOW_18_in_returnstate519 = new BitSet(new long[]{0x0000000000200000L});
     public static final BitSet FOLLOW_21_in_returnstate521 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_IDF_in_expression534 = new BitSet(new long[]{0x007FC00000000000L});
+    public static final BitSet FOLLOW_IDF_in_expression534 = new BitSet(new long[]{0x007FE00000000000L});
     public static final BitSet FOLLOW_expression_bis_in_expression536 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_42_in_expression552 = new BitSet(new long[]{0x007FC00000000000L});
+    public static final BitSet FOLLOW_42_in_expression552 = new BitSet(new long[]{0x007FE00000000000L});
     public static final BitSet FOLLOW_expression_bis_in_expression554 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_43_in_expression570 = new BitSet(new long[]{0x007FC00000000000L});
+    public static final BitSet FOLLOW_43_in_expression570 = new BitSet(new long[]{0x007FE00000000000L});
     public static final BitSet FOLLOW_expression_bis_in_expression572 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_CSTE_ENT_in_expression588 = new BitSet(new long[]{0x007FC00000000000L});
+    public static final BitSet FOLLOW_CSTE_ENT_in_expression588 = new BitSet(new long[]{0x007FE00000000000L});
     public static final BitSet FOLLOW_expression_bis_in_expression590 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_CSTE_CHAINE_in_expression606 = new BitSet(new long[]{0x007FC00000000000L});
+    public static final BitSet FOLLOW_CSTE_CHAINE_in_expression606 = new BitSet(new long[]{0x007FE00000000000L});
     public static final BitSet FOLLOW_expression_bis_in_expression608 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_44_in_expression624 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_IDFC_in_expression626 = new BitSet(new long[]{0x007FC00000000000L});
+    public static final BitSet FOLLOW_IDFC_in_expression626 = new BitSet(new long[]{0x007FE00000000000L});
     public static final BitSet FOLLOW_expression_bis_in_expression628 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_17_in_expression644 = new BitSet(new long[]{0x00003C00000200E0L});
     public static final BitSet FOLLOW_expression_in_expression646 = new BitSet(new long[]{0x0000000000040000L});
-    public static final BitSet FOLLOW_18_in_expression648 = new BitSet(new long[]{0x007FC00000000000L});
+    public static final BitSet FOLLOW_18_in_expression648 = new BitSet(new long[]{0x007FE00000000000L});
     public static final BitSet FOLLOW_expression_bis_in_expression650 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_45_in_expression666 = new BitSet(new long[]{0x00003C00000200E0L});
-    public static final BitSet FOLLOW_expression_in_expression668 = new BitSet(new long[]{0x007FC00000000000L});
+    public static final BitSet FOLLOW_expression_in_expression668 = new BitSet(new long[]{0x007FE00000000000L});
     public static final BitSet FOLLOW_expression_bis_in_expression670 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_46_in_expression_bis690 = new BitSet(new long[]{0x0000000000000020L});
     public static final BitSet FOLLOW_IDF_in_expression_bis692 = new BitSet(new long[]{0x0000000000020000L});
@@ -1546,10 +1547,10 @@ public class LoocParser extends Parser {
     public static final BitSet FOLLOW_expression_in_expression_bis697 = new BitSet(new long[]{0x0000000008040000L});
     public static final BitSet FOLLOW_27_in_expression_bis702 = new BitSet(new long[]{0x00003C00000200E0L});
     public static final BitSet FOLLOW_expression_in_expression_bis704 = new BitSet(new long[]{0x0000000008040000L});
-    public static final BitSet FOLLOW_18_in_expression_bis708 = new BitSet(new long[]{0x007FC00000000000L});
+    public static final BitSet FOLLOW_18_in_expression_bis708 = new BitSet(new long[]{0x007FE00000000000L});
     public static final BitSet FOLLOW_expression_bis_in_expression_bis710 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_oper_in_expression_bis730 = new BitSet(new long[]{0x00003C00000200E0L});
-    public static final BitSet FOLLOW_expression_in_expression_bis732 = new BitSet(new long[]{0x007FC00000000000L});
+    public static final BitSet FOLLOW_expression_in_expression_bis732 = new BitSet(new long[]{0x007FE00000000000L});
     public static final BitSet FOLLOW_expression_bis_in_expression_bis734 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_set_in_oper0 = new BitSet(new long[]{0x0000000000000002L});
 
