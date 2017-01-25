@@ -81,9 +81,9 @@ method_args:   IDF ':' type (',' IDF ':' type)* ;
 
 instruction:   IDF ':=' affectation ';'
            |   'if' expression 'then' instruction ('else' instruction)? 'fi'
-           |   'for' IDF 'in' expression '..' expression 'do' (instruction)+ 'end'   /* DEMANDER AU PROF, LIGNE ETRANGE */
+           |   'for' IDF 'in' expression '..' expression 'do' (instruction)+ 'end'
            |   '{' (var_decl)* (instruction)+ '}'
-           |   'do' expression ('.' IDF '(' (expression)? (',' expression)* ')')? ';'
+           |   'do' expression ';'
            |   print
            |   read
            |   returnstate
@@ -93,11 +93,7 @@ affectation:   expression
            |   'nil'
            ;
 
-print:   'write' strprint ';' ;
-
-strprint:   expression
-        |   CSTE_CHAINE
-        ;
+print:   'write' expression ';' ;
 
 read:   'read' IDF ';' ;
 
@@ -109,6 +105,7 @@ expression:   IDF expression_bis
           |   'this' expression_bis
           |   'super' expression_bis
           |   CSTE_ENT expression_bis
+          |   CSTE_CHAINE expression_bis
           |   'new' IDFC expression_bis
           |   '(' expression ')' expression_bis
           |   '-' expression expression_bis
