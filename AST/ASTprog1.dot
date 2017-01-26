@@ -1,0 +1,119 @@
+digraph {
+
+	ordering=out;
+	ranksep=.4;
+	bgcolor="lightgrey"; node [shape=box, fixedsize=false, fontsize=12, fontname="Helvetica-bold", fontcolor="blue"
+		width=.25, height=.25, color="black", fillcolor="white", style="filled, solid, bold"];
+	edge [arrowsize=.5, color="black", style="bold"]
+
+  n0 [label="PROGRAM"];
+  n1 [label="VARDEC"];
+  n1 [label="VARDEC"];
+  n2 [label="n"];
+  n3 [label="INT"];
+  n4 [label="VARDEC"];
+  n4 [label="VARDEC"];
+  n5 [label="total"];
+  n6 [label="INT"];
+  n7 [label="VARDEC"];
+  n7 [label="VARDEC"];
+  n8 [label="i"];
+  n9 [label="INT"];
+  n10 [label="AFFECT"];
+  n10 [label="AFFECT"];
+  n11 [label="n"];
+  n12 [label="EXPR"];
+  n12 [label="EXPR"];
+  n13 [label="10"];
+  n14 [label="VIDE"];
+  n15 [label="AFFECT"];
+  n15 [label="AFFECT"];
+  n16 [label="total"];
+  n17 [label="EXPR"];
+  n17 [label="EXPR"];
+  n18 [label="0"];
+  n19 [label="VIDE"];
+  n20 [label="FOR"];
+  n20 [label="FOR"];
+  n21 [label="i"];
+  n22 [label="EXPR"];
+  n22 [label="EXPR"];
+  n23 [label="0"];
+  n24 [label="VIDE"];
+  n25 [label="EXPR"];
+  n25 [label="EXPR"];
+  n26 [label="n"];
+  n27 [label="VIDE"];
+  n28 [label="AFFECT"];
+  n28 [label="AFFECT"];
+  n29 [label="total"];
+  n30 [label="EXPR"];
+  n30 [label="EXPR"];
+  n31 [label="total"];
+  n32 [label="+"];
+  n32 [label="+"];
+  n33 [label="EXPR"];
+  n33 [label="EXPR"];
+  n34 [label="i"];
+  n35 [label="*"];
+  n35 [label="*"];
+  n36 [label="EXPR"];
+  n36 [label="EXPR"];
+  n37 [label="i"];
+  n38 [label="VIDE"];
+  n39 [label="VIDE"];
+  n40 [label="VIDE"];
+  n41 [label="WRITE"];
+  n41 [label="WRITE"];
+  n42 [label="EXPR"];
+  n42 [label="EXPR"];
+  n43 [label="total"];
+  n44 [label="VIDE"];
+
+  n0 -> n1 // "PROGRAM" -> "VARDEC"
+  n1 -> n2 // "VARDEC" -> "n"
+  n1 -> n3 // "VARDEC" -> "INT"
+  n0 -> n4 // "PROGRAM" -> "VARDEC"
+  n4 -> n5 // "VARDEC" -> "total"
+  n4 -> n6 // "VARDEC" -> "INT"
+  n0 -> n7 // "PROGRAM" -> "VARDEC"
+  n7 -> n8 // "VARDEC" -> "i"
+  n7 -> n9 // "VARDEC" -> "INT"
+  n0 -> n10 // "PROGRAM" -> "AFFECT"
+  n10 -> n11 // "AFFECT" -> "n"
+  n10 -> n12 // "AFFECT" -> "EXPR"
+  n12 -> n13 // "EXPR" -> "10"
+  n12 -> n14 // "EXPR" -> "VIDE"
+  n0 -> n15 // "PROGRAM" -> "AFFECT"
+  n15 -> n16 // "AFFECT" -> "total"
+  n15 -> n17 // "AFFECT" -> "EXPR"
+  n17 -> n18 // "EXPR" -> "0"
+  n17 -> n19 // "EXPR" -> "VIDE"
+  n0 -> n20 // "PROGRAM" -> "FOR"
+  n20 -> n21 // "FOR" -> "i"
+  n20 -> n22 // "FOR" -> "EXPR"
+  n22 -> n23 // "EXPR" -> "0"
+  n22 -> n24 // "EXPR" -> "VIDE"
+  n20 -> n25 // "FOR" -> "EXPR"
+  n25 -> n26 // "EXPR" -> "n"
+  n25 -> n27 // "EXPR" -> "VIDE"
+  n20 -> n28 // "FOR" -> "AFFECT"
+  n28 -> n29 // "AFFECT" -> "total"
+  n28 -> n30 // "AFFECT" -> "EXPR"
+  n30 -> n31 // "EXPR" -> "total"
+  n30 -> n32 // "EXPR" -> "+"
+  n32 -> n33 // "+" -> "EXPR"
+  n33 -> n34 // "EXPR" -> "i"
+  n33 -> n35 // "EXPR" -> "*"
+  n35 -> n36 // "*" -> "EXPR"
+  n36 -> n37 // "EXPR" -> "i"
+  n36 -> n38 // "EXPR" -> "VIDE"
+  n35 -> n39 // "*" -> "VIDE"
+  n32 -> n40 // "+" -> "VIDE"
+  n0 -> n41 // "PROGRAM" -> "WRITE"
+  n41 -> n42 // "WRITE" -> "EXPR"
+  n42 -> n43 // "EXPR" -> "total"
+  n42 -> n44 // "EXPR" -> "VIDE"
+
+}
+

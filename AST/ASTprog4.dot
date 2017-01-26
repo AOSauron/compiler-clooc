@@ -1,0 +1,277 @@
+digraph {
+
+	ordering=out;
+	ranksep=.4;
+	bgcolor="lightgrey"; node [shape=box, fixedsize=false, fontsize=12, fontname="Helvetica-bold", fontcolor="blue"
+		width=.25, height=.25, color="black", fillcolor="white", style="filled, solid, bold"];
+	edge [arrowsize=.5, color="black", style="bold"]
+
+  n0 [label="PROGRAM"];
+  n1 [label="CLASS"];
+  n1 [label="CLASS"];
+  n2 [label="Animal"];
+  n3 [label="ITEMDEC"];
+  n3 [label="ITEMDEC"];
+  n4 [label="VARDEC"];
+  n4 [label="VARDEC"];
+  n5 [label="name"];
+  n6 [label="STRING"];
+  n7 [label="METHODDEC"];
+  n7 [label="METHODDEC"];
+  n8 [label="setName"];
+  n9 [label="METHODARG"];
+  n9 [label="METHODARG"];
+  n10 [label="n"];
+  n11 [label="STRING"];
+  n12 [label="AFFECT"];
+  n12 [label="AFFECT"];
+  n13 [label="name"];
+  n14 [label="EXPR"];
+  n14 [label="EXPR"];
+  n15 [label="n"];
+  n16 [label="VIDE"];
+  n17 [label="METHODDEC"];
+  n17 [label="METHODDEC"];
+  n18 [label="whoami"];
+  n19 [label="WRITE"];
+  n19 [label="WRITE"];
+  n20 [label="EXPR"];
+  n20 [label="EXPR"];
+  n21 [label="\"My name is \""];
+  n22 [label="VIDE"];
+  n23 [label="WRITE"];
+  n23 [label="WRITE"];
+  n24 [label="EXPR"];
+  n24 [label="EXPR"];
+  n25 [label="name"];
+  n26 [label="VIDE"];
+  n27 [label="CLASS"];
+  n27 [label="CLASS"];
+  n28 [label="Dog"];
+  n29 [label="Animal"];
+  n30 [label="ITEMDEC"];
+  n30 [label="ITEMDEC"];
+  n31 [label="METHODDEC"];
+  n31 [label="METHODDEC"];
+  n32 [label="whoami"];
+  n33 [label="WRITE"];
+  n33 [label="WRITE"];
+  n34 [label="EXPR"];
+  n34 [label="EXPR"];
+  n35 [label="\"My name is \""];
+  n36 [label="VIDE"];
+  n37 [label="WRITE"];
+  n37 [label="WRITE"];
+  n38 [label="EXPR"];
+  n38 [label="EXPR"];
+  n39 [label="name"];
+  n40 [label="VIDE"];
+  n41 [label="WRITE"];
+  n41 [label="WRITE"];
+  n42 [label="EXPR"];
+  n42 [label="EXPR"];
+  n43 [label="\". And ...a dog.\""];
+  n44 [label="VIDE"];
+  n45 [label="CLASS"];
+  n45 [label="CLASS"];
+  n46 [label="Cat"];
+  n47 [label="Animal"];
+  n48 [label="ITEMDEC"];
+  n48 [label="ITEMDEC"];
+  n49 [label="METHODDEC"];
+  n49 [label="METHODDEC"];
+  n50 [label="whoami"];
+  n51 [label="do"];
+  n52 [label="SUPER"];
+  n52 [label="SUPER"];
+  n53 [label="METHODCALLING"];
+  n53 [label="METHODCALLING"];
+  n54 [label="whoami"];
+  n55 [label="VIDE"];
+  n56 [label=";"];
+  n57 [label="WRITE"];
+  n57 [label="WRITE"];
+  n58 [label="EXPR"];
+  n58 [label="EXPR"];
+  n59 [label="\". And ...a cat.\""];
+  n60 [label="VIDE"];
+  n61 [label="VARDEC"];
+  n61 [label="VARDEC"];
+  n62 [label="a1"];
+  n63 [label="Animal"];
+  n64 [label="VARDEC"];
+  n64 [label="VARDEC"];
+  n65 [label="a2"];
+  n66 [label="Animal"];
+  n67 [label="AFFECT"];
+  n67 [label="AFFECT"];
+  n68 [label="a1"];
+  n69 [label="NEW"];
+  n69 [label="NEW"];
+  n70 [label="Dog"];
+  n71 [label="VIDE"];
+  n72 [label="do"];
+  n73 [label="EXPR"];
+  n73 [label="EXPR"];
+  n74 [label="a1"];
+  n75 [label="METHODCALLING"];
+  n75 [label="METHODCALLING"];
+  n76 [label="setName"];
+  n77 [label="EXPR"];
+  n77 [label="EXPR"];
+  n78 [label="\"boo\""];
+  n79 [label="VIDE"];
+  n80 [label="VIDE"];
+  n81 [label=";"];
+  n82 [label="AFFECT"];
+  n82 [label="AFFECT"];
+  n83 [label="a2"];
+  n84 [label="NEW"];
+  n84 [label="NEW"];
+  n85 [label="Cat"];
+  n86 [label="VIDE"];
+  n87 [label="do"];
+  n88 [label="EXPR"];
+  n88 [label="EXPR"];
+  n89 [label="a2"];
+  n90 [label="METHODCALLING"];
+  n90 [label="METHODCALLING"];
+  n91 [label="setName"];
+  n92 [label="EXPR"];
+  n92 [label="EXPR"];
+  n93 [label="\"foo\""];
+  n94 [label="VIDE"];
+  n95 [label="VIDE"];
+  n96 [label=";"];
+  n97 [label="do"];
+  n98 [label="EXPR"];
+  n98 [label="EXPR"];
+  n99 [label="a1"];
+  n100 [label="METHODCALLING"];
+  n100 [label="METHODCALLING"];
+  n101 [label="whoami"];
+  n102 [label="VIDE"];
+  n103 [label=";"];
+  n104 [label="do"];
+  n105 [label="EXPR"];
+  n105 [label="EXPR"];
+  n106 [label="a2"];
+  n107 [label="METHODCALLING"];
+  n107 [label="METHODCALLING"];
+  n108 [label="whoami"];
+  n109 [label="VIDE"];
+  n110 [label=";"];
+
+  n0 -> n1 // "PROGRAM" -> "CLASS"
+  n1 -> n2 // "CLASS" -> "Animal"
+  n1 -> n3 // "CLASS" -> "ITEMDEC"
+  n3 -> n4 // "ITEMDEC" -> "VARDEC"
+  n4 -> n5 // "VARDEC" -> "name"
+  n4 -> n6 // "VARDEC" -> "STRING"
+  n3 -> n7 // "ITEMDEC" -> "METHODDEC"
+  n7 -> n8 // "METHODDEC" -> "setName"
+  n7 -> n9 // "METHODDEC" -> "METHODARG"
+  n9 -> n10 // "METHODARG" -> "n"
+  n9 -> n11 // "METHODARG" -> "STRING"
+  n7 -> n12 // "METHODDEC" -> "AFFECT"
+  n12 -> n13 // "AFFECT" -> "name"
+  n12 -> n14 // "AFFECT" -> "EXPR"
+  n14 -> n15 // "EXPR" -> "n"
+  n14 -> n16 // "EXPR" -> "VIDE"
+  n3 -> n17 // "ITEMDEC" -> "METHODDEC"
+  n17 -> n18 // "METHODDEC" -> "whoami"
+  n17 -> n19 // "METHODDEC" -> "WRITE"
+  n19 -> n20 // "WRITE" -> "EXPR"
+  n20 -> n21 // "EXPR" -> "\"My name is \""
+  n20 -> n22 // "EXPR" -> "VIDE"
+  n17 -> n23 // "METHODDEC" -> "WRITE"
+  n23 -> n24 // "WRITE" -> "EXPR"
+  n24 -> n25 // "EXPR" -> "name"
+  n24 -> n26 // "EXPR" -> "VIDE"
+  n0 -> n27 // "PROGRAM" -> "CLASS"
+  n27 -> n28 // "CLASS" -> "Dog"
+  n27 -> n29 // "CLASS" -> "Animal"
+  n27 -> n30 // "CLASS" -> "ITEMDEC"
+  n30 -> n31 // "ITEMDEC" -> "METHODDEC"
+  n31 -> n32 // "METHODDEC" -> "whoami"
+  n31 -> n33 // "METHODDEC" -> "WRITE"
+  n33 -> n34 // "WRITE" -> "EXPR"
+  n34 -> n35 // "EXPR" -> "\"My name is \""
+  n34 -> n36 // "EXPR" -> "VIDE"
+  n31 -> n37 // "METHODDEC" -> "WRITE"
+  n37 -> n38 // "WRITE" -> "EXPR"
+  n38 -> n39 // "EXPR" -> "name"
+  n38 -> n40 // "EXPR" -> "VIDE"
+  n31 -> n41 // "METHODDEC" -> "WRITE"
+  n41 -> n42 // "WRITE" -> "EXPR"
+  n42 -> n43 // "EXPR" -> "\". And ...a dog.\""
+  n42 -> n44 // "EXPR" -> "VIDE"
+  n0 -> n45 // "PROGRAM" -> "CLASS"
+  n45 -> n46 // "CLASS" -> "Cat"
+  n45 -> n47 // "CLASS" -> "Animal"
+  n45 -> n48 // "CLASS" -> "ITEMDEC"
+  n48 -> n49 // "ITEMDEC" -> "METHODDEC"
+  n49 -> n50 // "METHODDEC" -> "whoami"
+  n49 -> n51 // "METHODDEC" -> "do"
+  n49 -> n52 // "METHODDEC" -> "SUPER"
+  n52 -> n53 // "SUPER" -> "METHODCALLING"
+  n53 -> n54 // "METHODCALLING" -> "whoami"
+  n53 -> n55 // "METHODCALLING" -> "VIDE"
+  n49 -> n56 // "METHODDEC" -> ";"
+  n49 -> n57 // "METHODDEC" -> "WRITE"
+  n57 -> n58 // "WRITE" -> "EXPR"
+  n58 -> n59 // "EXPR" -> "\". And ...a cat.\""
+  n58 -> n60 // "EXPR" -> "VIDE"
+  n0 -> n61 // "PROGRAM" -> "VARDEC"
+  n61 -> n62 // "VARDEC" -> "a1"
+  n61 -> n63 // "VARDEC" -> "Animal"
+  n0 -> n64 // "PROGRAM" -> "VARDEC"
+  n64 -> n65 // "VARDEC" -> "a2"
+  n64 -> n66 // "VARDEC" -> "Animal"
+  n0 -> n67 // "PROGRAM" -> "AFFECT"
+  n67 -> n68 // "AFFECT" -> "a1"
+  n67 -> n69 // "AFFECT" -> "NEW"
+  n69 -> n70 // "NEW" -> "Dog"
+  n69 -> n71 // "NEW" -> "VIDE"
+  n0 -> n72 // "PROGRAM" -> "do"
+  n0 -> n73 // "PROGRAM" -> "EXPR"
+  n73 -> n74 // "EXPR" -> "a1"
+  n73 -> n75 // "EXPR" -> "METHODCALLING"
+  n75 -> n76 // "METHODCALLING" -> "setName"
+  n75 -> n77 // "METHODCALLING" -> "EXPR"
+  n77 -> n78 // "EXPR" -> "\"boo\""
+  n77 -> n79 // "EXPR" -> "VIDE"
+  n75 -> n80 // "METHODCALLING" -> "VIDE"
+  n0 -> n81 // "PROGRAM" -> ";"
+  n0 -> n82 // "PROGRAM" -> "AFFECT"
+  n82 -> n83 // "AFFECT" -> "a2"
+  n82 -> n84 // "AFFECT" -> "NEW"
+  n84 -> n85 // "NEW" -> "Cat"
+  n84 -> n86 // "NEW" -> "VIDE"
+  n0 -> n87 // "PROGRAM" -> "do"
+  n0 -> n88 // "PROGRAM" -> "EXPR"
+  n88 -> n89 // "EXPR" -> "a2"
+  n88 -> n90 // "EXPR" -> "METHODCALLING"
+  n90 -> n91 // "METHODCALLING" -> "setName"
+  n90 -> n92 // "METHODCALLING" -> "EXPR"
+  n92 -> n93 // "EXPR" -> "\"foo\""
+  n92 -> n94 // "EXPR" -> "VIDE"
+  n90 -> n95 // "METHODCALLING" -> "VIDE"
+  n0 -> n96 // "PROGRAM" -> ";"
+  n0 -> n97 // "PROGRAM" -> "do"
+  n0 -> n98 // "PROGRAM" -> "EXPR"
+  n98 -> n99 // "EXPR" -> "a1"
+  n98 -> n100 // "EXPR" -> "METHODCALLING"
+  n100 -> n101 // "METHODCALLING" -> "whoami"
+  n100 -> n102 // "METHODCALLING" -> "VIDE"
+  n0 -> n103 // "PROGRAM" -> ";"
+  n0 -> n104 // "PROGRAM" -> "do"
+  n0 -> n105 // "PROGRAM" -> "EXPR"
+  n105 -> n106 // "EXPR" -> "a2"
+  n105 -> n107 // "EXPR" -> "METHODCALLING"
+  n107 -> n108 // "METHODCALLING" -> "whoami"
+  n107 -> n109 // "METHODCALLING" -> "VIDE"
+  n0 -> n110 // "PROGRAM" -> ";"
+
+}
+

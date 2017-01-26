@@ -1,0 +1,276 @@
+digraph {
+
+	ordering=out;
+	ranksep=.4;
+	bgcolor="lightgrey"; node [shape=box, fixedsize=false, fontsize=12, fontname="Helvetica-bold", fontcolor="blue"
+		width=.25, height=.25, color="black", fillcolor="white", style="filled, solid, bold"];
+	edge [arrowsize=.5, color="black", style="bold"]
+
+  n0 [label="PROGRAM"];
+  n1 [label="CLASS"];
+  n1 [label="CLASS"];
+  n2 [label="Fibonacci"];
+  n3 [label="ITEMDEC"];
+  n3 [label="ITEMDEC"];
+  n4 [label="VARDEC"];
+  n4 [label="VARDEC"];
+  n5 [label="current"];
+  n6 [label="INT"];
+  n7 [label="VARDEC"];
+  n7 [label="VARDEC"];
+  n8 [label="previous"];
+  n9 [label="INT"];
+  n10 [label="VARDEC"];
+  n10 [label="VARDEC"];
+  n11 [label="generation"];
+  n12 [label="INT"];
+  n13 [label="METHODDEC"];
+  n13 [label="METHODDEC"];
+  n14 [label="init"];
+  n15 [label="AFFECT"];
+  n15 [label="AFFECT"];
+  n16 [label="current"];
+  n17 [label="EXPR"];
+  n17 [label="EXPR"];
+  n18 [label="1"];
+  n19 [label="VIDE"];
+  n20 [label="AFFECT"];
+  n20 [label="AFFECT"];
+  n21 [label="previous"];
+  n22 [label="EXPR"];
+  n22 [label="EXPR"];
+  n23 [label="0"];
+  n24 [label="VIDE"];
+  n25 [label="AFFECT"];
+  n25 [label="AFFECT"];
+  n26 [label="generation"];
+  n27 [label="EXPR"];
+  n27 [label="EXPR"];
+  n28 [label="1"];
+  n29 [label="VIDE"];
+  n30 [label="METHODDEC"];
+  n30 [label="METHODDEC"];
+  n31 [label="nextGen"];
+  n32 [label="VARDEC"];
+  n32 [label="VARDEC"];
+  n33 [label="temp"];
+  n34 [label="INT"];
+  n35 [label="AFFECT"];
+  n35 [label="AFFECT"];
+  n36 [label="temp"];
+  n37 [label="EXPR"];
+  n37 [label="EXPR"];
+  n38 [label="current"];
+  n39 [label="VIDE"];
+  n40 [label="AFFECT"];
+  n40 [label="AFFECT"];
+  n41 [label="current"];
+  n42 [label="EXPR"];
+  n42 [label="EXPR"];
+  n43 [label="current"];
+  n44 [label="+"];
+  n44 [label="+"];
+  n45 [label="EXPR"];
+  n45 [label="EXPR"];
+  n46 [label="previous"];
+  n47 [label="VIDE"];
+  n48 [label="VIDE"];
+  n49 [label="AFFECT"];
+  n49 [label="AFFECT"];
+  n50 [label="previous"];
+  n51 [label="EXPR"];
+  n51 [label="EXPR"];
+  n52 [label="temp"];
+  n53 [label="VIDE"];
+  n54 [label="AFFECT"];
+  n54 [label="AFFECT"];
+  n55 [label="generation"];
+  n56 [label="EXPR"];
+  n56 [label="EXPR"];
+  n57 [label="generation"];
+  n58 [label="+"];
+  n58 [label="+"];
+  n59 [label="EXPR"];
+  n59 [label="EXPR"];
+  n60 [label="1"];
+  n61 [label="VIDE"];
+  n62 [label="VIDE"];
+  n63 [label="METHODDEC"];
+  n63 [label="METHODDEC"];
+  n64 [label="nextGenAndGet"];
+  n65 [label="INT"];
+  n66 [label="do"];
+  n67 [label="THIS"];
+  n67 [label="THIS"];
+  n68 [label="METHODCALLING"];
+  n68 [label="METHODCALLING"];
+  n69 [label="nextGen"];
+  n70 [label="VIDE"];
+  n71 [label=";"];
+  n72 [label="RETURN"];
+  n72 [label="RETURN"];
+  n73 [label="EXPR"];
+  n73 [label="EXPR"];
+  n74 [label="current"];
+  n75 [label="VIDE"];
+  n76 [label="VARDEC"];
+  n76 [label="VARDEC"];
+  n77 [label="f"];
+  n78 [label="Fibonacci"];
+  n79 [label="AFFECT"];
+  n79 [label="AFFECT"];
+  n80 [label="f"];
+  n81 [label="NEW"];
+  n81 [label="NEW"];
+  n82 [label="Fibonacci"];
+  n83 [label="VIDE"];
+  n84 [label="do"];
+  n85 [label="EXPR"];
+  n85 [label="EXPR"];
+  n86 [label="f"];
+  n87 [label="METHODCALLING"];
+  n87 [label="METHODCALLING"];
+  n88 [label="init"];
+  n89 [label="VIDE"];
+  n90 [label=";"];
+  n91 [label="do"];
+  n92 [label="EXPR"];
+  n92 [label="EXPR"];
+  n93 [label="f"];
+  n94 [label="METHODCALLING"];
+  n94 [label="METHODCALLING"];
+  n95 [label="nextGen"];
+  n96 [label="VIDE"];
+  n97 [label=";"];
+  n98 [label="do"];
+  n99 [label="EXPR"];
+  n99 [label="EXPR"];
+  n100 [label="f"];
+  n101 [label="METHODCALLING"];
+  n101 [label="METHODCALLING"];
+  n102 [label="nextGen"];
+  n103 [label="VIDE"];
+  n104 [label=";"];
+  n105 [label="WRITE"];
+  n105 [label="WRITE"];
+  n106 [label="EXPR"];
+  n106 [label="EXPR"];
+  n107 [label="f"];
+  n108 [label="METHODCALLING"];
+  n108 [label="METHODCALLING"];
+  n109 [label="nextGenAndGet"];
+  n110 [label="VIDE"];
+
+  n0 -> n1 // "PROGRAM" -> "CLASS"
+  n1 -> n2 // "CLASS" -> "Fibonacci"
+  n1 -> n3 // "CLASS" -> "ITEMDEC"
+  n3 -> n4 // "ITEMDEC" -> "VARDEC"
+  n4 -> n5 // "VARDEC" -> "current"
+  n4 -> n6 // "VARDEC" -> "INT"
+  n3 -> n7 // "ITEMDEC" -> "VARDEC"
+  n7 -> n8 // "VARDEC" -> "previous"
+  n7 -> n9 // "VARDEC" -> "INT"
+  n3 -> n10 // "ITEMDEC" -> "VARDEC"
+  n10 -> n11 // "VARDEC" -> "generation"
+  n10 -> n12 // "VARDEC" -> "INT"
+  n3 -> n13 // "ITEMDEC" -> "METHODDEC"
+  n13 -> n14 // "METHODDEC" -> "init"
+  n13 -> n15 // "METHODDEC" -> "AFFECT"
+  n15 -> n16 // "AFFECT" -> "current"
+  n15 -> n17 // "AFFECT" -> "EXPR"
+  n17 -> n18 // "EXPR" -> "1"
+  n17 -> n19 // "EXPR" -> "VIDE"
+  n13 -> n20 // "METHODDEC" -> "AFFECT"
+  n20 -> n21 // "AFFECT" -> "previous"
+  n20 -> n22 // "AFFECT" -> "EXPR"
+  n22 -> n23 // "EXPR" -> "0"
+  n22 -> n24 // "EXPR" -> "VIDE"
+  n13 -> n25 // "METHODDEC" -> "AFFECT"
+  n25 -> n26 // "AFFECT" -> "generation"
+  n25 -> n27 // "AFFECT" -> "EXPR"
+  n27 -> n28 // "EXPR" -> "1"
+  n27 -> n29 // "EXPR" -> "VIDE"
+  n3 -> n30 // "ITEMDEC" -> "METHODDEC"
+  n30 -> n31 // "METHODDEC" -> "nextGen"
+  n30 -> n32 // "METHODDEC" -> "VARDEC"
+  n32 -> n33 // "VARDEC" -> "temp"
+  n32 -> n34 // "VARDEC" -> "INT"
+  n30 -> n35 // "METHODDEC" -> "AFFECT"
+  n35 -> n36 // "AFFECT" -> "temp"
+  n35 -> n37 // "AFFECT" -> "EXPR"
+  n37 -> n38 // "EXPR" -> "current"
+  n37 -> n39 // "EXPR" -> "VIDE"
+  n30 -> n40 // "METHODDEC" -> "AFFECT"
+  n40 -> n41 // "AFFECT" -> "current"
+  n40 -> n42 // "AFFECT" -> "EXPR"
+  n42 -> n43 // "EXPR" -> "current"
+  n42 -> n44 // "EXPR" -> "+"
+  n44 -> n45 // "+" -> "EXPR"
+  n45 -> n46 // "EXPR" -> "previous"
+  n45 -> n47 // "EXPR" -> "VIDE"
+  n44 -> n48 // "+" -> "VIDE"
+  n30 -> n49 // "METHODDEC" -> "AFFECT"
+  n49 -> n50 // "AFFECT" -> "previous"
+  n49 -> n51 // "AFFECT" -> "EXPR"
+  n51 -> n52 // "EXPR" -> "temp"
+  n51 -> n53 // "EXPR" -> "VIDE"
+  n30 -> n54 // "METHODDEC" -> "AFFECT"
+  n54 -> n55 // "AFFECT" -> "generation"
+  n54 -> n56 // "AFFECT" -> "EXPR"
+  n56 -> n57 // "EXPR" -> "generation"
+  n56 -> n58 // "EXPR" -> "+"
+  n58 -> n59 // "+" -> "EXPR"
+  n59 -> n60 // "EXPR" -> "1"
+  n59 -> n61 // "EXPR" -> "VIDE"
+  n58 -> n62 // "+" -> "VIDE"
+  n3 -> n63 // "ITEMDEC" -> "METHODDEC"
+  n63 -> n64 // "METHODDEC" -> "nextGenAndGet"
+  n63 -> n65 // "METHODDEC" -> "INT"
+  n63 -> n66 // "METHODDEC" -> "do"
+  n63 -> n67 // "METHODDEC" -> "THIS"
+  n67 -> n68 // "THIS" -> "METHODCALLING"
+  n68 -> n69 // "METHODCALLING" -> "nextGen"
+  n68 -> n70 // "METHODCALLING" -> "VIDE"
+  n63 -> n71 // "METHODDEC" -> ";"
+  n63 -> n72 // "METHODDEC" -> "RETURN"
+  n72 -> n73 // "RETURN" -> "EXPR"
+  n73 -> n74 // "EXPR" -> "current"
+  n73 -> n75 // "EXPR" -> "VIDE"
+  n0 -> n76 // "PROGRAM" -> "VARDEC"
+  n76 -> n77 // "VARDEC" -> "f"
+  n76 -> n78 // "VARDEC" -> "Fibonacci"
+  n0 -> n79 // "PROGRAM" -> "AFFECT"
+  n79 -> n80 // "AFFECT" -> "f"
+  n79 -> n81 // "AFFECT" -> "NEW"
+  n81 -> n82 // "NEW" -> "Fibonacci"
+  n81 -> n83 // "NEW" -> "VIDE"
+  n0 -> n84 // "PROGRAM" -> "do"
+  n0 -> n85 // "PROGRAM" -> "EXPR"
+  n85 -> n86 // "EXPR" -> "f"
+  n85 -> n87 // "EXPR" -> "METHODCALLING"
+  n87 -> n88 // "METHODCALLING" -> "init"
+  n87 -> n89 // "METHODCALLING" -> "VIDE"
+  n0 -> n90 // "PROGRAM" -> ";"
+  n0 -> n91 // "PROGRAM" -> "do"
+  n0 -> n92 // "PROGRAM" -> "EXPR"
+  n92 -> n93 // "EXPR" -> "f"
+  n92 -> n94 // "EXPR" -> "METHODCALLING"
+  n94 -> n95 // "METHODCALLING" -> "nextGen"
+  n94 -> n96 // "METHODCALLING" -> "VIDE"
+  n0 -> n97 // "PROGRAM" -> ";"
+  n0 -> n98 // "PROGRAM" -> "do"
+  n0 -> n99 // "PROGRAM" -> "EXPR"
+  n99 -> n100 // "EXPR" -> "f"
+  n99 -> n101 // "EXPR" -> "METHODCALLING"
+  n101 -> n102 // "METHODCALLING" -> "nextGen"
+  n101 -> n103 // "METHODCALLING" -> "VIDE"
+  n0 -> n104 // "PROGRAM" -> ";"
+  n0 -> n105 // "PROGRAM" -> "WRITE"
+  n105 -> n106 // "WRITE" -> "EXPR"
+  n106 -> n107 // "EXPR" -> "f"
+  n106 -> n108 // "EXPR" -> "METHODCALLING"
+  n108 -> n109 // "METHODCALLING" -> "nextGenAndGet"
+  n108 -> n110 // "METHODCALLING" -> "VIDE"
+
+}
+

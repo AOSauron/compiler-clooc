@@ -7,13 +7,15 @@
 * **Auteurs**
 	- DUBOIS Nicolas
 	- GARCIA Guillaume
-	- HINSBERGER Laure 
+	- HINSBERGER Laure
 	- ZAMBAUX Gauthier
 
 * **Dépendances**
 	- bash
-	- default-jdk 				      (Java Development Kit)
-	- antlr-3.3-complete.jar		     (fourni dans le git)
+	- default-jdk 				      																	(Java Development Kit)
+	- antlr-3.3-complete.jar			 																(fourni dans le git)
+	- graphviz																										(pour visualiser les AST)
+	- freeglut3 libgraphviz4 libgts-0.7-5 libgts-bin libgd2-xpm 	(pour graphviz)
 
 * **Build & execute**
 	- Lancez le script analyseurs/createLexParsCompile.sh
