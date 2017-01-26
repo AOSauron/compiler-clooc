@@ -1,4 +1,4 @@
 analyse/*.class*
-analyse/*.java*
+analyse/*r.java*
 analyse/*.tokens*
 ANTLR/*
