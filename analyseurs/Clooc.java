@@ -14,16 +14,16 @@ public class Clooc {
           LoocLexer lexer = new LoocLexer(input);
           CommonTokenStream tokens = new CommonTokenStream(lexer);
           LoocParser parser = new LoocParser(tokens);
-          /*
-          CommonTree tree = (CommonTree) parser.parse().getTree();
+
+          CommonTree tree = (CommonTree) parser.program().getTree();
           DOTTreeGenerator gen = new DOTTreeGenerator();
           StringTemplate st = gen.toDOT(tree);
           System.out.println(st);
-          */
+          /*
           LoocParser.program_return result = parser.program();
           Tree t = (Tree) result.getTree();
           System.out.println(t.toStringTree());
-        //  parser.program();
+        //  parser.program();*/
         }
         catch (ArrayIndexOutOfBoundsException e) {
           System.out.println("Passez un fichier en paremètre");
