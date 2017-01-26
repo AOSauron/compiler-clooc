@@ -89,14 +89,12 @@
 * ~~**Demander aux profs où est ce git local (l'adresse locale donnée n'existe pas)**~~
 	=> C'est OK le git de github a été mirroré sur celui de la forge.
 
-* **Finir complètement la construction de l'AST (voir pour la regle qui donne le mot videà)**
+* **Finir complètement la construction de l'AST (voir plus bas)**
+
+	*Revoir les opérateurs (+ *)
+	Revoir liste données des arguments
+	Ajouter BLOCK des instructions d'une méthode et tout en fait (if, for...)
+	Revoir opérateurs de comparaison
+	Mettre METHODCALLING comme héritier de la var et créer la liste des args*
 
 * **Commencer la construction de table des symbloes**
-
-
-
-Revoir les opérateurs (+ *)
-Revoir liste données des arguments
-Ajouter BLOCK des instructions d'une méthode et tout en fait (if, for...)
-Revoir opérateurs de comparaison
-Mettre METHODCALLING comme héritier de la var et créer la liste des args
