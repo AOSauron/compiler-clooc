@@ -79,19 +79,19 @@ returnstate:   'return' '(' expression ')' ';' -> ^(RETURN expression);
 
 /* expression a dû être dérecursivée gauche. */
 
-expression:   IDF expressionbis -> ^(EXPR IDF expressionbis)
-          |   'this' expressionbis -> ^(THIS expressionbis)
-          |   'super' expressionbis -> ^(SUPER expressionbis)
-          |   CSTE_ENT expressionbis -> ^(EXPR CSTE_ENT expressionbis)
-          |   CSTE_CHAINE expressionbis -> ^(EXPR CSTE_CHAINE expressionbis)
-          |   'new' IDFC expressionbis -> ^(NEW IDFC expressionbis)
-          |   '(' expression ')' expressionbis -> ^(EXPR expression expressionbis)
-          |   '-' expression expressionbis -> ^(NEG expression expressionbis)
+expression:   IDF expressionbis -> IDF (expressionbis)? /*^(EXPR IDF expressionbis)*/
+          |   'this' expressionbis -> ^(THIS (expressionbis)?)
+          |   'super' expressionbis -> ^(SUPER (expressionbis)?)
+          |   CSTE_ENT expressionbis -> CSTE_ENT (expressionbis)? /*^(EXPR CSTE_ENT expressionbis)*/
+          |   CSTE_CHAINE expressionbis -> CSTE_CHAINE (expressionbis)? /*^(EXPR CSTE_CHAINE expressionbis)*/
+          |   'new' IDFC expressionbis -> ^(NEW IDFC (expressionbis)?)
+          |   '(' expression ')' expressionbis -> expression (expressionbis)? /*^(EXPR expression expressionbis)*/
+          |   '-' expression expressionbis -> ^(NEG expression (expressionbis)?)
           ;
 
-expressionbis:   '.' IDF '(' (expression)? (',' expression)* ')' expressionbis -> ^(METHODCALLING IDF (expression)* expressionbis)
-              |   oper expression expressionbis -> ^(oper expression expressionbis)
-              |    /*Le mot vide*/ -> VIDE
+expressionbis:   '.' IDF '(' (expression)? (',' expression)* ')' expressionbis -> ^(METHODCALLING IDF (expression)* (expressionbis)?)
+              |   oper expression expressionbis -> ^(oper expression (expressionbis)?)
+              |    /*Le mot vide*/ /*-> VIDE*/
               ;
 
 oper:   '+'
