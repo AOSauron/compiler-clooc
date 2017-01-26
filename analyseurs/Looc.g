@@ -5,12 +5,12 @@ Maj : 25/01/17   14:40  */
  grammar Looc;
 
  options {
- k=1;  /* Pour forcer LL(?) => LL(1) */
- output=AST;
- ASTLabelType=CommonTree;
- /*buildAST =true;*/   /* Construction de l'Arbre Syntaxique */
+   k=1;  /* Pour forcer LL(?) => LL(1) */
+   output=AST;
+   ASTLabelType=CommonTree;
  }
 
+/* Tokens imaginaires pour l'AST */
  tokens {
    PROGRAM;
    CLASS;
@@ -28,20 +28,26 @@ Maj : 25/01/17   14:40  */
    EXPR;
    NEW;
    METHODCALLING;
+   THIS;
+   SUPER;
+   NEG;
+   VIDE;
+   INT;
+   STRING;
  }
 
 
 program:   (class_decl)* (var_decl)* (instruction)+ -> ^(PROGRAM (class_decl)* (var_decl)* (instruction)+);
 
-class_decl:   'class' IDFC ('inherit' IDFC)? '=' '(' class_item_decl ')' -> ^(CLASS IDFC IDFC class_item_decl);
+class_decl:   'class' IDFC ('inherit' IDFC)? '=' '(' class_item_decl ')' -> ^(CLASS IDFC (IDFC)? class_item_decl);
 
 class_item_decl:   (var_decl)* (method_decl)* -> ^(ITEMDEC (var_decl)* (method_decl)*);
 
 var_decl:   'var' IDF ':' type ';' -> ^(VARDEC IDF type);
 
-type:   IDFC       //{ $arbre = new Arbre($IDFC.text); }
-    |   'int'      //{ $arbre = new Arbre("int"); }
-    |   'string'   //{ $arbre = new Arbre("string"); }
+type:   IDFC -> ^(IDFC)
+    |   'int' -> ^(INT)
+    |   'string' -> ^(STRING)
     ;
 
 method_decl:   'method' IDF '(' (method_args)* ')' (':' type)? '{' (var_decl)* (instruction)+ '}' -> ^(METHODDEC IDF method_args type (var_decl)* (instruction)+);
@@ -70,30 +76,30 @@ returnstate:   'return' '(' expression ')' ';' -> ^(RETURN expression);
 
 /* expression a dû être dérecursivée gauche. */
 
-expression:   IDF expression_bis -> ^(EXPR IDF expression_bis)
-          |   'this' expression_bis
-          |   'super' expression_bis
-          |   CSTE_ENT expression_bis -> ^(EXPR CSTE_ENT expression_bis)
-          |   CSTE_CHAINE expression_bis -> ^(EXPR CSTE_CHAINE expression_bis)
-          |   'new' IDFC expression_bis -> ^(NEW IDFC expression_bis)
-          |   '(' expression ')' expression_bis -> ^(EXPR expression expression_bis)
-          |   '-' expression expression_bis -> ^('-' expression expression_bis)
+expression:   IDF expressionbis -> ^(EXPR IDF expressionbis)
+          |   'this' expressionbis -> ^(THIS expressionbis)
+          |   'super' expressionbis -> ^(SUPER expressionbis)
+          |   CSTE_ENT expressionbis -> ^(EXPR CSTE_ENT expressionbis)
+          |   CSTE_CHAINE expressionbis -> ^(EXPR CSTE_CHAINE expressionbis)
+          |   'new' IDFC expressionbis -> ^(NEW IDFC expressionbis)
+          |   '(' expression ')' expressionbis -> ^(EXPR expression expressionbis)
+          |   '-' expression expressionbis -> ^(NEG expression expressionbis)
           ;
 
-expression_bis:   '.' IDF '(' (expression)? (',' expression)* ')' expression_bis -> ^(METHODCALLING IDF /*(expression)?*/ (expression)* expression_bis)
-              |   oper expression expression_bis -> ^(oper expression expression_bis)
-              |    /*Le mot vide*/                   //{ $arbre = null;}
+expressionbis:   '.' IDF '(' (expression)? (',' expression)* ')' expressionbis -> ^(METHODCALLING IDF (expression)+ expressionbis)
+              |   oper expression expressionbis -> ^(oper expression expressionbis)
+              |    /*Le mot vide*/ -> VIDE
               ;
 
-oper:   '+'     //{ $arbre = new Arbre("+"); }
-    |   '-'     //{ $arbre = new Arbre("-"); }
-    |   '*'     //{ $arbre = new Arbre("*"); }
-    |   '<'     //{ $arbre = new Arbre("<"); }
-    |   '<='    //{ $arbre = new Arbre("<="); }
-    |   '>'     //{ $arbre = new Arbre(">"); }
-    |   '>='    //{ $arbre = new Arbre(">="); }
-    |   '=='    //{ $arbre = new Arbre("=="); }
-    |   '!='    //{ $arbre = new Arbre("!="); }
+oper:   '+'
+    |   '-'
+    |   '*'
+    |   '<'
+    |   '<='
+    |   '>'
+    |   '>='
+    |   '=='
+    |   '!='
     ;
 
 IDFC:   ('A'..'Z') ('a'..'z'|'A'..'Z'|'0'..'9'|'_')* ;
