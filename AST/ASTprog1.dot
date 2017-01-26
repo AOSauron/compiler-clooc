@@ -22,53 +22,29 @@ digraph {
   n10 [label="AFFECT"];
   n10 [label="AFFECT"];
   n11 [label="n"];
-  n12 [label="EXPR"];
-  n12 [label="EXPR"];
-  n13 [label="10"];
-  n14 [label="VIDE"];
-  n15 [label="AFFECT"];
-  n15 [label="AFFECT"];
-  n16 [label="total"];
-  n17 [label="EXPR"];
-  n17 [label="EXPR"];
+  n12 [label="10"];
+  n13 [label="AFFECT"];
+  n13 [label="AFFECT"];
+  n14 [label="total"];
+  n15 [label="0"];
+  n16 [label="FOR"];
+  n16 [label="FOR"];
+  n17 [label="i"];
   n18 [label="0"];
-  n19 [label="VIDE"];
-  n20 [label="FOR"];
-  n20 [label="FOR"];
-  n21 [label="i"];
-  n22 [label="EXPR"];
-  n22 [label="EXPR"];
-  n23 [label="0"];
-  n24 [label="VIDE"];
-  n25 [label="EXPR"];
-  n25 [label="EXPR"];
-  n26 [label="n"];
-  n27 [label="VIDE"];
-  n28 [label="AFFECT"];
-  n28 [label="AFFECT"];
-  n29 [label="total"];
-  n30 [label="EXPR"];
-  n30 [label="EXPR"];
-  n31 [label="total"];
-  n32 [label="+"];
-  n32 [label="+"];
-  n33 [label="EXPR"];
-  n33 [label="EXPR"];
-  n34 [label="i"];
-  n35 [label="*"];
-  n35 [label="*"];
-  n36 [label="EXPR"];
-  n36 [label="EXPR"];
-  n37 [label="i"];
-  n38 [label="VIDE"];
-  n39 [label="VIDE"];
-  n40 [label="VIDE"];
-  n41 [label="WRITE"];
-  n41 [label="WRITE"];
-  n42 [label="EXPR"];
-  n42 [label="EXPR"];
-  n43 [label="total"];
-  n44 [label="VIDE"];
+  n19 [label="n"];
+  n20 [label="AFFECT"];
+  n20 [label="AFFECT"];
+  n21 [label="total"];
+  n22 [label="total"];
+  n23 [label="+"];
+  n23 [label="+"];
+  n24 [label="i"];
+  n25 [label="*"];
+  n25 [label="*"];
+  n26 [label="i"];
+  n27 [label="WRITE"];
+  n27 [label="WRITE"];
+  n28 [label="total"];
 
   n0 -> n1 // "PROGRAM" -> "VARDEC"
   n1 -> n2 // "VARDEC" -> "n"
@@ -81,39 +57,22 @@ digraph {
   n7 -> n9 // "VARDEC" -> "INT"
   n0 -> n10 // "PROGRAM" -> "AFFECT"
   n10 -> n11 // "AFFECT" -> "n"
-  n10 -> n12 // "AFFECT" -> "EXPR"
-  n12 -> n13 // "EXPR" -> "10"
-  n12 -> n14 // "EXPR" -> "VIDE"
-  n0 -> n15 // "PROGRAM" -> "AFFECT"
-  n15 -> n16 // "AFFECT" -> "total"
-  n15 -> n17 // "AFFECT" -> "EXPR"
-  n17 -> n18 // "EXPR" -> "0"
-  n17 -> n19 // "EXPR" -> "VIDE"
-  n0 -> n20 // "PROGRAM" -> "FOR"
-  n20 -> n21 // "FOR" -> "i"
-  n20 -> n22 // "FOR" -> "EXPR"
-  n22 -> n23 // "EXPR" -> "0"
-  n22 -> n24 // "EXPR" -> "VIDE"
-  n20 -> n25 // "FOR" -> "EXPR"
-  n25 -> n26 // "EXPR" -> "n"
-  n25 -> n27 // "EXPR" -> "VIDE"
-  n20 -> n28 // "FOR" -> "AFFECT"
-  n28 -> n29 // "AFFECT" -> "total"
-  n28 -> n30 // "AFFECT" -> "EXPR"
-  n30 -> n31 // "EXPR" -> "total"
-  n30 -> n32 // "EXPR" -> "+"
-  n32 -> n33 // "+" -> "EXPR"
-  n33 -> n34 // "EXPR" -> "i"
-  n33 -> n35 // "EXPR" -> "*"
-  n35 -> n36 // "*" -> "EXPR"
-  n36 -> n37 // "EXPR" -> "i"
-  n36 -> n38 // "EXPR" -> "VIDE"
-  n35 -> n39 // "*" -> "VIDE"
-  n32 -> n40 // "+" -> "VIDE"
-  n0 -> n41 // "PROGRAM" -> "WRITE"
-  n41 -> n42 // "WRITE" -> "EXPR"
-  n42 -> n43 // "EXPR" -> "total"
-  n42 -> n44 // "EXPR" -> "VIDE"
+  n10 -> n12 // "AFFECT" -> "10"
+  n0 -> n13 // "PROGRAM" -> "AFFECT"
+  n13 -> n14 // "AFFECT" -> "total"
+  n13 -> n15 // "AFFECT" -> "0"
+  n0 -> n16 // "PROGRAM" -> "FOR"
+  n16 -> n17 // "FOR" -> "i"
+  n16 -> n18 // "FOR" -> "0"
+  n16 -> n19 // "FOR" -> "n"
+  n16 -> n20 // "FOR" -> "AFFECT"
+  n20 -> n21 // "AFFECT" -> "total"
+  n20 -> n22 // "AFFECT" -> "total"
+  n20 -> n23 // "AFFECT" -> "+"
+  n23 -> n24 // "+" -> "i"
+  n23 -> n25 // "+" -> "*"
+  n25 -> n26 // "*" -> "i"
+  n0 -> n27 // "PROGRAM" -> "WRITE"
+  n27 -> n28 // "WRITE" -> "total"
 
 }
-

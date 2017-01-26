@@ -32,87 +32,50 @@ digraph {
   n17 [label="INT"];
   n18 [label="IF"];
   n18 [label="IF"];
-  n19 [label="EXPR"];
-  n19 [label="EXPR"];
-  n20 [label="b"];
-  n21 [label="=="];
-  n21 [label="=="];
-  n22 [label="EXPR"];
-  n22 [label="EXPR"];
-  n23 [label="0"];
-  n24 [label="VIDE"];
-  n25 [label="VIDE"];
-  n26 [label="RETURN"];
-  n26 [label="RETURN"];
-  n27 [label="EXPR"];
-  n27 [label="EXPR"];
-  n28 [label="1"];
-  n29 [label="VIDE"];
-  n30 [label="AFFECT"];
-  n30 [label="AFFECT"];
-  n31 [label="retval"];
-  n32 [label="EXPR"];
-  n32 [label="EXPR"];
-  n33 [label="1"];
-  n34 [label="VIDE"];
-  n35 [label="FOR"];
-  n35 [label="FOR"];
-  n36 [label="i"];
-  n37 [label="EXPR"];
-  n37 [label="EXPR"];
-  n38 [label="1"];
-  n39 [label="VIDE"];
-  n40 [label="EXPR"];
-  n40 [label="EXPR"];
-  n41 [label="b"];
-  n42 [label="VIDE"];
-  n43 [label="AFFECT"];
-  n43 [label="AFFECT"];
-  n44 [label="retval"];
-  n45 [label="EXPR"];
-  n45 [label="EXPR"];
-  n46 [label="retval"];
-  n47 [label="*"];
-  n47 [label="*"];
-  n48 [label="EXPR"];
-  n48 [label="EXPR"];
-  n49 [label="a"];
-  n50 [label="VIDE"];
-  n51 [label="VIDE"];
-  n52 [label="RETURN"];
-  n52 [label="RETURN"];
-  n53 [label="EXPR"];
-  n53 [label="EXPR"];
-  n54 [label="retval"];
-  n55 [label="VIDE"];
-  n56 [label="VARDEC"];
-  n56 [label="VARDEC"];
-  n57 [label="m"];
-  n58 [label="Math"];
-  n59 [label="AFFECT"];
-  n59 [label="AFFECT"];
-  n60 [label="m"];
-  n61 [label="NEW"];
-  n61 [label="NEW"];
-  n62 [label="Math"];
-  n63 [label="VIDE"];
-  n64 [label="WRITE"];
-  n64 [label="WRITE"];
-  n65 [label="EXPR"];
-  n65 [label="EXPR"];
-  n66 [label="m"];
-  n67 [label="METHODCALLING"];
-  n67 [label="METHODCALLING"];
-  n68 [label="pow"];
-  n69 [label="EXPR"];
-  n69 [label="EXPR"];
-  n70 [label="2"];
-  n71 [label="VIDE"];
-  n72 [label="EXPR"];
-  n72 [label="EXPR"];
-  n73 [label="3"];
-  n74 [label="VIDE"];
-  n75 [label="VIDE"];
+  n19 [label="b"];
+  n20 [label="=="];
+  n20 [label="=="];
+  n21 [label="0"];
+  n22 [label="RETURN"];
+  n22 [label="RETURN"];
+  n23 [label="1"];
+  n24 [label="AFFECT"];
+  n24 [label="AFFECT"];
+  n25 [label="retval"];
+  n26 [label="1"];
+  n27 [label="FOR"];
+  n27 [label="FOR"];
+  n28 [label="i"];
+  n29 [label="1"];
+  n30 [label="b"];
+  n31 [label="AFFECT"];
+  n31 [label="AFFECT"];
+  n32 [label="retval"];
+  n33 [label="retval"];
+  n34 [label="*"];
+  n34 [label="*"];
+  n35 [label="a"];
+  n36 [label="RETURN"];
+  n36 [label="RETURN"];
+  n37 [label="retval"];
+  n38 [label="VARDEC"];
+  n38 [label="VARDEC"];
+  n39 [label="m"];
+  n40 [label="Math"];
+  n41 [label="AFFECT"];
+  n41 [label="AFFECT"];
+  n42 [label="m"];
+  n43 [label="NEW"];
+  n43 [label="NEW"];
+  n44 [label="Math"];
+  n45 [label="WRITE"];
+  n45 [label="WRITE"];
+  n46 [label="m"];
+  n47 [label="METHODCALLING"];
+  n47 [label="METHODCALLING"];
+  n48 [label="pow"];
+  n49 [label="2"];
+  n50 [label="3"];
 
   n0 -> n1 // "PROGRAM" -> "CLASS"
   n1 -> n2 // "CLASS" -> "Math"
@@ -132,63 +95,37 @@ digraph {
   n15 -> n16 // "VARDEC" -> "i"
   n15 -> n17 // "VARDEC" -> "INT"
   n4 -> n18 // "METHODDEC" -> "IF"
-  n18 -> n19 // "IF" -> "EXPR"
-  n19 -> n20 // "EXPR" -> "b"
-  n19 -> n21 // "EXPR" -> "=="
-  n21 -> n22 // "==" -> "EXPR"
-  n22 -> n23 // "EXPR" -> "0"
-  n22 -> n24 // "EXPR" -> "VIDE"
-  n21 -> n25 // "==" -> "VIDE"
-  n18 -> n26 // "IF" -> "RETURN"
-  n26 -> n27 // "RETURN" -> "EXPR"
-  n27 -> n28 // "EXPR" -> "1"
-  n27 -> n29 // "EXPR" -> "VIDE"
-  n4 -> n30 // "METHODDEC" -> "AFFECT"
-  n30 -> n31 // "AFFECT" -> "retval"
-  n30 -> n32 // "AFFECT" -> "EXPR"
-  n32 -> n33 // "EXPR" -> "1"
-  n32 -> n34 // "EXPR" -> "VIDE"
-  n4 -> n35 // "METHODDEC" -> "FOR"
-  n35 -> n36 // "FOR" -> "i"
-  n35 -> n37 // "FOR" -> "EXPR"
-  n37 -> n38 // "EXPR" -> "1"
-  n37 -> n39 // "EXPR" -> "VIDE"
-  n35 -> n40 // "FOR" -> "EXPR"
-  n40 -> n41 // "EXPR" -> "b"
-  n40 -> n42 // "EXPR" -> "VIDE"
-  n35 -> n43 // "FOR" -> "AFFECT"
-  n43 -> n44 // "AFFECT" -> "retval"
-  n43 -> n45 // "AFFECT" -> "EXPR"
-  n45 -> n46 // "EXPR" -> "retval"
-  n45 -> n47 // "EXPR" -> "*"
-  n47 -> n48 // "*" -> "EXPR"
-  n48 -> n49 // "EXPR" -> "a"
-  n48 -> n50 // "EXPR" -> "VIDE"
-  n47 -> n51 // "*" -> "VIDE"
-  n4 -> n52 // "METHODDEC" -> "RETURN"
-  n52 -> n53 // "RETURN" -> "EXPR"
-  n53 -> n54 // "EXPR" -> "retval"
-  n53 -> n55 // "EXPR" -> "VIDE"
-  n0 -> n56 // "PROGRAM" -> "VARDEC"
-  n56 -> n57 // "VARDEC" -> "m"
-  n56 -> n58 // "VARDEC" -> "Math"
-  n0 -> n59 // "PROGRAM" -> "AFFECT"
-  n59 -> n60 // "AFFECT" -> "m"
-  n59 -> n61 // "AFFECT" -> "NEW"
-  n61 -> n62 // "NEW" -> "Math"
-  n61 -> n63 // "NEW" -> "VIDE"
-  n0 -> n64 // "PROGRAM" -> "WRITE"
-  n64 -> n65 // "WRITE" -> "EXPR"
-  n65 -> n66 // "EXPR" -> "m"
-  n65 -> n67 // "EXPR" -> "METHODCALLING"
-  n67 -> n68 // "METHODCALLING" -> "pow"
-  n67 -> n69 // "METHODCALLING" -> "EXPR"
-  n69 -> n70 // "EXPR" -> "2"
-  n69 -> n71 // "EXPR" -> "VIDE"
-  n67 -> n72 // "METHODCALLING" -> "EXPR"
-  n72 -> n73 // "EXPR" -> "3"
-  n72 -> n74 // "EXPR" -> "VIDE"
-  n67 -> n75 // "METHODCALLING" -> "VIDE"
+  n18 -> n19 // "IF" -> "b"
+  n18 -> n20 // "IF" -> "=="
+  n20 -> n21 // "==" -> "0"
+  n18 -> n22 // "IF" -> "RETURN"
+  n22 -> n23 // "RETURN" -> "1"
+  n4 -> n24 // "METHODDEC" -> "AFFECT"
+  n24 -> n25 // "AFFECT" -> "retval"
+  n24 -> n26 // "AFFECT" -> "1"
+  n4 -> n27 // "METHODDEC" -> "FOR"
+  n27 -> n28 // "FOR" -> "i"
+  n27 -> n29 // "FOR" -> "1"
+  n27 -> n30 // "FOR" -> "b"
+  n27 -> n31 // "FOR" -> "AFFECT"
+  n31 -> n32 // "AFFECT" -> "retval"
+  n31 -> n33 // "AFFECT" -> "retval"
+  n31 -> n34 // "AFFECT" -> "*"
+  n34 -> n35 // "*" -> "a"
+  n4 -> n36 // "METHODDEC" -> "RETURN"
+  n36 -> n37 // "RETURN" -> "retval"
+  n0 -> n38 // "PROGRAM" -> "VARDEC"
+  n38 -> n39 // "VARDEC" -> "m"
+  n38 -> n40 // "VARDEC" -> "Math"
+  n0 -> n41 // "PROGRAM" -> "AFFECT"
+  n41 -> n42 // "AFFECT" -> "m"
+  n41 -> n43 // "AFFECT" -> "NEW"
+  n43 -> n44 // "NEW" -> "Math"
+  n0 -> n45 // "PROGRAM" -> "WRITE"
+  n45 -> n46 // "WRITE" -> "m"
+  n45 -> n47 // "WRITE" -> "METHODCALLING"
+  n47 -> n48 // "METHODCALLING" -> "pow"
+  n47 -> n49 // "METHODCALLING" -> "2"
+  n47 -> n50 // "METHODCALLING" -> "3"
 
 }
-

@@ -62,9 +62,9 @@
 	- `cd analyseurs/`
 	- `java Clooc path/du/programme/à/compiler`
 
-* **Construire l'AST d'un programme Looc**
+* **Construire l'AST au format DOT d'un programme Looc**
  	- `cd analyseurs/`
-	- `java Clooc path/du/programme/à/compiler > path/vers/ast.dot`
+	- `java Clooc -T path/du/programme/à/compiler path/vers/AST.dot`
 
 * **Visualiser un AST au format .dot avec ZGRViewer**
 	- Lancez ZGRViewer (`./run.sh` dans son dossier d'installation)
@@ -95,6 +95,7 @@
 	Revoir liste données des arguments
 	Ajouter BLOCK des instructions d'une méthode et tout en fait (if, for...)
 	Revoir opérateurs de comparaison
-	Mettre METHODCALLING comme héritier de la var et créer la liste des args*
+	Mettre METHODCALLING comme héritier de la var et créer la liste des args
+	TRAITER LA PRIORITE DES OPERATEURS*
 
 * **Commencer la construction de table des symbloes**
