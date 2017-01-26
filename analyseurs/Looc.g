@@ -61,7 +61,7 @@ instruction:   IDF ':=' affectation ';' -> ^(AFFECT IDF affectation)
            |   'if' expression 'then' instruction ('else' instruction)? 'fi' -> ^(IF expression instruction (instruction)?)
            |   'for' IDF 'in' expression '..' expression 'do' (instruction)+ 'end' -> ^(FOR IDF expression expression (instruction)+)
            |   '{' (var_decl)* (instruction)+ '}' -> ^(GROUP (var_decl)* (instruction)+)
-           |   'do' expression ';'
+           |   'do' expression ';' -> expression
            |   print
            |   read
            |   returnstate

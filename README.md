@@ -92,3 +92,11 @@
 * **Finir complètement la construction de l'AST (voir pour la regle qui donne le mot videà)**
 
 * **Commencer la construction de table des symbloes**
+
+
+
+Revoir les opérateurs (+ *)
+Revoir liste données des arguments
+Ajouter BLOCK des instructions d'une méthode et tout en fait (if, for...)
+Revoir opérateurs de comparaison
+Mettre METHODCALLING comme héritier de la var et créer la liste des args
