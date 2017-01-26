@@ -86,7 +86,7 @@ expression:   IDF expressionbis -> ^(EXPR IDF expressionbis)
           |   '-' expression expressionbis -> ^(NEG expression expressionbis)
           ;
 
-expressionbis:   '.' IDF '(' (expression)? (',' expression)* ')' expressionbis -> ^(METHODCALLING IDF (expression)+ expressionbis)
+expressionbis:   '.' IDF '(' (expression)? (',' expression)* ')' expressionbis -> ^(METHODCALLING IDF (expression)* expressionbis)
               |   oper expression expressionbis -> ^(oper expression expressionbis)
               |    /*Le mot vide*/ -> VIDE
               ;
