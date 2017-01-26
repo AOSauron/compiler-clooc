@@ -1,6 +1,9 @@
 /*  GRAMMAIRE POUR LE LANGAGE LOOC POUR PROJET DE COMPILATION TELECOM NANCY 2016-2017
-Authors : GARCIA Guillaume
-Maj : 25/01/17   14:40  */
+Authors :
+GARCIA Guillaume
+ZAMBAUX Gauthier
+HINSBERGER Laure
+Maj : 26/01/17   16:35  */
 
  grammar Looc;
 

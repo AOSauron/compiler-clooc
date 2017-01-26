@@ -2,3 +2,4 @@ analyse/*.class*
 analyse/*r.java*
 analyse/*.tokens*
 ANTLR/*
+*~
