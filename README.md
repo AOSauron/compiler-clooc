@@ -72,6 +72,9 @@
 	- File > Open > dot > AST.dot
 	- Vous pouvez exporter l'arbre au format .svg ou .png avec File > Export to ...
 
+* **Exporter un AST au format DOT en image PNG en ligne de commande**
+	- `dot -Tpng AST.dot -o ASTimage.png`
+
 ## ROADMAP
 
 * ~~**Demander aux profs pour la ligne "for ..." dans la grammaire, elle est étrange (expression..expression)**~~
