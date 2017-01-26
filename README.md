@@ -66,6 +66,11 @@
  	- `cd analyseurs/`
 	- `java Clooc -T path/du/programme/à/compiler path/vers/AST.dot`
 
+* **Convertir les AST au format DOT en image PNG**
+	- `cd AST/`
+	- - Si ce n'est pas déjà le cas, rendre exécutable le script `chmod +x exportpng.sh`
+	- `./exportpng.sh`
+
 * **Visualiser un AST au format .dot avec ZGRViewer**
 	- Lancez ZGRViewer (`./run.sh` dans son dossier d'installation)
 	- Si ce n'est pas déjà fait, allez dans View > Préférences pour choisir les dossiers tmp/ et graphs/, ainsi que l'endroit où se situe l'exécutable dot (usuellement sous /usr/bin/dot)
