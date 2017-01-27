@@ -1,6 +1,21 @@
+var x : int;
+var v : int;
+var i : string;
+
 do foo.doo().ntm().bebe().kek();
 
-if -(x==0) 
+
+x := 0;
+
+if (x==0 ) 
 then
- write pute;
+ i := "int";
+ write x;
+else
+ write x+1;
 fi
+
+
+
+v := -1+4*7/2-5
+

@@ -38,6 +38,9 @@ Maj : 26/01/17   16:35  */
    INT;
    STRING;
    ARG;
+   BLOCK;
+   DO;
+   ELSE;
  }
 
 
@@ -54,12 +57,12 @@ type:   IDFC -> ^(IDFC)
     |   'string' -> ^(STRING)
     ;
 
-method_decl:   'method' IDF '(' (method_args)* ')' (':' type)? '{' (var_decl)* (instruction)+ '}' -> ^(METHODDEC IDF (method_args)* (type)? (var_decl)* (instruction)+);
+method_decl:   'method' IDF '(' (method_args)? ')' (':' type)? '{' (var_decl)* (instruction)+ '}' -> ^(METHODDEC IDF (method_args)? (type)? (var_decl)* ^(BLOCK (instruction)+));
 
 method_args:   IDF ':' type (',' IDF ':' type)* -> ^(METHODARG ^(ARG IDF type) ^(ARG IDF type)*);
 
 instruction:   IDF ':=' affectation ';' -> ^(AFFECT IDF affectation)
-           |   'if' expression 'then' instruction ('else' instruction)? 'fi' -> ^(IF expression instruction (instruction)?)
+           |   'if' expression 'then' (s=(instruction)+) ('else' (r=(instruction)+))? 'fi' -> ^(IF expression ^(DO ^(CALL[$s] instruction)) ^(ELSE ^(CALL[$r] instruction))?)
            |   'for' IDF 'in' expression '..' expression 'do' (instruction)+ 'end' -> ^(FOR IDF expression expression (instruction)+)
            |   '{' (var_decl)* (instruction)+ '}' -> ^(GROUP (var_decl)* (instruction)+)
            |   'do' expression ';' -> expression

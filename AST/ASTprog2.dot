@@ -34,52 +34,56 @@ digraph {
   n17 [label="VARDEC"];
   n18 [label="i"];
   n19 [label="INT"];
-  n20 [label="IF"];
-  n20 [label="IF"];
-  n21 [label="b"];
-  n22 [label="=="];
-  n22 [label="=="];
-  n23 [label="0"];
-  n24 [label="RETURN"];
-  n24 [label="RETURN"];
-  n25 [label="1"];
-  n26 [label="AFFECT"];
-  n26 [label="AFFECT"];
-  n27 [label="retval"];
-  n28 [label="1"];
-  n29 [label="FOR"];
-  n29 [label="FOR"];
-  n30 [label="i"];
-  n31 [label="1"];
-  n32 [label="b"];
-  n33 [label="AFFECT"];
-  n33 [label="AFFECT"];
-  n34 [label="retval"];
-  n35 [label="retval"];
-  n36 [label="*"];
-  n36 [label="*"];
-  n37 [label="a"];
-  n38 [label="RETURN"];
-  n38 [label="RETURN"];
-  n39 [label="retval"];
-  n40 [label="VARDEC"];
-  n40 [label="VARDEC"];
-  n41 [label="m"];
-  n42 [label="Math"];
-  n43 [label="AFFECT"];
-  n43 [label="AFFECT"];
-  n44 [label="m"];
-  n45 [label="NEW"];
-  n45 [label="NEW"];
-  n46 [label="Math"];
-  n47 [label="WRITE"];
-  n47 [label="WRITE"];
-  n48 [label="m"];
-  n49 [label="METHODCALLING"];
-  n49 [label="METHODCALLING"];
-  n50 [label="pow"];
-  n51 [label="2"];
-  n52 [label="3"];
+  n20 [label="BLOCK"];
+  n20 [label="BLOCK"];
+  n21 [label="IF"];
+  n21 [label="IF"];
+  n22 [label="b"];
+  n23 [label="=="];
+  n23 [label="=="];
+  n24 [label="0"];
+  n25 [label="DO"];
+  n25 [label="DO"];
+  n26 [label="RETURN"];
+  n26 [label="RETURN"];
+  n27 [label="1"];
+  n28 [label="AFFECT"];
+  n28 [label="AFFECT"];
+  n29 [label="retval"];
+  n30 [label="1"];
+  n31 [label="FOR"];
+  n31 [label="FOR"];
+  n32 [label="i"];
+  n33 [label="1"];
+  n34 [label="b"];
+  n35 [label="AFFECT"];
+  n35 [label="AFFECT"];
+  n36 [label="retval"];
+  n37 [label="retval"];
+  n38 [label="*"];
+  n38 [label="*"];
+  n39 [label="a"];
+  n40 [label="RETURN"];
+  n40 [label="RETURN"];
+  n41 [label="retval"];
+  n42 [label="VARDEC"];
+  n42 [label="VARDEC"];
+  n43 [label="m"];
+  n44 [label="Math"];
+  n45 [label="AFFECT"];
+  n45 [label="AFFECT"];
+  n46 [label="m"];
+  n47 [label="NEW"];
+  n47 [label="NEW"];
+  n48 [label="Math"];
+  n49 [label="WRITE"];
+  n49 [label="WRITE"];
+  n50 [label="m"];
+  n51 [label="METHODCALLING"];
+  n51 [label="METHODCALLING"];
+  n52 [label="pow"];
+  n53 [label="2"];
+  n54 [label="3"];
 
   n0 -> n1 // "PROGRAM" -> "CLASS"
   n1 -> n2 // "CLASS" -> "Math"
@@ -100,38 +104,40 @@ digraph {
   n4 -> n17 // "METHODDEC" -> "VARDEC"
   n17 -> n18 // "VARDEC" -> "i"
   n17 -> n19 // "VARDEC" -> "INT"
-  n4 -> n20 // "METHODDEC" -> "IF"
-  n20 -> n21 // "IF" -> "b"
-  n20 -> n22 // "IF" -> "=="
-  n22 -> n23 // "==" -> "0"
-  n20 -> n24 // "IF" -> "RETURN"
-  n24 -> n25 // "RETURN" -> "1"
-  n4 -> n26 // "METHODDEC" -> "AFFECT"
-  n26 -> n27 // "AFFECT" -> "retval"
-  n26 -> n28 // "AFFECT" -> "1"
-  n4 -> n29 // "METHODDEC" -> "FOR"
-  n29 -> n30 // "FOR" -> "i"
-  n29 -> n31 // "FOR" -> "1"
-  n29 -> n32 // "FOR" -> "b"
-  n29 -> n33 // "FOR" -> "AFFECT"
-  n33 -> n34 // "AFFECT" -> "retval"
-  n33 -> n35 // "AFFECT" -> "retval"
-  n33 -> n36 // "AFFECT" -> "*"
-  n36 -> n37 // "*" -> "a"
-  n4 -> n38 // "METHODDEC" -> "RETURN"
-  n38 -> n39 // "RETURN" -> "retval"
-  n0 -> n40 // "PROGRAM" -> "VARDEC"
-  n40 -> n41 // "VARDEC" -> "m"
-  n40 -> n42 // "VARDEC" -> "Math"
-  n0 -> n43 // "PROGRAM" -> "AFFECT"
-  n43 -> n44 // "AFFECT" -> "m"
-  n43 -> n45 // "AFFECT" -> "NEW"
-  n45 -> n46 // "NEW" -> "Math"
-  n0 -> n47 // "PROGRAM" -> "WRITE"
-  n47 -> n48 // "WRITE" -> "m"
-  n47 -> n49 // "WRITE" -> "METHODCALLING"
-  n49 -> n50 // "METHODCALLING" -> "pow"
-  n49 -> n51 // "METHODCALLING" -> "2"
-  n49 -> n52 // "METHODCALLING" -> "3"
+  n4 -> n20 // "METHODDEC" -> "BLOCK"
+  n20 -> n21 // "BLOCK" -> "IF"
+  n21 -> n22 // "IF" -> "b"
+  n21 -> n23 // "IF" -> "=="
+  n23 -> n24 // "==" -> "0"
+  n21 -> n25 // "IF" -> "DO"
+  n25 -> n26 // "DO" -> "RETURN"
+  n26 -> n27 // "RETURN" -> "1"
+  n20 -> n28 // "BLOCK" -> "AFFECT"
+  n28 -> n29 // "AFFECT" -> "retval"
+  n28 -> n30 // "AFFECT" -> "1"
+  n20 -> n31 // "BLOCK" -> "FOR"
+  n31 -> n32 // "FOR" -> "i"
+  n31 -> n33 // "FOR" -> "1"
+  n31 -> n34 // "FOR" -> "b"
+  n31 -> n35 // "FOR" -> "AFFECT"
+  n35 -> n36 // "AFFECT" -> "retval"
+  n35 -> n37 // "AFFECT" -> "retval"
+  n35 -> n38 // "AFFECT" -> "*"
+  n38 -> n39 // "*" -> "a"
+  n20 -> n40 // "BLOCK" -> "RETURN"
+  n40 -> n41 // "RETURN" -> "retval"
+  n0 -> n42 // "PROGRAM" -> "VARDEC"
+  n42 -> n43 // "VARDEC" -> "m"
+  n42 -> n44 // "VARDEC" -> "Math"
+  n0 -> n45 // "PROGRAM" -> "AFFECT"
+  n45 -> n46 // "AFFECT" -> "m"
+  n45 -> n47 // "AFFECT" -> "NEW"
+  n47 -> n48 // "NEW" -> "Math"
+  n0 -> n49 // "PROGRAM" -> "WRITE"
+  n49 -> n50 // "WRITE" -> "m"
+  n49 -> n51 // "WRITE" -> "METHODCALLING"
+  n51 -> n52 // "METHODCALLING" -> "pow"
+  n51 -> n53 // "METHODCALLING" -> "2"
+  n51 -> n54 // "METHODCALLING" -> "3"
 
 }
