@@ -9,10 +9,12 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.io.FileOutputStream;
 
 public class Clooc {
     public static void main(String[] args) throws Exception {
 
+        //System.setOut(new PrintStream(new FileOutputStream("test.txt")));
         boolean AST=false;
         InputStream in;
         File file;
@@ -34,7 +36,7 @@ public class Clooc {
           }
           else {
             in = new FileInputStream(new File(args[0]));
-            System.out.println("Analyse du programme " + args[0] + " ...");
+            //System.out.println("Analyse du programme " + args[0] + " ...");
           }
 
           ANTLRInputStream input = new ANTLRInputStream(in);
@@ -57,7 +59,7 @@ public class Clooc {
           }
           else {
             parser.program();
-            System.out.println("Fin de vérification. Si aucun message d'erreur, le programme est validé (looc).");
+            //System.out.println("Fin de vérification. Si aucun message d'erreur, le programme est validé (looc).");
           }
         }
         catch (ArrayIndexOutOfBoundsException e) {

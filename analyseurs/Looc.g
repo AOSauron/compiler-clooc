@@ -41,6 +41,7 @@ Maj : 26/01/17   16:35  */
    BLOCK;
    DO;
    ELSE;
+   CALL;
  }
 
 
