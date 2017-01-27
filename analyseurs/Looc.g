@@ -37,6 +37,7 @@ Maj : 26/01/17   16:35  */
    VIDE;
    INT;
    STRING;
+   ARG;
  }
 
 
@@ -55,7 +56,7 @@ type:   IDFC -> ^(IDFC)
 
 method_decl:   'method' IDF '(' (method_args)* ')' (':' type)? '{' (var_decl)* (instruction)+ '}' -> ^(METHODDEC IDF (method_args)* (type)? (var_decl)* (instruction)+);
 
-method_args:   IDF ':' type (',' IDF ':' type)* -> ^(METHODARG IDF type (IDF type)*);
+method_args:   IDF ':' type (',' IDF ':' type)* -> ^(METHODARG ^(ARG IDF type) ^(ARG IDF type)*);
 
 instruction:   IDF ':=' affectation ';' -> ^(AFFECT IDF affectation)
            |   'if' expression 'then' instruction ('else' instruction)? 'fi' -> ^(IF expression instruction (instruction)?)

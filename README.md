@@ -100,7 +100,6 @@
 * **Finir complètement la construction de l'AST (voir plus bas)**
 
 	*Revoir les opérateurs (+ *)
-	Revoir liste données des arguments
 	Ajouter BLOCK des instructions d'une méthode et tout en fait (if, for...)
 	Revoir opérateurs de comparaison
 	Mettre METHODCALLING comme héritier de la var et créer la liste des args
