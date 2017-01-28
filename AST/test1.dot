@@ -32,21 +32,19 @@ digraph {
   n17 [label="i"];
   n18 [label="0"];
   n19 [label="n"];
-  n20 [label="DO"];
-  n20 [label="DO"];
-  n21 [label="AFFECT"];
-  n21 [label="AFFECT"];
+  n20 [label="AFFECT"];
+  n20 [label="AFFECT"];
+  n21 [label="total"];
   n22 [label="total"];
-  n23 [label="total"];
-  n24 [label="+"];
-  n24 [label="+"];
-  n25 [label="i"];
-  n26 [label="*"];
-  n26 [label="*"];
-  n27 [label="i"];
-  n28 [label="WRITE"];
-  n28 [label="WRITE"];
-  n29 [label="total"];
+  n23 [label="+"];
+  n23 [label="+"];
+  n24 [label="i"];
+  n25 [label="*"];
+  n25 [label="*"];
+  n26 [label="i"];
+  n27 [label="WRITE"];
+  n27 [label="WRITE"];
+  n28 [label="total"];
 
   n0 -> n1 // "PROGRAM" -> "VARDEC"
   n1 -> n2 // "VARDEC" -> "n"
@@ -67,15 +65,14 @@ digraph {
   n16 -> n17 // "FOR" -> "i"
   n16 -> n18 // "FOR" -> "0"
   n16 -> n19 // "FOR" -> "n"
-  n16 -> n20 // "FOR" -> "DO"
-  n20 -> n21 // "DO" -> "AFFECT"
-  n21 -> n22 // "AFFECT" -> "total"
-  n21 -> n23 // "AFFECT" -> "total"
-  n21 -> n24 // "AFFECT" -> "+"
-  n24 -> n25 // "+" -> "i"
-  n24 -> n26 // "+" -> "*"
-  n26 -> n27 // "*" -> "i"
-  n0 -> n28 // "PROGRAM" -> "WRITE"
-  n28 -> n29 // "WRITE" -> "total"
+  n16 -> n20 // "FOR" -> "AFFECT"
+  n20 -> n21 // "AFFECT" -> "total"
+  n20 -> n22 // "AFFECT" -> "total"
+  n20 -> n23 // "AFFECT" -> "+"
+  n23 -> n24 // "+" -> "i"
+  n23 -> n25 // "+" -> "*"
+  n25 -> n26 // "*" -> "i"
+  n0 -> n27 // "PROGRAM" -> "WRITE"
+  n27 -> n28 // "WRITE" -> "total"
 
 }

@@ -17,7 +17,6 @@ Maj : 26/01/17   16:35  */
  tokens {
    PROGRAM;
    CLASS;
-   ITEMDEC;
    VARDEC;
    METHODDEC;
    METHODARG;
@@ -41,15 +40,34 @@ Maj : 26/01/17   16:35  */
    BLOCK;
    DO;
    ELSE;
-   CALL;
- }
+}
+
+@members {
+   /** Return a list of all ancestors of this node.  The first node of
+   *  list is the root and the last is the parent of this node.
+   * @param <T>
+   * @param t
+   * @return
+   */
+  public static List<? extends Tree> getAncestors( Tree t) {
+
+      List<Tree> ancestors = new ArrayList<>();
+      t = t.getParent();
+      while ( t!=null ) {
+          ancestors.add(0, t); // insert at start
+          t = t.getParent();
+      }
+
+      return ancestors;
+  }
+}
 
 
 program:   (class_decl)* (var_decl)* (instruction)+ -> ^(PROGRAM (class_decl)* (var_decl)* (instruction)+);
 
 class_decl:   'class' IDFC ('inherit' IDFC)? '=' '(' class_item_decl ')' -> ^(CLASS IDFC (IDFC)? class_item_decl);
 
-class_item_decl:   (var_decl)* (method_decl)* -> ^(ITEMDEC (var_decl)* (method_decl)*);
+class_item_decl:   (var_decl)* (method_decl)* -> ^(BLOCK (var_decl)* (method_decl)*);
 
 var_decl:   'var' IDF ':' type ';' -> ^(VARDEC IDF type);
 
@@ -58,14 +76,14 @@ type:   IDFC -> ^(IDFC)
     |   'string' -> ^(STRING)
     ;
 
-method_decl:   'method' IDF '(' (method_args)? ')' (':' type)? '{' (var_decl)* (instruction)+ '}' -> ^(METHODDEC IDF (method_args)? (type)? (var_decl)* ^(BLOCK (instruction)+));
+method_decl:   'method' IDF '(' method_args? ')' (':' type)? '{' var_decl* instruction+ '}' -> ^(METHODDEC IDF method_args? type? var_decl* ^(BLOCK instruction+));
 
 method_args:   IDF ':' type (',' IDF ':' type)* -> ^(METHODARG ^(ARG IDF type) ^(ARG IDF type)*);
 
 instruction:   IDF ':=' affectation ';' -> ^(AFFECT IDF affectation)
-           |   'if' expression 'then' (s=(instruction)+) ('else' (r=(instruction)+))? 'fi' -> ^(IF expression ^(DO ^(CALL[$s] instruction)) ^(ELSE ^(CALL[$r] instruction))?)
-           |   'for' IDF 'in' expression '..' expression 'do' (instruction)+ 'end' -> ^(FOR IDF expression expression (instruction)+)
-           |   '{' (var_decl)* (instruction)+ '}' -> ^(GROUP (var_decl)* (instruction)+)
+           |   'if' expression 'then' a+=instruction* ('else' b+=instruction*)? 'fi' -> ^(IF expression ^(DO $a*) ^(ELSE $b*)?)
+           |   'for' IDF 'in' expression '..' expression 'do' instruction+ 'end' -> ^(FOR IDF expression expression ^(DO instruction+))
+           |   '{' var_decl* instruction+ '}' -> ^(GROUP var_decl* instruction+)
            |   'do' expression ';' -> expression
            |   print
            |   read
@@ -84,19 +102,19 @@ returnstate:   'return' '(' expression ')' ';' -> ^(RETURN expression);
 
 /* expression a dû être dérecursivée gauche. */
 
-expression:   IDF expressionbis -> IDF (expressionbis)?
-          |   'this' expressionbis -> ^(THIS (expressionbis)?)
-          |   'super' expressionbis -> ^(SUPER (expressionbis)?)
-          |   CSTE_ENT expressionbis -> CSTE_ENT (expressionbis)?
-          |   CSTE_CHAINE expressionbis -> CSTE_CHAINE (expressionbis)?
-          |   'new' IDFC expressionbis -> ^(NEW IDFC (expressionbis)?)
-          |   '(' expression ')' expressionbis -> expression (expressionbis)?
-          |   '-' expression expressionbis -> ^(NEG expression (expressionbis)?)
+expression:   IDF expressionbis -> IDF expressionbis? /* -> IDF (expressionbis^)?*/
+          |   'this' expressionbis -> ^(THIS expressionbis?)
+          |   'super' expressionbis -> ^(SUPER expressionbis?)
+          |   CSTE_ENT expressionbis -> CSTE_ENT expressionbis?
+          |   CSTE_CHAINE expressionbis -> CSTE_CHAINE expressionbis?
+          |   'new' IDFC expressionbis -> ^(NEW IDFC expressionbis?)
+          |   '(' expression ')' expressionbis -> expression expressionbis?
+          |   '-' expression expressionbis -> ^(NEG expression expressionbis?)
           ;
 
-expressionbis:   '.' IDF '(' (expression)? (',' expression)* ')' expressionbis -> ^(METHODCALLING IDF (expression)* (expressionbis)?)
-              |   oper expression expressionbis -> ^(oper expression (expressionbis)?)
-              |    /*Le mot vide*/
+expressionbis:   '.' IDF '(' (expression)? (',' expression)* ')' expressionbis -> ^(METHODCALLING IDF ^(ARG (expression)*)? (expressionbis)?)
+              |   oper expression expressionbis -> /*{a=g.getId()}*/ ^(oper {Tree.parent.getChild(0)} expression) expressionbis?
+              |   /*Le mot vide*/
               ;
 
 oper:   '+'
