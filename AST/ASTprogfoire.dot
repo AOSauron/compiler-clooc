@@ -1,0 +1,117 @@
+digraph {
+
+	ordering=out;
+	ranksep=.4;
+	bgcolor="lightgrey"; node [shape=box, fixedsize=false, fontsize=12, fontname="Helvetica-bold", fontcolor="blue"
+		width=.25, height=.25, color="black", fillcolor="white", style="filled, solid, bold"];
+	edge [arrowsize=.5, color="black", style="bold"]
+
+  n0 [label="PROGRAM"];
+  n1 [label="VARDEC"];
+  n1 [label="VARDEC"];
+  n2 [label="x"];
+  n3 [label="INT"];
+  n4 [label="VARDEC"];
+  n4 [label="VARDEC"];
+  n5 [label="v"];
+  n6 [label="INT"];
+  n7 [label="VARDEC"];
+  n7 [label="VARDEC"];
+  n8 [label="i"];
+  n9 [label="STRING"];
+  n10 [label="foo"];
+  n11 [label="METHODCALLING"];
+  n11 [label="METHODCALLING"];
+  n12 [label="doo"];
+  n13 [label="METHODCALLING"];
+  n13 [label="METHODCALLING"];
+  n14 [label="ntm"];
+  n15 [label="METHODCALLING"];
+  n15 [label="METHODCALLING"];
+  n16 [label="bebe"];
+  n17 [label="METHODCALLING"];
+  n17 [label="METHODCALLING"];
+  n18 [label="kek"];
+  n19 [label="AFFECT"];
+  n19 [label="AFFECT"];
+  n20 [label="x"];
+  n21 [label="0"];
+  n22 [label="IF"];
+  n22 [label="IF"];
+  n23 [label="x"];
+  n24 [label="=="];
+  n24 [label="=="];
+  n25 [label="0"];
+  n26 [label="DO"];
+  n26 [label="DO"];
+  n27 [label="AFFECT"];
+  n27 [label="AFFECT"];
+  n28 [label="i"];
+  n29 [label="\"int\""];
+  n30 [label="WRITE"];
+  n30 [label="WRITE"];
+  n31 [label="x"];
+  n32 [label="ELSE"];
+  n32 [label="ELSE"];
+  n33 [label="WRITE"];
+  n33 [label="WRITE"];
+  n34 [label="x"];
+  n35 [label="+"];
+  n35 [label="+"];
+  n36 [label="1"];
+  n37 [label="+"];
+  n37 [label="+"];
+  n38 [label="y"];
+  n39 [label="*"];
+  n39 [label="*"];
+  n40 [label="z"];
+  n41 [label="-"];
+  n41 [label="-"];
+  n42 [label="u"];
+  n43 [label="v := -1+4*7-5\n\n"];
+
+  n0 -> n1 // "PROGRAM" -> "VARDEC"
+  n1 -> n2 // "VARDEC" -> "x"
+  n1 -> n3 // "VARDEC" -> "INT"
+  n0 -> n4 // "PROGRAM" -> "VARDEC"
+  n4 -> n5 // "VARDEC" -> "v"
+  n4 -> n6 // "VARDEC" -> "INT"
+  n0 -> n7 // "PROGRAM" -> "VARDEC"
+  n7 -> n8 // "VARDEC" -> "i"
+  n7 -> n9 // "VARDEC" -> "STRING"
+  n0 -> n10 // "PROGRAM" -> "foo"
+  n0 -> n11 // "PROGRAM" -> "METHODCALLING"
+  n11 -> n12 // "METHODCALLING" -> "doo"
+  n11 -> n13 // "METHODCALLING" -> "METHODCALLING"
+  n13 -> n14 // "METHODCALLING" -> "ntm"
+  n13 -> n15 // "METHODCALLING" -> "METHODCALLING"
+  n15 -> n16 // "METHODCALLING" -> "bebe"
+  n15 -> n17 // "METHODCALLING" -> "METHODCALLING"
+  n17 -> n18 // "METHODCALLING" -> "kek"
+  n0 -> n19 // "PROGRAM" -> "AFFECT"
+  n19 -> n20 // "AFFECT" -> "x"
+  n19 -> n21 // "AFFECT" -> "0"
+  n0 -> n22 // "PROGRAM" -> "IF"
+  n22 -> n23 // "IF" -> "x"
+  n22 -> n24 // "IF" -> "=="
+  n24 -> n25 // "==" -> "0"
+  n22 -> n26 // "IF" -> "DO"
+  n26 -> n27 // "DO" -> "AFFECT"
+  n27 -> n28 // "AFFECT" -> "i"
+  n27 -> n29 // "AFFECT" -> "\"int\""
+  n26 -> n30 // "DO" -> "WRITE"
+  n30 -> n31 // "WRITE" -> "x"
+  n22 -> n32 // "IF" -> "ELSE"
+  n32 -> n33 // "ELSE" -> "WRITE"
+  n33 -> n34 // "WRITE" -> "x"
+  n33 -> n35 // "WRITE" -> "+"
+  n35 -> n36 // "+" -> "1"
+  n35 -> n37 // "+" -> "+"
+  n37 -> n38 // "+" -> "y"
+  n37 -> n39 // "+" -> "*"
+  n39 -> n40 // "*" -> "z"
+  n39 -> n41 // "*" -> "-"
+  n41 -> n42 // "-" -> "u"
+  n0 -> n43 // "PROGRAM" -> "v := -1+4*7-5\n\n"
+
+}
