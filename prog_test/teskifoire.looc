@@ -4,10 +4,9 @@ var i : string;
 
 do foo.doo().ntm().bebe().kek();
 
-
 x := 0;
 
-if (x==0 ) 
+if (x==0 )
 then
  i := "int";
  write x;
@@ -15,7 +14,5 @@ else
  write x+1;
 fi
 
-
-
-v := -1+4*7/2-5
-
+v := -1+4*7/2-5;
+w:=(-1+4)*7/2-5;

@@ -22,7 +22,7 @@ public class Clooc {
         PrintWriter printWriter;
         PrintStream old;
         PrintStream ps;
-        ByteArrayOutputStream baos;
+        //ByteArrayOutputStream baos;
 
         //Flag pour construction AST
         if (args[0].equals("-T")) {
