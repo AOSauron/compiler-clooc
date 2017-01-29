@@ -42,6 +42,10 @@ Maj : 26/01/17   16:35  */
    ELSE;
 }
 
+@header {
+  import java.util.HashMap;
+}
+
 @members {
    /** Return a list of all ancestors of this node.  The first node of
    *  list is the root and the last is the parent of this node.
@@ -60,10 +64,13 @@ Maj : 26/01/17   16:35  */
 
       return ancestors;
   }
+
+  /* Table des symboles */
+  HashMap<String,Integer> memory = new HashMap<String,Integer>();
 }
 
 
-program:   (class_decl)* (var_decl)* (instruction)+ -> ^(PROGRAM (class_decl)* (var_decl)* (instruction)+);
+program:   (class_decl)* (var_decl)* (instruction {System.out.println($instruction.idf+" = "+$instruction.value);})+ -> ^(PROGRAM (class_decl)* (var_decl)* (instruction)+);
 
 class_decl:   'class' IDFC ('inherit' IDFC)? '=' '(' class_item_decl ')' -> ^(CLASS IDFC (IDFC)? class_item_decl);
 
@@ -80,7 +87,8 @@ method_decl:   'method' IDF '(' method_args? ')' (':' type)? '{' var_decl* instr
 
 method_args:   IDF ':' type (',' IDF ':' type)* -> ^(METHODARG ^(ARG IDF type) ^(ARG IDF type)*);
 
-instruction:   IDF ':=' affectation ';' -> ^(AFFECT IDF affectation)
+instruction returns [int value, String idf]
+           :   IDF ':=' aff=affectation {$value=$aff.value;$idf=$IDF.text;memory.put($IDF.text, new Integer($aff.value));} ';' -> ^(AFFECT IDF affectation)
            |   'if' expression 'then' a+=instruction* ('else' b+=instruction*)? 'fi' -> ^(IF expression ^(DO $a*) ^(ELSE $b*)?)
            |   'for' IDF 'in' expression '..' expression 'do' instruction+ 'end' -> ^(FOR IDF expression expression ^(DO instruction+))
            |   '{' var_decl* instruction+ '}' -> ^(GROUP var_decl* instruction+)
@@ -90,7 +98,8 @@ instruction:   IDF ':=' affectation ';' -> ^(AFFECT IDF affectation)
            |   returnstate
            ;
 
-affectation:   expression
+affectation returns [int value]
+           :   expr=expression {$value=$expr.value;}
            |   'nil'
            ;
 
@@ -102,30 +111,79 @@ returnstate:   'return' '(' expression ')' ';' -> ^(RETURN expression);
 
 /* expression a dû être dérecursivée gauche. */
 
-expression:   IDF expressionbis -> IDF expressionbis? /* -> IDF (expressionbis^)?*/
+expression returns [int value]
+          :   IDF
+            {
+              Integer v = (Integer)memory.get($IDF.text);
+              if (v!=null) $value=v.intValue();
+              else System.err.println("undefined variable "+$IDF);
+            } exprbis=expressionbis /*{$value=$exprbis.value;}*/ -> IDF expressionbis?   /*-> IDF (expressionbis^)?*/
           |   'this' expressionbis -> ^(THIS expressionbis?)
           |   'super' expressionbis -> ^(SUPER expressionbis?)
-          |   CSTE_ENT expressionbis -> CSTE_ENT expressionbis?
+          |   CSTE_ENT {$value = Integer.parseInt($CSTE_ENT.text);} expressionbis -> CSTE_ENT expressionbis?
           |   CSTE_CHAINE expressionbis -> CSTE_CHAINE expressionbis?
           |   'new' IDFC expressionbis -> ^(NEW IDFC expressionbis?)
-          |   '(' expression ')' expressionbis -> expression expressionbis?
+          |   '(' expr=expression ')' {$value=$expr.value;} exprbis=expressionbis {$value=$exprbis.value;} -> expression expressionbis?
           |   '-' expression expressionbis -> ^(NEG expression expressionbis?)
           ;
 
-expressionbis:   '.' IDF '(' (expression)? (',' expression)* ')' expressionbis -> ^(METHODCALLING IDF ^(ARG (expression)*)? (expressionbis)?)
-              |   oper expression expressionbis -> /*{a=g.getId()}*/ ^(oper {Tree.parent.getChild(0)} expression) expressionbis?
+expressionbis returns [int value, int operator]
+              :   '.' IDF '(' (expression)? (',' expression)* ')' expressionbis -> ^(METHODCALLING IDF ^(ARG (expression)*)? (expressionbis)?)
+              |   oper {$operator=$oper.operator;} expr=expression
+                {
+                    switch ($operator) {
+                      case 1: $value += $expr.value; break;
+                      case 2: $value -= $expr.value; break;
+                      case 3: $value *= $expr.value; break;
+                      case 4: $value /= $expr.value; break;
+                      //case 5: $value \%= $expression.value; break;
+
+                      case 11: if ($value < $expr.value) $value=1;
+                               else $value=0;
+                               break;
+                      case 12: if ($value <= $expr.value) $value=1;
+                               else $value=0;
+                               break;
+                      case 13: if ($value > $expr.value) $value=1;
+                               else $value=0;
+                               break;
+                      case 14: if ($value >= $expr.value) $value=1;
+                               else $value=0;
+                               break;
+                      case 15: if ($value == $expr.value) $value=1;
+                               else $value=0;
+                               break;
+                      case 16: if ($value != $expr.value) $value=1;
+                               else $value=0;
+                               break;
+
+                      //case 21: $value = $value && $expression.value; break;
+                      //case 22: $value = $value || $expression.value; break;
+
+                      default: System.err.println("undefined operator "+$operator); break;
+                    }
+                }
+                exprbis=expressionbis
+                {
+                  $value=$exprbis.value;
+                } -> /*{a=g.getId()}*/ ^(oper /*{Tree.parent.getChild(0)}*/ expression) expressionbis?
               |   /*Le mot vide*/
               ;
 
-oper:   '+'
-    |   '-'
-    |   '*'
-    |   '<'
-    |   '<='
-    |   '>'
-    |   '>='
-    |   '=='
-    |   '!='
+oper returns [int operator]
+    :   '+' {$operator = 1;}
+    |   '-' {$operator = 2;}
+    |   '*' {$operator = 3;}
+    |   '/' {$operator = 4;}
+    //|   '\%' {$operator = 5;}*/
+    |   '<' {$operator = 11;}
+    |   '<=' {$operator = 12;}
+    |   '>' {$operator = 13;}
+    |   '>=' {$operator = 14;}
+    |   '==' {$operator = 15;}
+    |   '!=' {$operator = 16;}
+    |   '&&' {$operator = 21;}
+    |   '||' {$operator = 22;}
     ;
 
 IDFC:   ('A'..'Z') ('a'..'z'|'A'..'Z'|'0'..'9'|'_')* ;

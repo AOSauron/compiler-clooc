@@ -3,3 +3,5 @@ analyse/*r.java*
 analyse/*.tokens*
 ANTLR/*
 *~
+AST/*.png
+AST/*.dot
