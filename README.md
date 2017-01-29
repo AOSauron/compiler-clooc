@@ -101,6 +101,7 @@
 
 	*Revoir les opérateurs (+ *)
 	Revoir opérateurs de comparaison
-	TRAITER LA PRIORITE DES OPERATEURS*
+	TRAITER LA PRIORITE DES OPERATEURS => règles à revoir pour TDS*
 
-* **Commencer la construction de table des symbloes**
+* **Commencer la construction de table des symboles**
+	=> Commencée, attendre la fin de construction de l'AST pour pouvoir implémenter complètement la TDS (surtout niveaux opérations arithmétiques/logiques)

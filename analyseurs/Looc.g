@@ -111,13 +111,13 @@ returnstate:   'return' '(' expression ')' ';' -> ^(RETURN expression);
 
 /* expression a dû être dérecursivée gauche. */
 
-expression returns [int value]
+expression returns [int value, int valuee]
           :   IDF
             {
               Integer v = (Integer)memory.get($IDF.text);
               if (v!=null) $value=v.intValue();
               else System.err.println("undefined variable "+$IDF);
-            } exprbis=expressionbis /*{$value=$exprbis.value;}*/ -> IDF expressionbis?   /*-> IDF (expressionbis^)?*/
+            } exprbis=expressionbis /*{$valuee=$exprbis.valuee;}*/ -> IDF expressionbis?   /*-> IDF (expressionbis^)?*/
           |   'this' expressionbis -> ^(THIS expressionbis?)
           |   'super' expressionbis -> ^(SUPER expressionbis?)
           |   CSTE_ENT {$value = Integer.parseInt($CSTE_ENT.text);} expressionbis -> CSTE_ENT expressionbis?
@@ -127,12 +127,12 @@ expression returns [int value]
           |   '-' expression expressionbis -> ^(NEG expression expressionbis?)
           ;
 
-expressionbis returns [int value, int operator]
+expressionbis returns [int value, int operator, int valuee]
               :   '.' IDF '(' (expression)? (',' expression)* ')' expressionbis -> ^(METHODCALLING IDF ^(ARG (expression)*)? (expressionbis)?)
               |   oper {$operator=$oper.operator;} expr=expression
                 {
                     switch ($operator) {
-                      case 1: $value += $expr.value; break;
+                      case 1: $value += $expr.value;System.out.println($value+" "+$expr.value); break;
                       case 2: $value -= $expr.value; break;
                       case 3: $value *= $expr.value; break;
                       case 4: $value /= $expr.value; break;
@@ -164,9 +164,9 @@ expressionbis returns [int value, int operator]
                     }
                 }
                 exprbis=expressionbis
-                {
+                /*{
                   $value=$exprbis.value;
-                } -> /*{a=g.getId()}*/ ^(oper /*{Tree.parent.getChild(0)}*/ expression) expressionbis?
+                }*/ -> /*{a=g.getId()}*/ ^(oper /*{Tree.parent.getChild(0)}*/ expression) expressionbis?
               |   /*Le mot vide*/
               ;
 
