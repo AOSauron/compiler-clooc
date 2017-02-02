@@ -1,6 +1,6 @@
-analyse/*.class*
-analyse/*r.java*
-analyse/*.tokens*
+analyseurs/*.class*
+analyseurs/*r.java*
+analyseurs/*.tokens*
 ANTLR/*
 *~
 AST/*.png
