@@ -1,4 +1,4 @@
-var x : int;
+/*var x : int;
 var v : int;
 var i : string;
 
@@ -12,7 +12,10 @@ then
  write x;
 else
  write x+1+y*(z-u);
-fi
+fi*/
 
 v := -1+4*7/2-5;
 w:=(-1+4)*7/2-5;
+
+cOND := x==0 || y==2 && c!=5 || f!=6 ;
+cOND := x==0 || y==2 && (c!=5 || f!=6) ;

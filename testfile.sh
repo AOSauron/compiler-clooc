@@ -22,9 +22,9 @@ then
   read -p "[TESTLOOC] Voulez vous (re-)compiler la grammaire Looc.g ainsi que le compilateur Clooc.java ? Oui(o/O/y/Y) ou Non(n/N) : " comp
       case $comp in
         [OoyY]* ) echo "[TESTLOOC] Création des analyseurs lexical et syntaxique à partir de la grammaire Looc.g ..."
-                  java -jar ../ANTLR/antlr-3.3-complete.jar Looc.g &> /dev/null
+                  java -jar ../ANTLR/antlr-3.3-complete.jar Looc.g #&> /dev/null
                   echo "[TESTLOOC] Compilation de la classe Clooc.java ..."
-                  javac LoocLexer.java LoocParser.java Clooc.java &> /dev/null
+                  javac LoocLexer.java LoocParser.java Clooc.java #&> /dev/null
                   echo "[TESTLOOC] Compilation terminée."
                   break;;
         [Nn]* ) break;;

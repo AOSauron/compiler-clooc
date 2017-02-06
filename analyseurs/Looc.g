@@ -40,6 +40,13 @@ Maj : 26/01/17   16:35  */
    BLOCK;
    DO;
    ELSE;
+   OR;
+   AND;
+   MULTDIVMOD;
+   NEGPLUS;
+   MINUSPLUS;
+   ISGREATERLOWER;
+   ISDIFF;
 }
 
 @members {
@@ -102,21 +109,44 @@ returnstate:   'return' '(' expression ')' ';' -> ^(RETURN expression);
 
 /* expression a dû être dérecursivée gauche. */
 
-expression:   IDF expressionbis -> IDF expressionbis? /* -> IDF (expressionbis^)?*/
-          |   'this' expressionbis -> ^(THIS expressionbis?)
+expression:   //IDF expressionbis -> IDF expressionbis? /* -> IDF (expressionbis^)?*/
+          /*|*/   'this' expressionbis -> ^(THIS expressionbis?)
           |   'super' expressionbis -> ^(SUPER expressionbis?)
-          |   CSTE_ENT expressionbis -> CSTE_ENT expressionbis?
-          |   CSTE_CHAINE expressionbis -> CSTE_CHAINE expressionbis?
+          //|   CSTE_ENT expressionbis -> CSTE_ENT expressionbis?
+          |   CSTE_CHAINE expressionbis -> ^(CSTE_CHAINE expressionbis?)
           |   'new' IDFC expressionbis -> ^(NEW IDFC expressionbis?)
-          |   '(' expression ')' expressionbis -> expression expressionbis?
-          |   '-' expression expressionbis -> ^(NEG expression expressionbis?)
+          //|   '(' expression ')' expressionbis -> ^(expression expressionbis?)
+          //|   '-' expression expressionbis -> ^(NEG expression expressionbis?)
+          |   exprio1 -> exprio1
           ;
 
-expressionbis:   '.' IDF '(' (expression)? (',' expression)* ')' expressionbis -> ^(METHODCALLING IDF ^(ARG (expression)*)? (expressionbis)?)
-              |   oper expression expressionbis -> /*{a=g.getId()}*/ ^(oper {Tree.parent.getChild(0)} expression) expressionbis?
-              |   /*Le mot vide*/
-              ;
+//expression : exprio1 ;
 
+exprio1 : exprio2 ( '||'^ exprio2)* ;
+
+exprio2 : exprio3 ( '&&'^ exprio3)* ;
+
+exprio3 : exprio4 ( '=='^ exprio4 | '!='^ exprio4)* ;
+
+exprio4 : exprio5 ( '<'^ exprio5 | '<='^ exprio5 | '>'^ exprio5 | '>='^ exprio5)* ;
+
+exprio5 : exprio6 ( '+'^ exprio6 | '-'^ exprio6)* ;
+
+exprio6 : exprio7 ( '*'^ exprio7 | '/'^ exprio7 | '%'^ exprio7)* ;
+
+exprio7 : ('-'^|'+'^)? exprio8 ;
+
+exprio8 : CSTE_ENT -> ^(CSTE_ENT)
+        | IDF -> ^(IDF)
+        | '(' expression ')' -> expression
+        ;
+
+expressionbis:   '.' IDF '(' (expression)? (',' expression)* ')' expressionbis -> ^(METHODCALLING IDF ^(ARG (expression)*)? (expressionbis)?)
+            //  |   oper expression expressionbis -> /*{a=g.getId()}*/ /* ^(oper /*{Tree.parent.getChild(0)}*/ /*expression) expressionbis? */
+              |   /*Le mot vide*/
+              //|   exprio1 -> exprio1
+              ;
+/*
 oper:   '+'
     |   '-'
     |   '*'
@@ -126,7 +156,7 @@ oper:   '+'
     |   '>='
     |   '=='
     |   '!='
-    ;
+    ; */
 
 IDFC:   ('A'..'Z') ('a'..'z'|'A'..'Z'|'0'..'9'|'_')* ;
 
