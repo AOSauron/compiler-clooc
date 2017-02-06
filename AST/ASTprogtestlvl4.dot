@@ -1,0 +1,176 @@
+digraph {
+
+	ordering=out;
+	ranksep=.4;
+	bgcolor="lightgrey"; node [shape=box, fixedsize=false, fontsize=12, fontname="Helvetica-bold", fontcolor="blue"
+		width=.25, height=.25, color="black", fillcolor="white", style="filled, solid, bold"];
+	edge [arrowsize=.5, color="black", style="bold"]
+
+  n0 [label="PROGRAM"];
+  n1 [label="CLASS"];
+  n1 [label="CLASS"];
+  n2 [label="Animal"];
+  n3 [label="BLOCK"];
+  n3 [label="BLOCK"];
+  n4 [label="VARDEC"];
+  n4 [label="VARDEC"];
+  n5 [label="name"];
+  n6 [label="STRING"];
+  n7 [label="METHODDEC"];
+  n7 [label="METHODDEC"];
+  n8 [label="setName"];
+  n9 [label="METHODARG"];
+  n9 [label="METHODARG"];
+  n10 [label="ARG"];
+  n10 [label="ARG"];
+  n11 [label="n"];
+  n12 [label="STRING"];
+  n13 [label="BLOCK"];
+  n13 [label="BLOCK"];
+  n14 [label="AFFECT"];
+  n14 [label="AFFECT"];
+  n15 [label="name"];
+  n16 [label="n"];
+  n17 [label="METHODDEC"];
+  n17 [label="METHODDEC"];
+  n18 [label="whoami"];
+  n19 [label="BLOCK"];
+  n19 [label="BLOCK"];
+  n20 [label="WRITE"];
+  n20 [label="WRITE"];
+  n21 [label="\"My name is \""];
+  n22 [label="WRITE"];
+  n22 [label="WRITE"];
+  n23 [label="name"];
+  n24 [label="CLASS"];
+  n24 [label="CLASS"];
+  n25 [label="Dog"];
+  n26 [label="Animal"];
+  n27 [label="BLOCK"];
+  n27 [label="BLOCK"];
+  n28 [label="METHODDEC"];
+  n28 [label="METHODDEC"];
+  n29 [label="whoami"];
+  n30 [label="BLOCK"];
+  n30 [label="BLOCK"];
+  n31 [label="WRITE"];
+  n31 [label="WRITE"];
+  n32 [label="\"My name is \""];
+  n33 [label="WRITE"];
+  n33 [label="WRITE"];
+  n34 [label="name"];
+  n35 [label="WRITE"];
+  n35 [label="WRITE"];
+  n36 [label="\". And ...a dog.\""];
+  n37 [label="CLASS"];
+  n37 [label="CLASS"];
+  n38 [label="Cat"];
+  n39 [label="Animal"];
+  n40 [label="BLOCK"];
+  n40 [label="BLOCK"];
+  n41 [label="METHODDEC"];
+  n41 [label="METHODDEC"];
+  n42 [label="whoami"];
+  n43 [label="BLOCK"];
+  n43 [label="BLOCK"];
+  n44 [label="SUPER"];
+  n44 [label="SUPER"];
+  n45 [label="METHODCALLING"];
+  n45 [label="METHODCALLING"];
+  n46 [label="whoami"];
+  n47 [label="WRITE"];
+  n47 [label="WRITE"];
+  n48 [label="\". And ...a cat.\""];
+  n49 [label="VARDEC"];
+  n49 [label="VARDEC"];
+  n50 [label="a1"];
+  n51 [label="Animal"];
+  n52 [label="VARDEC"];
+  n52 [label="VARDEC"];
+  n53 [label="a2"];
+  n54 [label="Animal"];
+  n55 [label="AFFECT"];
+  n55 [label="AFFECT"];
+  n56 [label="a1"];
+  n57 [label="NEW"];
+  n57 [label="NEW"];
+  n58 [label="Dog"];
+  n59 [label="a1"];
+  n60 [label="AFFECT"];
+  n60 [label="AFFECT"];
+  n61 [label="a2"];
+  n62 [label="NEW"];
+  n62 [label="NEW"];
+  n63 [label="Cat"];
+  n64 [label="a2"];
+  n65 [label="a1"];
+  n66 [label="a2"];
+
+  n0 -> n1 // "PROGRAM" -> "CLASS"
+  n1 -> n2 // "CLASS" -> "Animal"
+  n1 -> n3 // "CLASS" -> "BLOCK"
+  n3 -> n4 // "BLOCK" -> "VARDEC"
+  n4 -> n5 // "VARDEC" -> "name"
+  n4 -> n6 // "VARDEC" -> "STRING"
+  n3 -> n7 // "BLOCK" -> "METHODDEC"
+  n7 -> n8 // "METHODDEC" -> "setName"
+  n7 -> n9 // "METHODDEC" -> "METHODARG"
+  n9 -> n10 // "METHODARG" -> "ARG"
+  n10 -> n11 // "ARG" -> "n"
+  n10 -> n12 // "ARG" -> "STRING"
+  n7 -> n13 // "METHODDEC" -> "BLOCK"
+  n13 -> n14 // "BLOCK" -> "AFFECT"
+  n14 -> n15 // "AFFECT" -> "name"
+  n14 -> n16 // "AFFECT" -> "n"
+  n3 -> n17 // "BLOCK" -> "METHODDEC"
+  n17 -> n18 // "METHODDEC" -> "whoami"
+  n17 -> n19 // "METHODDEC" -> "BLOCK"
+  n19 -> n20 // "BLOCK" -> "WRITE"
+  n20 -> n21 // "WRITE" -> "\"My name is \""
+  n19 -> n22 // "BLOCK" -> "WRITE"
+  n22 -> n23 // "WRITE" -> "name"
+  n0 -> n24 // "PROGRAM" -> "CLASS"
+  n24 -> n25 // "CLASS" -> "Dog"
+  n24 -> n26 // "CLASS" -> "Animal"
+  n24 -> n27 // "CLASS" -> "BLOCK"
+  n27 -> n28 // "BLOCK" -> "METHODDEC"
+  n28 -> n29 // "METHODDEC" -> "whoami"
+  n28 -> n30 // "METHODDEC" -> "BLOCK"
+  n30 -> n31 // "BLOCK" -> "WRITE"
+  n31 -> n32 // "WRITE" -> "\"My name is \""
+  n30 -> n33 // "BLOCK" -> "WRITE"
+  n33 -> n34 // "WRITE" -> "name"
+  n30 -> n35 // "BLOCK" -> "WRITE"
+  n35 -> n36 // "WRITE" -> "\". And ...a dog.\""
+  n0 -> n37 // "PROGRAM" -> "CLASS"
+  n37 -> n38 // "CLASS" -> "Cat"
+  n37 -> n39 // "CLASS" -> "Animal"
+  n37 -> n40 // "CLASS" -> "BLOCK"
+  n40 -> n41 // "BLOCK" -> "METHODDEC"
+  n41 -> n42 // "METHODDEC" -> "whoami"
+  n41 -> n43 // "METHODDEC" -> "BLOCK"
+  n43 -> n44 // "BLOCK" -> "SUPER"
+  n44 -> n45 // "SUPER" -> "METHODCALLING"
+  n45 -> n46 // "METHODCALLING" -> "whoami"
+  n43 -> n47 // "BLOCK" -> "WRITE"
+  n47 -> n48 // "WRITE" -> "\". And ...a cat.\""
+  n0 -> n49 // "PROGRAM" -> "VARDEC"
+  n49 -> n50 // "VARDEC" -> "a1"
+  n49 -> n51 // "VARDEC" -> "Animal"
+  n0 -> n52 // "PROGRAM" -> "VARDEC"
+  n52 -> n53 // "VARDEC" -> "a2"
+  n52 -> n54 // "VARDEC" -> "Animal"
+  n0 -> n55 // "PROGRAM" -> "AFFECT"
+  n55 -> n56 // "AFFECT" -> "a1"
+  n55 -> n57 // "AFFECT" -> "NEW"
+  n57 -> n58 // "NEW" -> "Dog"
+  n0 -> n59 // "PROGRAM" -> "a1"
+  n0 -> n60 // "PROGRAM" -> "AFFECT"
+  n60 -> n61 // "AFFECT" -> "a2"
+  n60 -> n62 // "AFFECT" -> "NEW"
+  n62 -> n63 // "NEW" -> "Cat"
+  n0 -> n64 // "PROGRAM" -> "a2"
+  n0 -> n65 // "PROGRAM" -> "a1"
+  n0 -> n66 // "PROGRAM" -> "a2"
+
+}

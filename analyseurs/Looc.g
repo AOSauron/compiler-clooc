@@ -3,7 +3,7 @@ Authors :
 GARCIA Guillaume
 ZAMBAUX Gauthier
 HINSBERGER Laure
-Maj : 26/01/17   16:35  */
+Maj : 06/02/17   22:24  */
 
  grammar Looc;
 
@@ -40,6 +40,13 @@ Maj : 26/01/17   16:35  */
    BLOCK;
    DO;
    ELSE;
+   OR;
+   AND;
+   MULTDIVMOD;
+   NEGPLUS;
+   MINUSPLUS;
+   ISGREATERLOWER;
+   ISDIFF;
 }
 
 @header {
@@ -58,7 +65,7 @@ Maj : 26/01/17   16:35  */
       List<Tree> ancestors = new ArrayList<>();
       t = t.getParent();
       while ( t!=null ) {
-          ancestors.add(0, t); // insert at start
+          ancestors.add(0, t);
           t = t.getParent();
       }
 
@@ -111,80 +118,54 @@ returnstate:   'return' '(' expression ')' ';' -> ^(RETURN expression);
 
 /* expression a dû être dérecursivée gauche. */
 
-expression returns [int value, int valuee]
-          :   IDF
-            {
-              Integer v = (Integer)memory.get($IDF.text);
-              if (v!=null) $value=v.intValue();
-              else System.err.println("undefined variable "+$IDF);
-            } exprbis=expressionbis /*{$valuee=$exprbis.valuee;}*/ -> IDF expressionbis?   /*-> IDF (expressionbis^)?*/
-          |   'this' expressionbis -> ^(THIS expressionbis?)
+expression:   //IDF expressionbis -> IDF expressionbis? /* -> IDF (expressionbis^)?*/
+          /*|*/   'this' expressionbis -> ^(THIS expressionbis?)
           |   'super' expressionbis -> ^(SUPER expressionbis?)
-          |   CSTE_ENT {$value = Integer.parseInt($CSTE_ENT.text);} expressionbis -> CSTE_ENT expressionbis?
-          |   CSTE_CHAINE expressionbis -> CSTE_CHAINE expressionbis?
+          //|   CSTE_ENT expressionbis -> CSTE_ENT expressionbis?
+          |   CSTE_CHAINE expressionbis -> ^(CSTE_CHAINE expressionbis?)
           |   'new' IDFC expressionbis -> ^(NEW IDFC expressionbis?)
-          |   '(' expr=expression ')' {$value=$expr.value;} exprbis=expressionbis {$value=$exprbis.value;} -> expression expressionbis?
-          |   '-' expression expressionbis -> ^(NEG expression expressionbis?)
+          //|   '(' expression ')' expressionbis -> ^(expression expressionbis?)
+          //|   '-' expression expressionbis -> ^(NEG expression expressionbis?)
+          |   exprio1 expressionbis -> exprio1
           ;
 
-expressionbis returns [int value, int operator, int valuee]
-              :   '.' IDF '(' (expression)? (',' expression)* ')' expressionbis -> ^(METHODCALLING IDF ^(ARG (expression)*)? (expressionbis)?)
-              |   oper {$operator=$oper.operator;} expr=expression
-                {
-                    switch ($operator) {
-                      case 1: $value += $expr.value;System.out.println($value+" "+$expr.value); break;
-                      case 2: $value -= $expr.value; break;
-                      case 3: $value *= $expr.value; break;
-                      case 4: $value /= $expr.value; break;
-                      //case 5: $value \%= $expression.value; break;
+//expression : exprio1 ;
 
-                      case 11: if ($value < $expr.value) $value=1;
-                               else $value=0;
-                               break;
-                      case 12: if ($value <= $expr.value) $value=1;
-                               else $value=0;
-                               break;
-                      case 13: if ($value > $expr.value) $value=1;
-                               else $value=0;
-                               break;
-                      case 14: if ($value >= $expr.value) $value=1;
-                               else $value=0;
-                               break;
-                      case 15: if ($value == $expr.value) $value=1;
-                               else $value=0;
-                               break;
-                      case 16: if ($value != $expr.value) $value=1;
-                               else $value=0;
-                               break;
+exprio1 : exprio2 ( '||'^ exprio2)* ;
 
-                      //case 21: $value = $value && $expression.value; break;
-                      //case 22: $value = $value || $expression.value; break;
+exprio2 : exprio3 ( '&&'^ exprio3)* ;
 
-                      default: System.err.println("undefined operator "+$operator); break;
-                    }
-                }
-                exprbis=expressionbis
-                /*{
-                  $value=$exprbis.value;
-                }*/ -> /*{a=g.getId()}*/ ^(oper /*{Tree.parent.getChild(0)}*/ expression) expressionbis?
+exprio3 : exprio4 ( '=='^ exprio4 | '!='^ exprio4)* ;
+
+exprio4 : exprio5 ( '<'^ exprio5 | '<='^ exprio5 | '>'^ exprio5 | '>='^ exprio5)* ;
+
+exprio5 : exprio6 ( '+'^ exprio6 | '-'^ exprio6)* ;
+
+exprio6 : exprio7 ( '*'^ exprio7 | '/'^ exprio7 | '%'^ exprio7)* ;
+
+exprio7 : ('-'^|'+'^)? exprio8 ;
+
+exprio8 : CSTE_ENT -> ^(CSTE_ENT)
+        | IDF -> ^(IDF)
+        | '(' expression ')' -> expression
+        ;
+
+expressionbis:   '.' IDF '(' (expression)? (',' expression)* ')' expressionbis -> ^(METHODCALLING IDF ^(ARG (expression)*)? (expressionbis)?)
+            //  |   oper expression expressionbis -> /*{a=g.getId()}*/ /* ^(oper /*{Tree.parent.getChild(0)}*/ /*expression) expressionbis? */
               |   /*Le mot vide*/
+              //|   exprio1 -> exprio1
               ;
-
-oper returns [int operator]
-    :   '+' {$operator = 1;}
-    |   '-' {$operator = 2;}
-    |   '*' {$operator = 3;}
-    |   '/' {$operator = 4;}
-    //|   '\%' {$operator = 5;}*/
-    |   '<' {$operator = 11;}
-    |   '<=' {$operator = 12;}
-    |   '>' {$operator = 13;}
-    |   '>=' {$operator = 14;}
-    |   '==' {$operator = 15;}
-    |   '!=' {$operator = 16;}
-    |   '&&' {$operator = 21;}
-    |   '||' {$operator = 22;}
-    ;
+/*
+oper:   '+'
+    |   '-'
+    |   '*'
+    |   '<'
+    |   '<='
+    |   '>'
+    |   '>='
+    |   '=='
+    |   '!='
+    ; */
 
 IDFC:   ('A'..'Z') ('a'..'z'|'A'..'Z'|'0'..'9'|'_')* ;
 
