@@ -3,7 +3,7 @@ Authors :
 GARCIA Guillaume
 ZAMBAUX Gauthier
 HINSBERGER Laure
-Maj : 26/01/17   16:35  */
+Maj : 06/02/17   22:24  */
 
  grammar Looc;
 
@@ -61,7 +61,7 @@ Maj : 26/01/17   16:35  */
       List<Tree> ancestors = new ArrayList<>();
       t = t.getParent();
       while ( t!=null ) {
-          ancestors.add(0, t); // insert at start
+          ancestors.add(0, t);
           t = t.getParent();
       }
 
@@ -117,7 +117,7 @@ expression:   //IDF expressionbis -> IDF expressionbis? /* -> IDF (expressionbis
           |   'new' IDFC expressionbis -> ^(NEW IDFC expressionbis?)
           //|   '(' expression ')' expressionbis -> ^(expression expressionbis?)
           //|   '-' expression expressionbis -> ^(NEG expression expressionbis?)
-          |   exprio1 -> exprio1
+          |   exprio1 expressionbis -> exprio1
           ;
 
 //expression : exprio1 ;

@@ -19,9 +19,9 @@ then
   filelooc=$(basename $1)
   filename=${filelooc%.*}
   while true; do
-  read -p "[TESTLOOC] Voulez vous (re-)compiler la grammaire Looc.g ainsi que le compilateur Clooc.java ? Oui(o/O/y/Y) ou Non(n/N) : " comp
+  read -p "[TESTLOOC] Voulez vous (re-)compiler la grammaire Looc.g ainsi que le compilateur Clooc.java ? Oui(o/O/y/Y/Entrée) ou Non(n/N) : " comp
       case $comp in
-        [OoyY]* ) echo "[TESTLOOC] Création des analyseurs lexical et syntaxique à partir de la grammaire Looc.g ..."
+        ""|[OoyY]* ) echo "[TESTLOOC] Création des analyseurs lexical et syntaxique à partir de la grammaire Looc.g ..."
                   java -jar ../ANTLR/antlr-3.3-complete.jar Looc.g #&> /dev/null
                   echo "[TESTLOOC] Compilation de la classe Clooc.java ..."
                   javac LoocLexer.java LoocParser.java Clooc.java #&> /dev/null
@@ -43,20 +43,21 @@ then
   #fi
   echo "[TESTLOOC] Terminé (OK si pas de message d'erreur.)"
   while true; do
-  read -p "[TESTLOOC] Voulez vous construire l'AST ? Oui(o/O/y/Y) ou Non(n/N) : " ok
+  read -p "[TESTLOOC] Voulez vous construire l'AST ? Oui(o/O/y/Y/Entrée) ou Non(n/N) : " ok
       case $ok in
-        [OoyY]* ) echo "[TESTLOOC] Construction de l'AST (format DOT) de $filelooc ..."
+       ""|[OoyY]* ) echo "[TESTLOOC] Construction de l'AST (format DOT) de $filelooc ..."
                   path1="../AST/AST$filename.dot"
+		              path12="AST/AST$filename.dot"
                   path2="../AST/AST$filename.png"
+		              path22="AST/AST$filename.png"
                   java Clooc -T $fullpath  $path1
                   echo "[TESTLOOC] Terminé"
                   echo "[TESTLOOC] Conversion de l'arbre DOT en image PNG ..."
                   dot -Tpng $path1 -o $path2 &> /dev/null
-                  echo "[TESTLOOC] Terminé. L'image a été produite dans le fichier $path2"
+                  echo "[TESTLOOC] Terminé. L'image a été produite dans le fichier $path22"
                   cd ..
                   echo "[TESTLOOC] Affichage de l'arbre"
-                  path2="AST/AST$filename.png"
-                  eog $path2 &> /dev/null &
+                  eog $path22 &> /dev/null &
                   break;;
         [Nn]* ) echo "[TESTLOOC] Terminé."
                 exit;;

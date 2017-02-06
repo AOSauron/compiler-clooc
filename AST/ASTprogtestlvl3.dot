@@ -1,0 +1,174 @@
+digraph {
+
+	ordering=out;
+	ranksep=.4;
+	bgcolor="lightgrey"; node [shape=box, fixedsize=false, fontsize=12, fontname="Helvetica-bold", fontcolor="blue"
+		width=.25, height=.25, color="black", fillcolor="white", style="filled, solid, bold"];
+	edge [arrowsize=.5, color="black", style="bold"]
+
+  n0 [label="PROGRAM"];
+  n1 [label="CLASS"];
+  n1 [label="CLASS"];
+  n2 [label="Fibonacci"];
+  n3 [label="BLOCK"];
+  n3 [label="BLOCK"];
+  n4 [label="VARDEC"];
+  n4 [label="VARDEC"];
+  n5 [label="current"];
+  n6 [label="INT"];
+  n7 [label="VARDEC"];
+  n7 [label="VARDEC"];
+  n8 [label="previous"];
+  n9 [label="INT"];
+  n10 [label="VARDEC"];
+  n10 [label="VARDEC"];
+  n11 [label="generation"];
+  n12 [label="INT"];
+  n13 [label="METHODDEC"];
+  n13 [label="METHODDEC"];
+  n14 [label="init"];
+  n15 [label="BLOCK"];
+  n15 [label="BLOCK"];
+  n16 [label="AFFECT"];
+  n16 [label="AFFECT"];
+  n17 [label="current"];
+  n18 [label="1"];
+  n19 [label="AFFECT"];
+  n19 [label="AFFECT"];
+  n20 [label="previous"];
+  n21 [label="0"];
+  n22 [label="AFFECT"];
+  n22 [label="AFFECT"];
+  n23 [label="generation"];
+  n24 [label="1"];
+  n25 [label="METHODDEC"];
+  n25 [label="METHODDEC"];
+  n26 [label="nextGen"];
+  n27 [label="VARDEC"];
+  n27 [label="VARDEC"];
+  n28 [label="temp"];
+  n29 [label="INT"];
+  n30 [label="BLOCK"];
+  n30 [label="BLOCK"];
+  n31 [label="AFFECT"];
+  n31 [label="AFFECT"];
+  n32 [label="temp"];
+  n33 [label="current"];
+  n34 [label="AFFECT"];
+  n34 [label="AFFECT"];
+  n35 [label="current"];
+  n36 [label="+"];
+  n36 [label="+"];
+  n37 [label="current"];
+  n38 [label="previous"];
+  n39 [label="AFFECT"];
+  n39 [label="AFFECT"];
+  n40 [label="previous"];
+  n41 [label="temp"];
+  n42 [label="AFFECT"];
+  n42 [label="AFFECT"];
+  n43 [label="generation"];
+  n44 [label="+"];
+  n44 [label="+"];
+  n45 [label="generation"];
+  n46 [label="1"];
+  n47 [label="METHODDEC"];
+  n47 [label="METHODDEC"];
+  n48 [label="nextGenAndGet"];
+  n49 [label="INT"];
+  n50 [label="BLOCK"];
+  n50 [label="BLOCK"];
+  n51 [label="THIS"];
+  n51 [label="THIS"];
+  n52 [label="METHODCALLING"];
+  n52 [label="METHODCALLING"];
+  n53 [label="nextGen"];
+  n54 [label="RETURN"];
+  n54 [label="RETURN"];
+  n55 [label="current"];
+  n56 [label="VARDEC"];
+  n56 [label="VARDEC"];
+  n57 [label="f"];
+  n58 [label="Fibonacci"];
+  n59 [label="AFFECT"];
+  n59 [label="AFFECT"];
+  n60 [label="f"];
+  n61 [label="NEW"];
+  n61 [label="NEW"];
+  n62 [label="Fibonacci"];
+  n63 [label="f"];
+  n64 [label="f"];
+  n65 [label="f"];
+  n66 [label="WRITE"];
+  n66 [label="WRITE"];
+  n67 [label="f"];
+
+  n0 -> n1 // "PROGRAM" -> "CLASS"
+  n1 -> n2 // "CLASS" -> "Fibonacci"
+  n1 -> n3 // "CLASS" -> "BLOCK"
+  n3 -> n4 // "BLOCK" -> "VARDEC"
+  n4 -> n5 // "VARDEC" -> "current"
+  n4 -> n6 // "VARDEC" -> "INT"
+  n3 -> n7 // "BLOCK" -> "VARDEC"
+  n7 -> n8 // "VARDEC" -> "previous"
+  n7 -> n9 // "VARDEC" -> "INT"
+  n3 -> n10 // "BLOCK" -> "VARDEC"
+  n10 -> n11 // "VARDEC" -> "generation"
+  n10 -> n12 // "VARDEC" -> "INT"
+  n3 -> n13 // "BLOCK" -> "METHODDEC"
+  n13 -> n14 // "METHODDEC" -> "init"
+  n13 -> n15 // "METHODDEC" -> "BLOCK"
+  n15 -> n16 // "BLOCK" -> "AFFECT"
+  n16 -> n17 // "AFFECT" -> "current"
+  n16 -> n18 // "AFFECT" -> "1"
+  n15 -> n19 // "BLOCK" -> "AFFECT"
+  n19 -> n20 // "AFFECT" -> "previous"
+  n19 -> n21 // "AFFECT" -> "0"
+  n15 -> n22 // "BLOCK" -> "AFFECT"
+  n22 -> n23 // "AFFECT" -> "generation"
+  n22 -> n24 // "AFFECT" -> "1"
+  n3 -> n25 // "BLOCK" -> "METHODDEC"
+  n25 -> n26 // "METHODDEC" -> "nextGen"
+  n25 -> n27 // "METHODDEC" -> "VARDEC"
+  n27 -> n28 // "VARDEC" -> "temp"
+  n27 -> n29 // "VARDEC" -> "INT"
+  n25 -> n30 // "METHODDEC" -> "BLOCK"
+  n30 -> n31 // "BLOCK" -> "AFFECT"
+  n31 -> n32 // "AFFECT" -> "temp"
+  n31 -> n33 // "AFFECT" -> "current"
+  n30 -> n34 // "BLOCK" -> "AFFECT"
+  n34 -> n35 // "AFFECT" -> "current"
+  n34 -> n36 // "AFFECT" -> "+"
+  n36 -> n37 // "+" -> "current"
+  n36 -> n38 // "+" -> "previous"
+  n30 -> n39 // "BLOCK" -> "AFFECT"
+  n39 -> n40 // "AFFECT" -> "previous"
+  n39 -> n41 // "AFFECT" -> "temp"
+  n30 -> n42 // "BLOCK" -> "AFFECT"
+  n42 -> n43 // "AFFECT" -> "generation"
+  n42 -> n44 // "AFFECT" -> "+"
+  n44 -> n45 // "+" -> "generation"
+  n44 -> n46 // "+" -> "1"
+  n3 -> n47 // "BLOCK" -> "METHODDEC"
+  n47 -> n48 // "METHODDEC" -> "nextGenAndGet"
+  n47 -> n49 // "METHODDEC" -> "INT"
+  n47 -> n50 // "METHODDEC" -> "BLOCK"
+  n50 -> n51 // "BLOCK" -> "THIS"
+  n51 -> n52 // "THIS" -> "METHODCALLING"
+  n52 -> n53 // "METHODCALLING" -> "nextGen"
+  n50 -> n54 // "BLOCK" -> "RETURN"
+  n54 -> n55 // "RETURN" -> "current"
+  n0 -> n56 // "PROGRAM" -> "VARDEC"
+  n56 -> n57 // "VARDEC" -> "f"
+  n56 -> n58 // "VARDEC" -> "Fibonacci"
+  n0 -> n59 // "PROGRAM" -> "AFFECT"
+  n59 -> n60 // "AFFECT" -> "f"
+  n59 -> n61 // "AFFECT" -> "NEW"
+  n61 -> n62 // "NEW" -> "Fibonacci"
+  n0 -> n63 // "PROGRAM" -> "f"
+  n0 -> n64 // "PROGRAM" -> "f"
+  n0 -> n65 // "PROGRAM" -> "f"
+  n0 -> n66 // "PROGRAM" -> "WRITE"
+  n66 -> n67 // "WRITE" -> "f"
+
+}

@@ -45,7 +45,7 @@ digraph {
   n24 [label="5"];
   n25 [label="AFFECT"];
   n25 [label="AFFECT"];
-  n26 [label="cOND"];
+  n26 [label="cOND1"];
   n27 [label="||"];
   n27 [label="||"];
   n28 [label="||"];
@@ -70,7 +70,7 @@ digraph {
   n41 [label="6"];
   n42 [label="AFFECT"];
   n42 [label="AFFECT"];
-  n43 [label="cOND"];
+  n43 [label="cOND2"];
   n44 [label="||"];
   n44 [label="||"];
   n45 [label="=="];
@@ -119,7 +119,7 @@ digraph {
   n16 -> n23 // "/" -> "2"
   n15 -> n24 // "-" -> "5"
   n0 -> n25 // "PROGRAM" -> "AFFECT"
-  n25 -> n26 // "AFFECT" -> "cOND"
+  n25 -> n26 // "AFFECT" -> "cOND1"
   n25 -> n27 // "AFFECT" -> "||"
   n27 -> n28 // "||" -> "||"
   n28 -> n29 // "||" -> "=="
@@ -136,7 +136,7 @@ digraph {
   n39 -> n40 // "!=" -> "f"
   n39 -> n41 // "!=" -> "6"
   n0 -> n42 // "PROGRAM" -> "AFFECT"
-  n42 -> n43 // "AFFECT" -> "cOND"
+  n42 -> n43 // "AFFECT" -> "cOND2"
   n42 -> n44 // "AFFECT" -> "||"
   n44 -> n45 // "||" -> "=="
   n45 -> n46 // "==" -> "x"
