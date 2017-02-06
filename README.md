@@ -83,13 +83,13 @@
 ## ROADMAP
 
 * ~~**Demander aux profs pour la ligne "for ..." dans la grammaire, elle est étrange (expression..expression)**~~
-	=> Réglé. La grammaire officielle sera corrigé prochainement par les profs, la notre l'est déjà.
+	=> Réglé. La grammaire officielle sera corrigée prochainement par les profs, la nôtre l'est déjà.
 
 * ~~**Rendre la règle expression non-récursive gauche**~~
 	=> Réglé. **Voir pour corriger les deux warning restant.**
 
 * ~~**Préparer le terrain pour analyse syntatixe (analyse lexical presque OK)**~~
-	=> OK. Grammaire fonctionnels, reste à la roder sur des tests poussés.
+	=> OK. Grammaire fonctionnelle, reste à la roder sur des tests poussés.
 
 * ~~**Enfin, faire la construction de l'AST**~~
 	=> OK dans les grandes lignes, reste à le simplifier, et à le tester de façon poussée aussi.
@@ -103,4 +103,4 @@
 	Revoir opérateurs de comparaison
 	TRAITER LA PRIORITE DES OPERATEURS*
 
-* **Commencer la construction de table des symbloes**
+* **Commencer la construction de table des symboles**
