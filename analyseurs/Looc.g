@@ -82,7 +82,7 @@ affectation:   expression
 
 print:   'write' expression ';' -> ^(WRITE expression);
 
-read:   'read' IDF ';' -> ^(READ IDF);
+read:   'read' INT_CST ';' -> ^(READ INT_CST); //'read' IDF ';' -> ^(READ IDF);  //Contradiction dans le sujet !!!!!
 
 returnstate:   'return' '(' expression ')' ';' -> ^(RETURN expression);
 
