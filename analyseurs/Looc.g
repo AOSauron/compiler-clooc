@@ -49,26 +49,6 @@ Maj : 06/02/17   22:24  */
    ISDIFF;
 }
 
-@members {
-   /** Return a list of all ancestors of this node.  The first node of
-   *  list is the root and the last is the parent of this node.
-   * @param <T>
-   * @param t
-   * @return
-   */
-  public static List<? extends Tree> getAncestors( Tree t) {
-
-      List<Tree> ancestors = new ArrayList<>();
-      t = t.getParent();
-      while ( t!=null ) {
-          ancestors.add(0, t);
-          t = t.getParent();
-      }
-
-      return ancestors;
-  }
-}
-
 
 program:   (class_decl)* (var_decl)* (instruction)+ -> ^(PROGRAM (class_decl)* (var_decl)* (instruction)+);
 
