@@ -24,7 +24,7 @@ then
         ""|[OoyY]* ) echo "[TESTLOOC] Création des analyseurs lexical et syntaxique à partir de la grammaire Looc.g ..."
                   java -jar ../ANTLR/antlr-3.3-complete.jar Looc.g #&> /dev/null
                   echo "[TESTLOOC] Compilation de la classe Clooc.java ..."
-                  javac LoocLexer.java LoocParser.java Clooc.java #&> /dev/null
+                  javac -encoding ISO-8859-1 LoocLexer.java LoocParser.java Clooc.java #&> /dev/null
                   echo "[TESTLOOC] Compilation terminée."
                   break;;
         [Nn]* ) break;;

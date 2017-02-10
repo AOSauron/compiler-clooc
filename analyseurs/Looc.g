@@ -86,8 +86,6 @@ read:   'read' IDF ';' -> ^(READ IDF);
 
 returnstate:   'return' '(' expression ')' ';' -> ^(RETURN expression);
 
-/* expression a dû être dérecursivée gauche. */
-
 expression:   //IDF expressionbis -> IDF expressionbis? /* -> IDF (expressionbis^)?*/
           /*|*/   'this' expressionbis -> ^(THIS expressionbis?)
           |   'super' expressionbis -> ^(SUPER expressionbis?)
