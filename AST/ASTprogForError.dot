@@ -1,0 +1,36 @@
+digraph {
+
+	ordering=out;
+	ranksep=.4;
+	bgcolor="lightgrey"; node [shape=box, fixedsize=false, fontsize=12, fontname="Helvetica-bold", fontcolor="blue"
+		width=.25, height=.25, color="black", fillcolor="white", style="filled, solid, bold"];
+	edge [arrowsize=.5, color="black", style="bold"]
+
+  n0 [label="PROGRAM"];
+  n1 [label="a = 89;"];
+  n2 [label="FOR"];
+  n2 [label="FOR"];
+  n3 [label="i"];
+  n4 [label="+"];
+  n4 [label="+"];
+  n5 [label="5"];
+  n6 [label="6"];
+  n7 [label="a"];
+  n8 [label="DO"];
+  n8 [label="DO"];
+  n9 [label="WRITE"];
+  n9 [label="WRITE"];
+  n10 [label="var"];
+
+  n0 -> n1 // "PROGRAM" -> "a = 89;"
+  n0 -> n2 // "PROGRAM" -> "FOR"
+  n2 -> n3 // "FOR" -> "i"
+  n2 -> n4 // "FOR" -> "+"
+  n4 -> n5 // "+" -> "5"
+  n4 -> n6 // "+" -> "6"
+  n2 -> n7 // "FOR" -> "a"
+  n2 -> n8 // "FOR" -> "DO"
+  n8 -> n9 // "DO" -> "WRITE"
+  n9 -> n10 // "WRITE" -> "var"
+
+}

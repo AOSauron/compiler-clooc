@@ -1,0 +1,11 @@
+var a:int;
+
+a := 4;
+
+if (a==1) then
+  var b : string; /*les var doivent être déclarées au début du programme*/
+  if (a+1==7) then
+    read b;
+  fi
+  write b;
+fi

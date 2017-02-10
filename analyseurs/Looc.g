@@ -33,7 +33,6 @@ Maj : 06/02/17   22:24  */
    THIS;
    SUPER;
    NEG;
-   VIDE;
    INT;
    STRING;
    ARG;
@@ -92,19 +91,19 @@ returnstate:   'return' '(' expression ')' ';' -> ^(RETURN expression);
 expression:   //IDF expressionbis -> IDF expressionbis? /* -> IDF (expressionbis^)?*/
           /*|*/   'this' expressionbis -> ^(THIS expressionbis?)
           |   'super' expressionbis -> ^(SUPER expressionbis?)
-          //|   CSTE_ENT expressionbis -> CSTE_ENT expressionbis?
-          |   CSTE_CHAINE expressionbis -> ^(CSTE_CHAINE expressionbis?)
+          //|   INT_CST expressionbis -> INT_CST expressionbis?
+          |   STRING_CST expressionbis -> ^(STRING_CST expressionbis?)
           |   'new' IDFC expressionbis -> ^(NEW IDFC expressionbis?)
           //|   '(' expression ')' expressionbis -> ^(expression expressionbis?)
           //|   '-' expression expressionbis -> ^(NEG expression expressionbis?)
-          |   exprio1 expressionbis -> exprio1
+          |   exprio3 expressionbis -> exprio3
           ;
 
 //expression : exprio1 ;
 
-exprio1 : exprio2 ( '||'^ exprio2)* ;
+//exprio1 : exprio2 ( '||'^ exprio2)* ;
 
-exprio2 : exprio3 ( '&&'^ exprio3)* ;
+//exprio2 : exprio3 ( '&&'^ exprio3)* ;
 
 exprio3 : exprio4 ( '=='^ exprio4 | '!='^ exprio4)* ;
 
@@ -112,11 +111,11 @@ exprio4 : exprio5 ( '<'^ exprio5 | '<='^ exprio5 | '>'^ exprio5 | '>='^ exprio5)
 
 exprio5 : exprio6 ( '+'^ exprio6 | '-'^ exprio6)* ;
 
-exprio6 : exprio7 ( '*'^ exprio7 | '/'^ exprio7 | '%'^ exprio7)* ;
+exprio6 : exprio7 ( '*'^ exprio7 | '/'^ exprio7 /*| '%'^ exprio7*/)* ;
 
 exprio7 : ('-'^|'+'^)? exprio8 ;
 
-exprio8 : CSTE_ENT -> ^(CSTE_ENT)
+exprio8 : INT_CST -> ^(INT_CST)
         | IDF -> ^(IDF)
         | '(' expression ')' -> expression
         ;
@@ -142,9 +141,9 @@ IDFC:   ('A'..'Z') ('a'..'z'|'A'..'Z'|'0'..'9'|'_')* ;
 
 IDF:   ('a'..'z') ('a'..'z'|'A'..'Z'|'0'..'9'|'_')* ;
 
-CSTE_ENT:   '0'..'9'+ ;
+INT_CST:   '0'..'9'+ ;
 
-CSTE_CHAINE:   '"' (ESC_SEQ | ~('\r'|'\n'|'"'|'\\'))+ '"' ;
+STRING_CST:   '"' (ESC_SEQ | ~('\r'|'\n'|'"'|'\\'))+ '"' ;
 
 WS  :   (' '|'\t'|'\n'|'\r')+ {$channel=HIDDEN;} ;
 
