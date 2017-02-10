@@ -1,0 +1,120 @@
+digraph {
+
+	ordering=out;
+	ranksep=.4;
+	bgcolor="lightgrey"; node [shape=box, fixedsize=false, fontsize=12, fontname="Helvetica-bold", fontcolor="blue"
+		width=.25, height=.25, color="black", fillcolor="white", style="filled, solid, bold"];
+	edge [arrowsize=.5, color="black", style="bold"]
+
+  n0 [label="PROGRAM"];
+  n1 [label="bin/"];
+  n2 [label="bash\n\ncd ../"];
+  n3 [label="analyseurs/"];
+  n4 [label="AFFECT"];
+  n4 [label="AFFECT"];
+  n5 [label="echo"];
+  n6 [label="\"[TEST4...ur ...\""];
+  n6 [label="\"[TEST4...ur ...\""];
+  n7 [label="java"];
+  n8 [label="java Clooc ../"];
+  n9 [label="prog_test/"];
+  n10 [label="testAnimalJuste."];
+  n11 [label="AFFECT"];
+  n11 [label="AFFECT"];
+  n12 [label="looc"];
+  n13 [label="echo"];
+  n14 [label="AFFECT"];
+  n14 [label="AFFECT"];
+  n15 [label="echo"];
+  n16 [label="\"[TEST4...oc ...\""];
+  n16 [label="\"[TEST4...oc ...\""];
+  n17 [label="java"];
+  n18 [label="java Clooc -T ../"];
+  n19 [label="prog_test/"];
+  n20 [label="testAnimalJuste."];
+  n21 [label="looc ../...STprog5."];
+  n22 [label="AFFECT"];
+  n22 [label="AFFECT"];
+  n23 [label="dot"];
+  n24 [label="echo"];
+  n25 [label="AFFECT"];
+  n25 [label="AFFECT"];
+  n26 [label="echo"];
+  n27 [label="\"[TEST4...NG ...\""];
+  n27 [label="\"[TEST4...NG ...\""];
+  n28 [label="dot"];
+  n29 [label="AFFECT"];
+  n29 [label="AFFECT"];
+  n30 [label="dot"];
+  n31 [label="/"];
+  n31 [label="/"];
+  n32 [label="/"];
+  n32 [label="/"];
+  n33 [label="-"];
+  n33 [label="-"];
+  n34 [label="Tpng .."];
+  n35 [label="AST"];
+  n36 [label="ASTprog5"];
+  n37 [label="cd ../"];
+  n38 [label="prog_test/"];
+  n39 [label="AFFECT"];
+  n39 [label="AFFECT"];
+  n40 [label="echo"];
+  n41 [label="\"[TEST4...'arbre\""];
+  n41 [label="\"[TEST4...'arbre\""];
+  n42 [label="eog"];
+  n43 [label="eog ../AST/ASTprog5."];
+  n44 [label="dot."];
+  n45 [label="png  /"];
+  n46 [label="dev/"];
+  n47 [label="null"];
+
+  n0 -> n1 // "PROGRAM" -> "bin/"
+  n0 -> n2 // "PROGRAM" -> "bash\n\ncd ../"
+  n0 -> n3 // "PROGRAM" -> "analyseurs/"
+  n0 -> n4 // "PROGRAM" -> "AFFECT"
+  n4 -> n5 // "AFFECT" -> "echo"
+  n4 -> n6 // "AFFECT" -> "\"[TEST4...ur ...\""
+  n6 -> n7 // "\"[TEST4...ur ...\"" -> "java"
+  n0 -> n8 // "PROGRAM" -> "java Clooc ../"
+  n0 -> n9 // "PROGRAM" -> "prog_test/"
+  n0 -> n10 // "PROGRAM" -> "testAnimalJuste."
+  n0 -> n11 // "PROGRAM" -> "AFFECT"
+  n11 -> n12 // "AFFECT" -> "looc"
+  n11 -> n13 // "AFFECT" -> "echo"
+  n0 -> n14 // "PROGRAM" -> "AFFECT"
+  n14 -> n15 // "AFFECT" -> "echo"
+  n14 -> n16 // "AFFECT" -> "\"[TEST4...oc ...\""
+  n16 -> n17 // "\"[TEST4...oc ...\"" -> "java"
+  n0 -> n18 // "PROGRAM" -> "java Clooc -T ../"
+  n0 -> n19 // "PROGRAM" -> "prog_test/"
+  n0 -> n20 // "PROGRAM" -> "testAnimalJuste."
+  n0 -> n21 // "PROGRAM" -> "looc ../...STprog5."
+  n0 -> n22 // "PROGRAM" -> "AFFECT"
+  n22 -> n23 // "AFFECT" -> "dot"
+  n22 -> n24 // "AFFECT" -> "echo"
+  n0 -> n25 // "PROGRAM" -> "AFFECT"
+  n25 -> n26 // "AFFECT" -> "echo"
+  n25 -> n27 // "AFFECT" -> "\"[TEST4...NG ...\""
+  n27 -> n28 // "\"[TEST4...NG ...\"" -> "dot"
+  n0 -> n29 // "PROGRAM" -> "AFFECT"
+  n29 -> n30 // "AFFECT" -> "dot"
+  n29 -> n31 // "AFFECT" -> "/"
+  n31 -> n32 // "/" -> "/"
+  n32 -> n33 // "/" -> "-"
+  n33 -> n34 // "-" -> "Tpng .."
+  n32 -> n35 // "/" -> "AST"
+  n31 -> n36 // "/" -> "ASTprog5"
+  n0 -> n37 // "PROGRAM" -> "cd ../"
+  n0 -> n38 // "PROGRAM" -> "prog_test/"
+  n0 -> n39 // "PROGRAM" -> "AFFECT"
+  n39 -> n40 // "AFFECT" -> "echo"
+  n39 -> n41 // "AFFECT" -> "\"[TEST4...'arbre\""
+  n41 -> n42 // "\"[TEST4...'arbre\"" -> "eog"
+  n0 -> n43 // "PROGRAM" -> "eog ../AST/ASTprog5."
+  n0 -> n44 // "PROGRAM" -> "dot."
+  n0 -> n45 // "PROGRAM" -> "png  /"
+  n0 -> n46 // "PROGRAM" -> "dev/"
+  n0 -> n47 // "PROGRAM" -> "null"
+
+}
