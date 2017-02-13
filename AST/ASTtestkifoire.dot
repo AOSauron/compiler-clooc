@@ -46,53 +46,23 @@ digraph {
   n25 [label="AFFECT"];
   n25 [label="AFFECT"];
   n26 [label="cOND1"];
-  n27 [label="||"];
-  n27 [label="||"];
-  n28 [label="||"];
-  n28 [label="||"];
-  n29 [label="=="];
-  n29 [label="=="];
-  n30 [label="x"];
-  n31 [label="0"];
-  n32 [label="&&"];
-  n32 [label="&&"];
-  n33 [label="=="];
-  n33 [label="=="];
-  n34 [label="y"];
-  n35 [label="2"];
-  n36 [label="!="];
-  n36 [label="!="];
-  n37 [label="c"];
-  n38 [label="5"];
-  n39 [label="!="];
-  n39 [label="!="];
-  n40 [label="f"];
-  n41 [label="6"];
-  n42 [label="AFFECT"];
-  n42 [label="AFFECT"];
-  n43 [label="cOND2"];
-  n44 [label="||"];
-  n44 [label="||"];
-  n45 [label="=="];
-  n45 [label="=="];
-  n46 [label="x"];
-  n47 [label="0"];
-  n48 [label="&&"];
-  n48 [label="&&"];
-  n49 [label="=="];
-  n49 [label="=="];
-  n50 [label="y"];
-  n51 [label="2"];
-  n52 [label="||"];
-  n52 [label="||"];
-  n53 [label="!="];
-  n53 [label="!="];
-  n54 [label="c"];
-  n55 [label="5"];
-  n56 [label="!="];
-  n56 [label="!="];
-  n57 [label="f"];
-  n58 [label="6"];
+  n27 [label="=="];
+  n27 [label="=="];
+  n28 [label="x"];
+  n29 [label="0"];
+  n30 [label="y==2"];
+  n31 [label="c!=5"];
+  n32 [label="f!=6 ;"];
+  n33 [label="AFFECT"];
+  n33 [label="AFFECT"];
+  n34 [label="cOND2"];
+  n35 [label="=="];
+  n35 [label="=="];
+  n36 [label="x"];
+  n37 [label="0"];
+  n38 [label="y==2  ("];
+  n39 [label="c!=5"];
+  n40 [label="f!=6) ;"];
 
   n0 -> n1 // "PROGRAM" -> "AFFECT"
   n1 -> n2 // "AFFECT" -> "v"
@@ -120,37 +90,19 @@ digraph {
   n15 -> n24 // "-" -> "5"
   n0 -> n25 // "PROGRAM" -> "AFFECT"
   n25 -> n26 // "AFFECT" -> "cOND1"
-  n25 -> n27 // "AFFECT" -> "||"
-  n27 -> n28 // "||" -> "||"
-  n28 -> n29 // "||" -> "=="
-  n29 -> n30 // "==" -> "x"
-  n29 -> n31 // "==" -> "0"
-  n28 -> n32 // "||" -> "&&"
-  n32 -> n33 // "&&" -> "=="
-  n33 -> n34 // "==" -> "y"
-  n33 -> n35 // "==" -> "2"
-  n32 -> n36 // "&&" -> "!="
-  n36 -> n37 // "!=" -> "c"
-  n36 -> n38 // "!=" -> "5"
-  n27 -> n39 // "||" -> "!="
-  n39 -> n40 // "!=" -> "f"
-  n39 -> n41 // "!=" -> "6"
-  n0 -> n42 // "PROGRAM" -> "AFFECT"
-  n42 -> n43 // "AFFECT" -> "cOND2"
-  n42 -> n44 // "AFFECT" -> "||"
-  n44 -> n45 // "||" -> "=="
-  n45 -> n46 // "==" -> "x"
-  n45 -> n47 // "==" -> "0"
-  n44 -> n48 // "||" -> "&&"
-  n48 -> n49 // "&&" -> "=="
-  n49 -> n50 // "==" -> "y"
-  n49 -> n51 // "==" -> "2"
-  n48 -> n52 // "&&" -> "||"
-  n52 -> n53 // "||" -> "!="
-  n53 -> n54 // "!=" -> "c"
-  n53 -> n55 // "!=" -> "5"
-  n52 -> n56 // "||" -> "!="
-  n56 -> n57 // "!=" -> "f"
-  n56 -> n58 // "!=" -> "6"
+  n25 -> n27 // "AFFECT" -> "=="
+  n27 -> n28 // "==" -> "x"
+  n27 -> n29 // "==" -> "0"
+  n0 -> n30 // "PROGRAM" -> "y==2"
+  n0 -> n31 // "PROGRAM" -> "c!=5"
+  n0 -> n32 // "PROGRAM" -> "f!=6 ;"
+  n0 -> n33 // "PROGRAM" -> "AFFECT"
+  n33 -> n34 // "AFFECT" -> "cOND2"
+  n33 -> n35 // "AFFECT" -> "=="
+  n35 -> n36 // "==" -> "x"
+  n35 -> n37 // "==" -> "0"
+  n0 -> n38 // "PROGRAM" -> "y==2  ("
+  n0 -> n39 // "PROGRAM" -> "c!=5"
+  n0 -> n40 // "PROGRAM" -> "f!=6) ;"
 
 }

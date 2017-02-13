@@ -10,7 +10,28 @@ fi
 
 if [ -f $1 ]
 then
-  echo "[TESTLOOC] Export dans CLASSPATH de antlr-3.jar ... (préconfig)"
+  #DIFF=$(diff ANTLR/antlr-3.3-complete.jar patch/antlr-3.3-complete-unpatch.jar 2>&1)
+  if ! diff ANTLR/antlr-3.3-complete.jar patch/antlr-3.3-complete-unpatch.jar > /dev/null
+  then
+    echo "[TESTLOOC] ANTLR/antlr-3.3-complete.jar semble être patché correctement pour java 8."
+  else
+    echo "[TESTLOOC] /!\ ANTLR/antlr-3.3-complete.jar ne semble pas être patché correctement pour java 8. /!\ "
+    echo "[TESTLOOC] Voulez-vous patcher ce fichier avec le correctif patch/patch-antlr-3.3.patch ?"
+    echo "ATTENTION : Ce patch modifie de façon définitive l'archive antlr-3.3-complete.jar. Une version d'origine est disponible sous patch/antlr-3.3-complete-unpatch.jar si besoin."
+    while true; do
+    read -p "Patcher ? Oui(o/O/y/Y/Entrée) ou Non(n/N) : " rep
+    case $rep in
+      ""|[OoyY]* ) echo "[TESTLOOC] Lancement du patch ... "
+                patch --verbose ANTLR/antlr-3.3-complete.jar < patch/patch-antlr-3.3.patch
+                echo "[TESTLOOC] Patch terminé."
+                break;;
+      [Nn]* ) break;;
+      * ) echo "Répondez oui ou non."
+          continue;;
+    esac
+  done
+  fi
+  echo "[TESTLOOC] Export dans CLASSPATH de antlr-3.3-complete.jar ... (préconfig)"
   fpathantlr=$(readlink -f ANTLR/antlr-3.3-complete.jar)
   export CLASSPATH=$fpathantlr:.:$CLASSPATH
   echo "[TESTLOOC] Terminé."
@@ -31,7 +52,7 @@ then
         * ) echo "Répondez oui ou non."
             continue;;
       esac
-    done
+  done
   echo "[TESTLOOC] Vérification du programme $filelooc  ..."
   output=$(java Clooc $fullpath)
   #if [[ -z $ouput ]]; then
