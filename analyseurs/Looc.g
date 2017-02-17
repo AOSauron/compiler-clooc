@@ -109,9 +109,9 @@ exprio4 : exprio5 ( '<'^ exprio5 | '<='^ exprio5 | '>'^ exprio5 | '>='^ exprio5)
 
 exprio5 : exprio6 ( '+'^ exprio6 | '-'^ exprio6)* ;
 
-exprio6 : exprio7 ( '*'^ exprio7 | '/'^ exprio7 /*| '%'^ exprio7*/)* ;
+exprio6 : exprio7 ( '*'^ exprio7 | /* '/'^ exprio7 | '%'^ exprio7*/)* ;
 
-exprio7 : ('-'^|'+'^)? exprio8 ;
+exprio7 : ('-'^)? exprio8 ;
 
 exprio8 : INT_CST -> ^(INT_CST)
         | IDF -> ^(IDF)
