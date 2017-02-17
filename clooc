@@ -28,7 +28,7 @@ then
     while true; do
       read -p "java (OpenJDK-8-JRE) n'est pas installé, souhaitez-vous l'installer (apt-get) ? Oui(o/O/y/Y/Entrée) ou Non(n/N) : " rep3
       case $rep3 in
-        ""|[OoyY]* ) sudo apt-get install openjdk-8-jdk
+        ""|[OoyY]* ) sudo apt-get install openjdk-8-jre
                   break;;
         [Nn]* ) break;;
         * ) echo "Répondez oui ou non."
@@ -64,7 +64,7 @@ then
     while true; do
       read -p "dot (graphviz) n'est pas installé, souhaitez-vous l'installer (apt-get) ? Oui(o/O/y/Y/Entrée) ou Non(n/N) : " rep2
       case $rep2 in
-        ""|[OoyY]* ) sudo apt-get install grahviz
+        ""|[OoyY]* ) sudo apt-get install graphviz
                   break;;
         [Nn]* ) break;;
         * ) echo "Répondez oui ou non."
