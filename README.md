@@ -60,8 +60,8 @@
 
 ## Utilisation du compilateur
 
-* **Solution simple : le script testfile.sh**
-	- Lancer `./testfile.sh path/fichier.looc` où fichier.looc est le fichier à traiter.
+* **Solution simple : le script clooc**
+	- Lancer `./clooc path/fichier.looc` où fichier.looc est le fichier à traiter.
 	- Laissez-vous guider par le script qui ajustera tout automatiquement ou sur demande.
 	- Veillez à avoir graphiz et eog d'installé sur votre distrib.
 

@@ -1,0 +1,26 @@
+digraph {
+
+	ordering=out;
+	ranksep=.4;
+	bgcolor="lightgrey"; node [shape=box, fixedsize=false, fontsize=12, fontname="Helvetica-bold", fontcolor="blue"
+		width=.25, height=.25, color="black", fillcolor="white", style="filled, solid, bold"];
+	edge [arrowsize=.5, color="black", style="bold"]
+
+  n0 [label="PROGRAM"];
+  n1 [label="VARDEC"];
+  n1 [label="VARDEC"];
+  n2 [label="n"];
+  n3 [label="INT"];
+  n4 [label="AFFECT"];
+  n4 [label="AFFECT"];
+  n5 [label="val"];
+  n6 [label="total"];
+
+  n0 -> n1 // "PROGRAM" -> "VARDEC"
+  n1 -> n2 // "VARDEC" -> "n"
+  n1 -> n3 // "VARDEC" -> "INT"
+  n0 -> n4 // "PROGRAM" -> "AFFECT"
+  n4 -> n5 // "AFFECT" -> "val"
+  n4 -> n6 // "AFFECT" -> "total"
+
+}

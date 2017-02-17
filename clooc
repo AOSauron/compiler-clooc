@@ -10,7 +10,37 @@ fi
 
 if [ -f $1 ]
 then
-  #DIFF=$(diff ANTLR/antlr-3.3-complete.jar patch/antlr-3.3-complete-unpatch.jar 2>&1)
+  rm -f .dotversion &> /dev/null
+  EOG=$(eog --version | head -n1 | cut -d" " -f2-4)
+  (dot -V | head -n1 | cut -d" " -f3) &> .dotversion
+  DOT=$(<.dotversion)
+  echo $EOG | grep -q found && EOG=""
+  echo $DOT | grep -q found && DOT=""
+  if [[ -z $EOG ]]; then
+    while true; do
+      read -p "eog (Image Viewer for GNOME) n'est pas installé, souhaitez-vous l'installer (apt-get) ? Oui(o/O/y/Y/Entrée) ou Non(n/N) : " rep1
+      case $rep1 in
+        ""|[OoyY]* ) sudo apt-get install eog
+                  break;;
+        [Nn]* ) break;;
+        * ) echo "Répondez oui ou non."
+            continue;;
+      esac
+    done
+  fi
+  if [[ -z $DOT ]]; then
+    while true; do
+      read -p "dot (graphviz) n'est pas installé, souhaitez-vous l'installer (apt-get) ? Oui(o/O/y/Y/Entrée) ou Non(n/N) : " rep2
+      case $rep2 in
+        ""|[OoyY]* ) sudo apt-get install grahviz
+                  break;;
+        [Nn]* ) break;;
+        * ) echo "Répondez oui ou non."
+            continue;;
+      esac
+    done
+  fi
+  rm -f .dotversion &> /dev/null
   if ! diff ANTLR/antlr-3.3-complete.jar patch/antlr-3.3-complete-unpatch.jar > /dev/null
   then
     echo "[TESTLOOC] ANTLR/antlr-3.3-complete.jar semble être patché correctement pour java 8."
@@ -19,17 +49,17 @@ then
     echo "[TESTLOOC] Voulez-vous patcher ce fichier avec le correctif patch/patch-antlr-3.3.patch ?"
     echo "ATTENTION : Ce patch modifie de façon définitive l'archive antlr-3.3-complete.jar. Une version d'origine est disponible sous patch/antlr-3.3-complete-unpatch.jar si besoin."
     while true; do
-    read -p "Patcher ? Oui(o/O/y/Y/Entrée) ou Non(n/N) : " rep
-    case $rep in
-      ""|[OoyY]* ) echo "[TESTLOOC] Lancement du patch ... "
-                patch --verbose ANTLR/antlr-3.3-complete.jar < patch/patch-antlr-3.3.patch
-                echo "[TESTLOOC] Patch terminé."
-                break;;
-      [Nn]* ) break;;
-      * ) echo "Répondez oui ou non."
-          continue;;
-    esac
-  done
+      read -p "Patcher ? Oui(o/O/y/Y/Entrée) ou Non(n/N) : " rep
+      case $rep in
+        ""|[OoyY]* ) echo "[TESTLOOC] Lancement du patch ... "
+                  patch --verbose ANTLR/antlr-3.3-complete.jar < patch/patch-antlr-3.3.patch
+                  echo "[TESTLOOC] Patch terminé."
+                  break;;
+        [Nn]* ) break;;
+        * ) echo "Répondez oui ou non."
+            continue;;
+      esac
+    done
   fi
   echo "[TESTLOOC] Export dans CLASSPATH de antlr-3.3-complete.jar ... (préconfig)"
   fpathantlr=$(readlink -f ANTLR/antlr-3.3-complete.jar)
@@ -54,15 +84,18 @@ then
       esac
   done
   echo "[TESTLOOC] Vérification du programme $filelooc  ..."
-  output=$(java Clooc $fullpath)
-  #if [[ -z $ouput ]]; then
-    #echo $output
-    #echo "[TESTLOOC] - OK - Le programme $filelooc valide la grammaire Looc.g"
-  #else
-    #echo $output
-    #echo "[TESTLOOC] - ERREUR - Le programme $filelooc ne valide pas la grammaire Looc.g"
-  #fi
-  echo "[TESTLOOC] Terminé (OK si pas de message d'erreur.)"
+  rm -f .result &> /dev/null
+  java Clooc $fullpath &> .result
+  ERROR=$(<.result)
+  if [[ -z $ERROR ]]; then
+    echo "[TESTLOOC] - OK - Le programme $filelooc valide la grammaire Looc.g"
+  else
+    cat .result
+    echo "[TESTLOOC] - ERREUR - Le programme $filelooc ne valide pas la grammaire Looc.g : voir erreurs précédentes."
+    rm -f .result &> /dev/null
+    exit
+  fi
+  rm -f .result &> /dev/null
   while true; do
   read -p "[TESTLOOC] Voulez vous construire l'AST ? Oui(o/O/y/Y/Entrée) ou Non(n/N) : " ok
       case $ok in
@@ -71,7 +104,7 @@ then
 		              path12="AST/AST$filename.dot"
                   path2="../AST/AST$filename.png"
 		              path22="AST/AST$filename.png"
-                  java Clooc -T $fullpath  $path1
+                  java Clooc -T $fullpath  $path1 &> /dev/null
                   echo "[TESTLOOC] Terminé"
                   echo "[TESTLOOC] Conversion de l'arbre DOT en image PNG ..."
                   dot -Tpng $path1 -o $path2 &> /dev/null
