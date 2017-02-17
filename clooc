@@ -11,11 +11,43 @@ fi
 if [ -f $1 ]
 then
   rm -f .dotversion &> /dev/null
+  rm -f .javacversion &> /dev/null
+  rm -f .javaversion &> /dev/null
+  (java -version | head -n1) &> .javaversion
+  JAVA=$(<.javaversion)
+  (javac -version | head -n1) &> .javacversion
+  JAVAC=$(<.javacversion)
   EOG=$(eog --version | head -n1 | cut -d" " -f2-4)
   (dot -V | head -n1 | cut -d" " -f3) &> .dotversion
   DOT=$(<.dotversion)
+  echo $JAVA | grep -q found && JAVA=""
+  echo $JAVAC | grep -q found && JAVAC=""
   echo $EOG | grep -q found && EOG=""
   echo $DOT | grep -q found && DOT=""
+  if [[ -z $JAVA ]]; then
+    while true; do
+      read -p "java (OpenJDK-8-JRE) n'est pas installé, souhaitez-vous l'installer (apt-get) ? Oui(o/O/y/Y/Entrée) ou Non(n/N) : " rep3
+      case $rep3 in
+        ""|[OoyY]* ) sudo apt-get install openjdk-8-jdk
+                  break;;
+        [Nn]* ) break;;
+        * ) echo "Répondez oui ou non."
+            continue;;
+      esac
+    done
+  fi
+  if [[ -z $JAVAC ]]; then
+    while true; do
+      read -p "javac (Compilateur Java, OpenJDK-8-JDK) n'est pas installé, souhaitez-vous l'installer (apt-get) ? Oui(o/O/y/Y/Entrée) ou Non(n/N) : " rep4
+      case $rep4 in
+        ""|[OoyY]* ) sudo apt-get install openjdk-8-jdk
+                  break;;
+        [Nn]* ) break;;
+        * ) echo "Répondez oui ou non."
+            continue;;
+      esac
+    done
+  fi
   if [[ -z $EOG ]]; then
     while true; do
       read -p "eog (Image Viewer for GNOME) n'est pas installé, souhaitez-vous l'installer (apt-get) ? Oui(o/O/y/Y/Entrée) ou Non(n/N) : " rep1
@@ -40,7 +72,9 @@ then
       esac
     done
   fi
+  rm -f .javacversion &> /dev/null
   rm -f .dotversion &> /dev/null
+  rm -f .javaversion &> /dev/null
   if ! diff ANTLR/antlr-3.3-complete.jar patch/antlr-3.3-complete-unpatch.jar > /dev/null
   then
     echo "[TESTLOOC] ANTLR/antlr-3.3-complete.jar semble être patché correctement pour java 8."
