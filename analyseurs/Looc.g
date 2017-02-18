@@ -94,7 +94,7 @@ expression:   //IDF expressionbis -> IDF expressionbis? /* -> IDF (expressionbis
           |   'new' IDFC expressionbis -> ^(NEW IDFC expressionbis?)
           //|   '(' expression ')' expressionbis -> ^(expression expressionbis?)
           //|   '-' expression expressionbis -> ^(NEG expression expressionbis?)
-          |   exprio3 expressionbis -> exprio3
+          |   exprio4 expressionbis -> exprio4
           ;
 
 //expression : exprio1 ;
@@ -103,15 +103,15 @@ expression:   //IDF expressionbis -> IDF expressionbis? /* -> IDF (expressionbis
 
 //exprio2 : exprio3 ( '&&'^ exprio3)* ;
 
-exprio3 : exprio4 ( '=='^ exprio4 | '!='^ exprio4)* ;
+//exprio3 : exprio4 ( '=='^ exprio4 | '!='^ exprio4)* ;
 
-exprio4 : exprio5 ( '<'^ exprio5 | '<='^ exprio5 | '>'^ exprio5 | '>='^ exprio5)* ;
+exprio4 : exprio5 ( '=='^ exprio5 | '!='^ exprio5 | '<'^ exprio5 | '<='^ exprio5 | '>'^ exprio5 | '>='^ exprio5)* ;
 
 exprio5 : exprio6 ( '+'^ exprio6 | '-'^ exprio6)* ;
 
-exprio6 : exprio7 ( '*'^ exprio7 | '/'^ exprio7 /*| '%'^ exprio7*/)* ;
+exprio6 : exprio7 ( '*'^ exprio7 /*|  '/'^ exprio7 | '%'^ exprio7*/)* ;
 
-exprio7 : ('-'^|'+'^)? exprio8 ;
+exprio7 : ('-'^)? exprio8 ;
 
 exprio8 : INT_CST -> ^(INT_CST)
         | IDF -> ^(IDF)
