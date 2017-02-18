@@ -1,0 +1,8 @@
+a = 89;
+
+for i in (5+6)..a
+do
+  write "Ceci est une boucle for.; /*il manque une guillemet*/
+  var variable : bool;
+  variable = (a == 90) /*il manque un point virgule*/
+end

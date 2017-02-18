@@ -48,38 +48,8 @@ Maj : 06/02/17   22:24  */
    ISDIFF;
 }
 
-<<<<<<< HEAD:analyseurs/Looc-test.g
-@header {
-  import java.util.HashMap;
-}
 
-@members {
-   /** Return a list of all ancestors of this node.  The first node of
-   *  list is the root and the last is the parent of this node.
-   * @param <T>
-   * @param t
-   * @return
-   */
-  public static List<? extends Tree> getAncestors( Tree t) {
-
-      List<Tree> ancestors = new ArrayList<>();
-      t = t.getParent();
-      while ( t!=null ) {
-          ancestors.add(0, t);
-          t = t.getParent();
-      }
-
-      return ancestors;
-  }
-
-  /* Table des symboles */
-  HashMap<String,Integer> memory = new HashMap<String,Integer>();
-}
-
-=======
->>>>>>> arbre:analyseurs/Looc.g
-
-program:   (class_decl)* (var_decl)* (instruction {System.out.println($instruction.idf+" = "+$instruction.value);})+ -> ^(PROGRAM (class_decl)* (var_decl)* (instruction)+);
+program:   (class_decl)* (var_decl)* (instruction)+ -> ^(PROGRAM (class_decl)* (var_decl)* (instruction)+);
 
 class_decl:   'class' IDFC ('inherit' IDFC)? '=' '(' class_item_decl ')' -> ^(CLASS IDFC (IDFC)? class_item_decl);
 
@@ -96,8 +66,7 @@ method_decl:   'method' IDF '(' method_args? ')' (':' type)? '{' var_decl* instr
 
 method_args:   IDF ':' type (',' IDF ':' type)* -> ^(METHODARG ^(ARG IDF type) ^(ARG IDF type)*);
 
-instruction returns [int value, String idf]
-           :   IDF ':=' aff=affectation {$value=$aff.value;$idf=$IDF.text;memory.put($IDF.text, new Integer($aff.value));} ';' -> ^(AFFECT IDF affectation)
+instruction:   IDF ':=' affectation ';' -> ^(AFFECT IDF affectation)
            |   'if' expression 'then' a+=instruction* ('else' b+=instruction*)? 'fi' -> ^(IF expression ^(DO $a*) ^(ELSE $b*)?)
            |   'for' IDF 'in' expression '..' expression 'do' instruction+ 'end' -> ^(FOR IDF expression expression ^(DO instruction+))
            |   '{' var_decl* instruction+ '}' -> ^(GROUP var_decl* instruction+)
@@ -107,8 +76,7 @@ instruction returns [int value, String idf]
            |   returnstate
            ;
 
-affectation returns [int value]
-           :   expr=expression {$value=$expr.value;}
+affectation:   expression
            |   'nil'
            ;
 
@@ -154,6 +122,18 @@ expressionbis:   '.' IDF '(' (expression)? (',' expression)* ')' expressionbis -
             //  |   oper expression expressionbis -> /*{a=g.getId()}*/ /* ^(oper /*{Tree.parent.getChild(0)}*/ /*expression) expressionbis? */
               |   /*Le mot vide*/
               //|   exprio1 -> exprio1
+              ;
+/*
+oper:   '+'
+    |   '-'
+    |   '*'
+    |   '<'
+    |   '<='
+    |   '>'
+    |   '>='
+    |   '=='
+    |   '!='
+    ; */
 
 IDFC:   ('A'..'Z') ('a'..'z'|'A'..'Z'|'0'..'9'|'_')* ;
 

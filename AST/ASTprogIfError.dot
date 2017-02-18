@@ -1,0 +1,38 @@
+digraph {
+
+	ordering=out;
+	ranksep=.4;
+	bgcolor="lightgrey"; node [shape=box, fixedsize=false, fontsize=12, fontname="Helvetica-bold", fontcolor="blue"
+		width=.25, height=.25, color="black", fillcolor="white", style="filled, solid, bold"];
+	edge [arrowsize=.5, color="black", style="bold"]
+
+  n0 [label="PROGRAM"];
+  n1 [label="VARDEC"];
+  n1 [label="VARDEC"];
+  n2 [label="a"];
+  n3 [label="INT"];
+  n4 [label="AFFECT"];
+  n4 [label="AFFECT"];
+  n5 [label="a"];
+  n6 [label="4"];
+  n7 [label="IF"];
+  n7 [label="IF"];
+  n8 [label="=="];
+  n8 [label="=="];
+  n9 [label="a"];
+  n10 [label="1"];
+  n11 [label="DO"];
+
+  n0 -> n1 // "PROGRAM" -> "VARDEC"
+  n1 -> n2 // "VARDEC" -> "a"
+  n1 -> n3 // "VARDEC" -> "INT"
+  n0 -> n4 // "PROGRAM" -> "AFFECT"
+  n4 -> n5 // "AFFECT" -> "a"
+  n4 -> n6 // "AFFECT" -> "4"
+  n0 -> n7 // "PROGRAM" -> "IF"
+  n7 -> n8 // "IF" -> "=="
+  n8 -> n9 // "==" -> "a"
+  n8 -> n10 // "==" -> "1"
+  n7 -> n11 // "IF" -> "DO"
+
+}

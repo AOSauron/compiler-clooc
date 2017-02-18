@@ -1,0 +1,10 @@
+var a:int;
+var b : string;
+a := 4;
+
+if (a==1) then
+  if (a+1==7) then
+    read b;
+  fi
+  write b;
+fi

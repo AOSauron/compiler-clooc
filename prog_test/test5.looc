@@ -1,0 +1,35 @@
+/*
+Tout ceci est du
+commentaire et
+doit être ignoré
+
+if (c'est pas ignoré) then
+  il y a un problème;
+end
+*/
+
+class Animal = (
+  var nbPattes: int;
+
+  method animal(nb: int) {
+    nbPattes := nb;
+  }
+
+  method couperPatte() {
+    if (nbPattes > 0)
+    then
+      nbPattes := nbPattes-1;
+    else
+      write "Cet animal n'a pas de pattes !";
+    fi
+  }
+)
+
+class Chien inherit Animal = (
+  method chien() {
+    do this.animal(nb);
+  }
+)
+
+var chien:Chien;
+chien := new Chien;

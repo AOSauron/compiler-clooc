@@ -16,11 +16,18 @@
 	- antlr-3.3-complete.jar			 																(fourni dans le git)
 	- graphviz																										(pour visualiser les AST)
 	- freeglut3 libgraphviz4 libgts-0.7-5 libgts-bin libgd2-xpm 	(pour graphviz, conseil : utiliser gdebi)
+	- eog																													(ouvrir des png en ligne de commande)
 
 * **Build & execute**
 	- Lancez le script analyseurs/createLexParsCompile.sh
 	- cd analyseurs/
 	- java Clooc \<path/du/programme/à/compiler\>
+
+* **Problèmes connus**
+	- Avec une version de java supérieure à 8, une erreur récurrente (error(10) : NullPointerException ...) se produit.
+	- Pour la résoudre, un patch a été mis au point pour corriger le jar d'ANTLR. Suivez les instructions :
+	- `cd patch/`
+	- `./patch-antlr.sh`
 
 * **Forge TNCY**
 	- Un dépôt du projet est également présent sur la forge de TELECOM Nancy sous *Projets Divers >> COMPIL 2017 >> garcia62* (accès autorisé seulement pour les développeurs pour le moment)
@@ -52,6 +59,17 @@
 	- Pour utiliser ces tests, rentrer les mots à tester avec un retour à la ligne à chaque fois, puis appuyer sur Ctrl+D pour lancer la vérification. Si l'un des mots n'appartient pas à la grammaire, Test/TestArbre renverra une erreur pointée.
 
 ## Utilisation du compilateur
+
+* **Solution simple : le script clooc**
+	- Lancer `./clooc path/fichier.looc` où fichier.looc est le fichier à traiter.
+	- Laissez-vous guider par le script qui ajustera tout automatiquement ou sur demande.
+	- Veillez à avoir graphiz et eog d'installé sur votre distrib.
+
+* **Solution pas-à-pas : Lire les étapes suivantes**
+	- Passer en *bash* avec `bash`
+	- A la fin du fichier **~/.bashrc**, ajouter la ligne `export CLASSPATH=/chemin/vers/antlr-3.3-complete.jar:.:$CLASSPATH`
+	- Effectuez `source ~/.bashrc`
+	- Passez à la suite :
 
 * **Build du compilateur**
 	- `cd analyseurs/`
