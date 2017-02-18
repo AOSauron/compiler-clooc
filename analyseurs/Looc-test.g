@@ -154,18 +154,6 @@ expressionbis:   '.' IDF '(' (expression)? (',' expression)* ')' expressionbis -
             //  |   oper expression expressionbis -> /*{a=g.getId()}*/ /* ^(oper /*{Tree.parent.getChild(0)}*/ /*expression) expressionbis? */
               |   /*Le mot vide*/
               //|   exprio1 -> exprio1
-              ;
-/*
-oper:   '+'
-    |   '-'
-    |   '*'
-    |   '<'
-    |   '<='
-    |   '>'
-    |   '>='
-    |   '=='
-    |   '!='
-    ; */
 
 IDFC:   ('A'..'Z') ('a'..'z'|'A'..'Z'|'0'..'9'|'_')* ;
 
