@@ -125,6 +125,7 @@ then
     echo "[CLOOC] - OK - Le programme $filelooc valide la grammaire Looc.g"
   else
     cat .result
+    #sleep 1
     echo "[CLOOC] - ERREUR - Le programme $filelooc ne valide pas la grammaire Looc.g : voir erreurs précédentes."
     rm -f .result &> /dev/null
     exit

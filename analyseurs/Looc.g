@@ -42,7 +42,7 @@ Maj : 06/02/17   22:24  */
    OR;
    AND;
    MULTDIVMOD;
-   NEGPLUS;
+   NEG;
    MINUSPLUS;
    ISGREATERLOWER;
    ISDIFF;
@@ -94,14 +94,14 @@ expression:   //IDF expressionbis -> IDF expressionbis? /* -> IDF (expressionbis
           |   'new' IDFC expressionbis -> ^(NEW IDFC expressionbis?)
           //|   '(' expression ')' expressionbis -> ^(expression expressionbis?)
           //|   '-' expression expressionbis -> ^(NEG expression expressionbis?)
-          |   exprio4 expressionbis -> exprio4
+          |   exprio1 expressionbis -> exprio1
           ;
 
 //expression : exprio1 ;
 
-//exprio1 : exprio2 ( '||'^ exprio2)* ;
+exprio1 : exprio2 ( '&'^ exprio2)* ;
 
-//exprio2 : exprio3 ( '&&'^ exprio3)* ;
+exprio2 : exprio4 ( '|'^ exprio4)* ;
 
 //exprio3 : exprio4 ( '=='^ exprio4 | '!='^ exprio4)* ;
 

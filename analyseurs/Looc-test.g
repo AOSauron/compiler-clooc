@@ -48,7 +48,6 @@ Maj : 06/02/17   22:24  */
    ISDIFF;
 }
 
-<<<<<<< HEAD:analyseurs/Looc-test.g
 @header {
   import java.util.HashMap;
 }
@@ -75,9 +74,6 @@ Maj : 06/02/17   22:24  */
   /* Table des symboles */
   HashMap<String,Integer> memory = new HashMap<String,Integer>();
 }
-
-=======
->>>>>>> arbre:analyseurs/Looc.g
 
 program:   (class_decl)* (var_decl)* (instruction {System.out.println($instruction.idf+" = "+$instruction.value);})+ -> ^(PROGRAM (class_decl)* (var_decl)* (instruction)+);
 
