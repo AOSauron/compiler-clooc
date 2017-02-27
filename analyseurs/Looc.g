@@ -86,24 +86,16 @@ read:   'read' INT_CST ';' -> ^(READ INT_CST); //'read' IDF ';' -> ^(READ IDF); 
 
 returnstate:   'return' '(' expression ')' ';' -> ^(RETURN expression);
 
-expression:   //IDF expressionbis -> IDF expressionbis? /* -> IDF (expressionbis^)?*/
-          /*|*/   'this' expressionbis -> ^(THIS expressionbis?)
+expression:   'this' expressionbis -> ^(THIS expressionbis?)
           |   'super' expressionbis -> ^(SUPER expressionbis?)
-          //|   INT_CST expressionbis -> INT_CST expressionbis?
           |   STRING_CST expressionbis -> ^(STRING_CST expressionbis?)
           |   'new' IDFC expressionbis -> ^(NEW IDFC expressionbis?)
-          //|   '(' expression ')' expressionbis -> ^(expression expressionbis?)
-          //|   '-' expression expressionbis -> ^(NEG expression expressionbis?)
           |   exprio1 expressionbis -> exprio1
           ;
-
-//expression : exprio1 ;
 
 exprio1 : exprio2 ( '&'^ exprio2)* ;
 
 exprio2 : exprio4 ( '|'^ exprio4)* ;
-
-//exprio3 : exprio4 ( '=='^ exprio4 | '!='^ exprio4)* ;
 
 exprio4 : exprio5 ( '=='^ exprio5 | '!='^ exprio5 | '<'^ exprio5 | '<='^ exprio5 | '>'^ exprio5 | '>='^ exprio5)* ;
 
@@ -119,21 +111,8 @@ exprio8 : INT_CST -> ^(INT_CST)
         ;
 
 expressionbis:   '.' IDF '(' (expression)? (',' expression)* ')' expressionbis -> ^(METHODCALLING IDF ^(ARG (expression)*)? (expressionbis)?)
-            //  |   oper expression expressionbis -> /*{a=g.getId()}*/ /* ^(oper /*{Tree.parent.getChild(0)}*/ /*expression) expressionbis? */
               |   /*Le mot vide*/
-              //|   exprio1 -> exprio1
               ;
-/*
-oper:   '+'
-    |   '-'
-    |   '*'
-    |   '<'
-    |   '<='
-    |   '>'
-    |   '>='
-    |   '=='
-    |   '!='
-    ; */
 
 IDFC:   ('A'..'Z') ('a'..'z'|'A'..'Z'|'0'..'9'|'_')* ;
 
