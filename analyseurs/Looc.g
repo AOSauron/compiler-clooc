@@ -32,6 +32,7 @@ Maj : 06/02/17   22:24  */
    NEW;
    METHODCALLING;
    THIS;
+   THEN;
    SUPER;
    INT;
    STRING;
@@ -60,7 +61,7 @@ method_decl:   'method' IDF '(' method_args? ')' (':' type)? '{' var_decl* instr
 method_args:   IDF ':' type (',' IDF ':' type)* -> ^(METHODARG ^(ARG IDF type) ^(ARG IDF type)*);
 
 instruction:   IDF ':=' affectation ';' -> ^(AFFECT IDF affectation)
-           |   'if' expression 'then' a+=instruction* ('else' b+=instruction*)? 'fi' -> ^(IF expression ^(DO $a*) ^(ELSE $b*)?)
+           |   'if' expression 'then' a+=instruction* ('else' b+=instruction*)? 'fi' -> ^(IF expression ^(THEN $a*) ^(ELSE $b*)?)
            |   'for' IDF 'in' expression '..' expression 'do' instruction+ 'end' -> ^(FOR IDF expression expression ^(DO instruction+))
            |   '{' var_decl* instruction+ '}' -> ^(ANONYMOUSBLOC var_decl* instruction+)
            |   'do' expression ';' -> expression
