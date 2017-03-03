@@ -1,0 +1,24 @@
+class Item = (
+  method init(int a, string b)
+  {
+    current := 1;
+    previous := 0;
+    generation := 1;
+  }
+
+  method nextGen(int x, int y)
+  {
+    var temp : int;
+    temp := current;
+    current := current + previous;
+    previous := temp;
+    generation := generation + 1;
+  }
+)
+
+var item : Item;
+item := new Fibonacci;
+
+do item.init().nextGen();
+
+do item.init(15, "initialiser");
