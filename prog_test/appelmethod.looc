@@ -1,12 +1,12 @@
 class Item = (
-  method init(int a, string b)
+  method init(a : int, b : string )
   {
     current := 1;
     previous := 0;
     generation := 1;
   }
 
-  method nextGen(int x, int y)
+  method nextGen(x : int, y : int)
   {
     var temp : int;
     temp := current;
@@ -19,6 +19,6 @@ class Item = (
 var item : Item;
 item := new Fibonacci;
 
-do item.init().nextGen();
+do item.init(13).nextGen(23,67);
 
 do item.init(15, "initialiser");

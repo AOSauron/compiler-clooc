@@ -22,7 +22,7 @@ Maj : 06/02/17   22:24  */
    CLASS;
    VARDEC;
    METHODDEC;
-   METHODARG;
+   METHODARGS;
    AFFECT;
    IF;
    FOR;
@@ -60,7 +60,7 @@ type:   IDFC -> ^(IDFC)
 
 method_decl:   'method' IDF '(' method_args? ')' (':' type)? '{' var_decl* instruction+ '}' -> ^(METHODDEC IDF method_args? type? var_decl* ^(BLOCK instruction+));
 
-method_args:   IDF ':' type (',' IDF ':' type)* -> ^(METHODARG ^(ARG IDF type) ^(ARG IDF type)*);
+method_args:   IDF ':' type (',' IDF ':' type)* -> ^(METHODARGS ^(ARG IDF type) ^(ARG IDF type)*);
 
 instruction:   IDF ':=' affectation ';' -> ^(AFFECT IDF affectation)
            |   'if' expression 'then' a+=instruction+ ('else' b+=instruction+)? 'fi' -> ^(IF expression ^(THEN $a+) ^(ELSE $b+)?)
@@ -102,7 +102,7 @@ exprio8 : INT_CST -> ^(INT_CST)
         | '(' expression ')' -> expression
         ;
 
-expressionbis:   '.'  IDF '(' (expression)? (',' expression)* ')' expressionbis -> ^(METHODCALLING IDF ^( ARG (expression)*)? (expressionbis)?)
+expressionbis:   '.'  IDF '(' (expression)? (',' expression)* ')' expressionbis -> ^(METHODCALLING IDF ^( METHODARGS (expression)*)? (expressionbis)?)
               |   /*Le mot vide*/
               ;
 
