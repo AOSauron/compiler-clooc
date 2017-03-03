@@ -66,7 +66,7 @@ instruction:   IDF ':=' affectation ';' -> ^(AFFECT IDF affectation)
            |   'if' expression 'then' a+=instruction+ ('else' b+=instruction+)? 'fi' -> ^(IF expression ^(THEN $a+) ^(ELSE $b+)?)
            |   'for' IDF 'in' expression '..' expression 'do' instruction+ 'end' -> ^(FOR IDF expression expression ^(DO instruction+))
            |   '{' var_decl* instruction+ '}' -> ^(ANONYMOUSBLOCK var_decl* instruction+)
-           |   'do' expression ';' -> ^( DO expression )
+           |   'do' expression ';' -> ^( DO  expression )
            |   print
            |   read
            |   returnstate
@@ -86,7 +86,7 @@ expression:   'this' expressionbis -> ^(THIS expressionbis?)
           |   'super' expressionbis -> ^(SUPER expressionbis?)
           |   STRING_CST expressionbis -> ^(STRING_CST expressionbis?)
           |   'new' IDFC expressionbis -> ^(NEW IDFC expressionbis?)
-          |   exprio1 expressionbis -> ^(exprio1 expressionbis?)
+          |   exprio1 expressionbis ->  exprio1 expressionbis?
           ;
 
 exprio1 : exprio2 ( '+'^ exprio2 | '-'^ exprio2)* ;
@@ -98,11 +98,11 @@ exprio4 : exprio7 ( '=='^ exprio7 | '!='^ exprio7 | '<'^ exprio7 | '<='^ exprio7
 exprio7 : ('-'^)? exprio8 ;
 
 exprio8 : INT_CST -> ^(INT_CST)
-        | IDF -> ^(IDF)
+        | IDF -> IDF
         | '(' expression ')' -> expression
         ;
 
-expressionbis:   '.' IDF '(' (expression)? (',' expression)* ')' expressionbis -> ^( METHODCALLING ^( ARG (expression)*)? (expressionbis)?)
+expressionbis:   '.'  IDF '(' (expression)? (',' expression)* ')' expressionbis -> ^( METHODCALLING IDF ^( ARG (expression)*)? (expressionbis)?)
               |   /*Le mot vide*/
               ;
 
