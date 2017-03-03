@@ -1,0 +1,8 @@
+var v : int;
+var w : int;
+
+v := -1+4*7*2-5;
+w:=(-1+4)*7*2-5;
+
+write v;
+write w;

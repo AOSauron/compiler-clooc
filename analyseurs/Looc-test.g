@@ -23,7 +23,7 @@ Maj : 06/02/17   22:24  */
    AFFECT;
    IF;
    FOR;
-   ANONYMOUSBLOC;
+   GROUP;
    WRITE;
    READ;
    RETURN;
@@ -32,16 +32,50 @@ Maj : 06/02/17   22:24  */
    METHODCALLING;
    THIS;
    SUPER;
+   NEG;
    INT;
    STRING;
    ARG;
    BLOCK;
    DO;
    ELSE;
+   OR;
+   AND;
+   MULTDIVMOD;
+   NEGPLUS;
+   MINUSPLUS;
+   ISGREATERLOWER;
+   ISDIFF;
 }
 
+@header {
+  import java.util.HashMap;
+}
 
-program:   (class_decl)* (var_decl)* (instruction)+ -> ^(PROGRAM (class_decl)* (var_decl)* (instruction)+);
+@members {
+   /** Return a list of all ancestors of this node.  The first node of
+   *  list is the root and the last is the parent of this node.
+   * @param <T>
+   * @param t
+   * @return
+   */
+  public static List<? extends Tree> getAncestors( Tree t) {
+
+      List<Tree> ancestors = new ArrayList<>();
+      t = t.getParent();
+      while ( t!=null ) {
+          ancestors.add(0, t);
+          t = t.getParent();
+      }
+
+      return ancestors;
+  }
+
+  /* Table des symboles */
+  HashMap<String,Integer> memory = new HashMap<String,Integer>();
+}
+
+program:   (class_decl)* (var_decl)* (instruction {System.out.println($instruction.idf+" = "+$instruction.value);})+ -> ^(PROGRAM (class_decl)* (var_decl)* (instruction)+);
 
 class_decl:   'class' IDFC ('inherit' IDFC)? '=' '(' class_item_decl ')' -> ^(CLASS IDFC (IDFC)? class_item_decl);
 
@@ -58,17 +92,19 @@ method_decl:   'method' IDF '(' method_args? ')' (':' type)? '{' var_decl* instr
 
 method_args:   IDF ':' type (',' IDF ':' type)* -> ^(METHODARG ^(ARG IDF type) ^(ARG IDF type)*);
 
-instruction:   IDF ':=' affectation ';' -> ^(AFFECT IDF affectation)
+instruction returns [int value, String idf]
+           :   IDF ':=' aff=affectation {$value=$aff.value;$idf=$IDF.text;memory.put($IDF.text, new Integer($aff.value));} ';' -> ^(AFFECT IDF affectation)
            |   'if' expression 'then' a+=instruction* ('else' b+=instruction*)? 'fi' -> ^(IF expression ^(DO $a*) ^(ELSE $b*)?)
            |   'for' IDF 'in' expression '..' expression 'do' instruction+ 'end' -> ^(FOR IDF expression expression ^(DO instruction+))
-           |   '{' var_decl* instruction+ '}' -> ^(ANONYMOUSBLOC var_decl* instruction+)
+           |   '{' var_decl* instruction+ '}' -> ^(GROUP var_decl* instruction+)
            |   'do' expression ';' -> expression
            |   print
            |   read
            |   returnstate
            ;
 
-affectation:   expression
+affectation returns [int value]
+           :   expr=expression {$value=$expr.value;}
            |   'nil'
            ;
 
@@ -78,18 +114,30 @@ read:   'read' INT_CST ';' -> ^(READ INT_CST); //'read' IDF ';' -> ^(READ IDF); 
 
 returnstate:   'return' '(' expression ')' ';' -> ^(RETURN expression);
 
-expression:   'this' expressionbis -> ^(THIS expressionbis?)
+expression:   //IDF expressionbis -> IDF expressionbis? /* -> IDF (expressionbis^)?*/
+          /*|*/   'this' expressionbis -> ^(THIS expressionbis?)
           |   'super' expressionbis -> ^(SUPER expressionbis?)
+          //|   INT_CST expressionbis -> INT_CST expressionbis?
           |   STRING_CST expressionbis -> ^(STRING_CST expressionbis?)
           |   'new' IDFC expressionbis -> ^(NEW IDFC expressionbis?)
-          |   exprio1 expressionbis -> exprio1
+          //|   '(' expression ')' expressionbis -> ^(expression expressionbis?)
+          //|   '-' expression expressionbis -> ^(NEG expression expressionbis?)
+          |   exprio4 expressionbis -> exprio4
           ;
 
-exprio1 : exprio2 ( '+'^ exprio2 | '-'^ exprio2)* ;
+//expression : exprio1 ;
 
-exprio2 : exprio4 ( '*'^ exprio4)* ;
+//exprio1 : exprio2 ( '||'^ exprio2)* ;
 
-exprio4 : exprio7 ( '=='^ exprio7 | '!='^ exprio7 | '<'^ exprio7 | '<='^ exprio7 | '>'^ exprio7 | '>='^ exprio7)* ;
+//exprio2 : exprio3 ( '&&'^ exprio3)* ;
+
+//exprio3 : exprio4 ( '=='^ exprio4 | '!='^ exprio4)* ;
+
+exprio4 : exprio5 ( '=='^ exprio5 | '!='^ exprio5 | '<'^ exprio5 | '<='^ exprio5 | '>'^ exprio5 | '>='^ exprio5)* ;
+
+exprio5 : exprio6 ( '+'^ exprio6 | '-'^ exprio6)* ;
+
+exprio6 : exprio7 ( '*'^ exprio7 /*|  '/'^ exprio7 | '%'^ exprio7*/)* ;
 
 exprio7 : ('-'^)? exprio8 ;
 
@@ -99,8 +147,12 @@ exprio8 : INT_CST -> ^(INT_CST)
         ;
 
 expressionbis:   '.' IDF '(' (expression)? (',' expression)* ')' expressionbis -> ^(METHODCALLING IDF ^(ARG (expression)*)? (expressionbis)?)
+              //|   oper1^ expression expressionbis
               |   /*Le mot vide*/
+              //|   exprio1 -> exprio1
               ;
+
+
 
 IDFC:   ('A'..'Z') ('a'..'z'|'A'..'Z'|'0'..'9'|'_')* ;
 
