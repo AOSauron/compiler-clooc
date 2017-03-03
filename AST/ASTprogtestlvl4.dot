@@ -73,38 +73,66 @@ digraph {
   n42 [label="whoami"];
   n43 [label="BLOCK"];
   n43 [label="BLOCK"];
-  n44 [label="SUPER"];
-  n44 [label="SUPER"];
-  n45 [label="METHODCALLING"];
-  n45 [label="METHODCALLING"];
-  n46 [label="whoami"];
-  n47 [label="WRITE"];
-  n47 [label="WRITE"];
-  n48 [label="\". And ...a cat.\""];
-  n49 [label="VARDEC"];
-  n49 [label="VARDEC"];
-  n50 [label="a1"];
-  n51 [label="Animal"];
-  n52 [label="VARDEC"];
-  n52 [label="VARDEC"];
-  n53 [label="a2"];
-  n54 [label="Animal"];
-  n55 [label="AFFECT"];
-  n55 [label="AFFECT"];
-  n56 [label="a1"];
-  n57 [label="NEW"];
-  n57 [label="NEW"];
-  n58 [label="Dog"];
-  n59 [label="a1"];
-  n60 [label="AFFECT"];
-  n60 [label="AFFECT"];
-  n61 [label="a2"];
-  n62 [label="NEW"];
-  n62 [label="NEW"];
-  n63 [label="Cat"];
-  n64 [label="a2"];
-  n65 [label="a1"];
-  n66 [label="a2"];
+  n44 [label="DO"];
+  n44 [label="DO"];
+  n45 [label="SUPER"];
+  n45 [label="SUPER"];
+  n46 [label="METHODCALLING"];
+  n46 [label="METHODCALLING"];
+  n47 [label="whoami"];
+  n48 [label="WRITE"];
+  n48 [label="WRITE"];
+  n49 [label="\". And ...a cat.\""];
+  n50 [label="VARDEC"];
+  n50 [label="VARDEC"];
+  n51 [label="a1"];
+  n52 [label="Animal"];
+  n53 [label="VARDEC"];
+  n53 [label="VARDEC"];
+  n54 [label="a2"];
+  n55 [label="Animal"];
+  n56 [label="AFFECT"];
+  n56 [label="AFFECT"];
+  n57 [label="a1"];
+  n58 [label="NEW"];
+  n58 [label="NEW"];
+  n59 [label="Dog"];
+  n60 [label="DO"];
+  n60 [label="DO"];
+  n61 [label="a1"];
+  n62 [label="METHODCALLING"];
+  n62 [label="METHODCALLING"];
+  n63 [label="setName"];
+  n64 [label="ARG"];
+  n64 [label="ARG"];
+  n65 [label="\"boo\""];
+  n66 [label="AFFECT"];
+  n66 [label="AFFECT"];
+  n67 [label="a2"];
+  n68 [label="NEW"];
+  n68 [label="NEW"];
+  n69 [label="Cat"];
+  n70 [label="DO"];
+  n70 [label="DO"];
+  n71 [label="a2"];
+  n72 [label="METHODCALLING"];
+  n72 [label="METHODCALLING"];
+  n73 [label="setName"];
+  n74 [label="ARG"];
+  n74 [label="ARG"];
+  n75 [label="\"foo\""];
+  n76 [label="DO"];
+  n76 [label="DO"];
+  n77 [label="a1"];
+  n78 [label="METHODCALLING"];
+  n78 [label="METHODCALLING"];
+  n79 [label="whoami"];
+  n80 [label="DO"];
+  n80 [label="DO"];
+  n81 [label="a2"];
+  n82 [label="METHODCALLING"];
+  n82 [label="METHODCALLING"];
+  n83 [label="whoami"];
 
   n0 -> n1 // "PROGRAM" -> "CLASS"
   n1 -> n2 // "CLASS" -> "Animal"
@@ -149,28 +177,45 @@ digraph {
   n40 -> n41 // "BLOCK" -> "METHODDEC"
   n41 -> n42 // "METHODDEC" -> "whoami"
   n41 -> n43 // "METHODDEC" -> "BLOCK"
-  n43 -> n44 // "BLOCK" -> "SUPER"
-  n44 -> n45 // "SUPER" -> "METHODCALLING"
-  n45 -> n46 // "METHODCALLING" -> "whoami"
-  n43 -> n47 // "BLOCK" -> "WRITE"
-  n47 -> n48 // "WRITE" -> "\". And ...a cat.\""
-  n0 -> n49 // "PROGRAM" -> "VARDEC"
-  n49 -> n50 // "VARDEC" -> "a1"
-  n49 -> n51 // "VARDEC" -> "Animal"
-  n0 -> n52 // "PROGRAM" -> "VARDEC"
-  n52 -> n53 // "VARDEC" -> "a2"
-  n52 -> n54 // "VARDEC" -> "Animal"
-  n0 -> n55 // "PROGRAM" -> "AFFECT"
-  n55 -> n56 // "AFFECT" -> "a1"
-  n55 -> n57 // "AFFECT" -> "NEW"
-  n57 -> n58 // "NEW" -> "Dog"
-  n0 -> n59 // "PROGRAM" -> "a1"
-  n0 -> n60 // "PROGRAM" -> "AFFECT"
-  n60 -> n61 // "AFFECT" -> "a2"
-  n60 -> n62 // "AFFECT" -> "NEW"
-  n62 -> n63 // "NEW" -> "Cat"
-  n0 -> n64 // "PROGRAM" -> "a2"
-  n0 -> n65 // "PROGRAM" -> "a1"
-  n0 -> n66 // "PROGRAM" -> "a2"
+  n43 -> n44 // "BLOCK" -> "DO"
+  n44 -> n45 // "DO" -> "SUPER"
+  n45 -> n46 // "SUPER" -> "METHODCALLING"
+  n46 -> n47 // "METHODCALLING" -> "whoami"
+  n43 -> n48 // "BLOCK" -> "WRITE"
+  n48 -> n49 // "WRITE" -> "\". And ...a cat.\""
+  n0 -> n50 // "PROGRAM" -> "VARDEC"
+  n50 -> n51 // "VARDEC" -> "a1"
+  n50 -> n52 // "VARDEC" -> "Animal"
+  n0 -> n53 // "PROGRAM" -> "VARDEC"
+  n53 -> n54 // "VARDEC" -> "a2"
+  n53 -> n55 // "VARDEC" -> "Animal"
+  n0 -> n56 // "PROGRAM" -> "AFFECT"
+  n56 -> n57 // "AFFECT" -> "a1"
+  n56 -> n58 // "AFFECT" -> "NEW"
+  n58 -> n59 // "NEW" -> "Dog"
+  n0 -> n60 // "PROGRAM" -> "DO"
+  n60 -> n61 // "DO" -> "a1"
+  n60 -> n62 // "DO" -> "METHODCALLING"
+  n62 -> n63 // "METHODCALLING" -> "setName"
+  n62 -> n64 // "METHODCALLING" -> "ARG"
+  n64 -> n65 // "ARG" -> "\"boo\""
+  n0 -> n66 // "PROGRAM" -> "AFFECT"
+  n66 -> n67 // "AFFECT" -> "a2"
+  n66 -> n68 // "AFFECT" -> "NEW"
+  n68 -> n69 // "NEW" -> "Cat"
+  n0 -> n70 // "PROGRAM" -> "DO"
+  n70 -> n71 // "DO" -> "a2"
+  n70 -> n72 // "DO" -> "METHODCALLING"
+  n72 -> n73 // "METHODCALLING" -> "setName"
+  n72 -> n74 // "METHODCALLING" -> "ARG"
+  n74 -> n75 // "ARG" -> "\"foo\""
+  n0 -> n76 // "PROGRAM" -> "DO"
+  n76 -> n77 // "DO" -> "a1"
+  n76 -> n78 // "DO" -> "METHODCALLING"
+  n78 -> n79 // "METHODCALLING" -> "whoami"
+  n0 -> n80 // "PROGRAM" -> "DO"
+  n80 -> n81 // "DO" -> "a2"
+  n80 -> n82 // "DO" -> "METHODCALLING"
+  n82 -> n83 // "METHODCALLING" -> "whoami"
 
 }

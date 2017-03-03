@@ -1,0 +1,44 @@
+Controles sémantiques à tester !
+
+
+– Pas assez ou trop de sous-arbres (ne devrait jamais arriver avec Antlr)
+
+– Taille de tableau incorrecte (autre chose qu'un entier)
+
+– Utilisation d'un tableau sans index (en tant que simple variable), à l'accès
+
+– Utilisation d'un index hors bornes, à l'accès d'un élément d'un tableau
+
+– Élément d'un tableau utilisé alors qu'il n'a pas été initialisé (ou que le tableau lui-même n'a pas été initialisé)
+
+– Nombre incorrect de valeurs lors de l'initialisation d'un tableau, à la définition
+
+– Utilisation d'une variable en tant que tableau, à l'accès
+
+– Variable accédée inexistante dans la pile de contextes
+
+– Variable accédée alors qu'elle n'a pas été initialisée
+
+– Type du retour d'une instruction utilisée lors de l'accès à un élément d'un tableau (ou à l'appel d'une fonction, ou à l'affectation)
+
+– Mauvaise assignation dans la définition d'une boucle for
+
+– Utilisation d'autre chose qu'un entier pour le maximum d'une boucle for
+
+– Modification d'une variable d'incrément d'une boucle for
+
+– Utilisation d'autre chose qu'un entier dans une opération arithmétique (directement, ou par le biais du retour d'une instruction)
+
+– Tentative de redéfinition d'une variable/tableau/fonction dans un même contexte (sinon, surcharge autorisée)
+
+– Avertissement si la définition d'une variable/tableau/fonction surcharge un autre symbole défini dans un contexte plus profond
+
+– Nombre d'arguments lors de l'appel d'une fonction
+
+– Contrôle des types passés à l'appel d'une fonction
+
+– Utilisation d'un autre symbole, en tant que fonction
+
+– Retour incorrect d'une fonction
+
+– Fonction appelée inexistante dans la pile de contextes

@@ -102,7 +102,7 @@ exprio8 : INT_CST -> ^(INT_CST)
         | '(' expression ')' -> expression
         ;
 
-expressionbis:   '.'  IDF '(' (expression)? (',' expression)* ')' expressionbis -> ^( METHODCALLING IDF ^( ARG (expression)*)? (expressionbis)?)
+expressionbis:   '.'  IDF '(' (expression)? (',' expression)* ')' expressionbis -> ^(METHODCALLING IDF ^( ARG (expression)*)? (expressionbis)?)
               |   /*Le mot vide*/
               ;
 

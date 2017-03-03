@@ -78,30 +78,50 @@ digraph {
   n49 [label="INT"];
   n50 [label="BLOCK"];
   n50 [label="BLOCK"];
-  n51 [label="THIS"];
-  n51 [label="THIS"];
-  n52 [label="METHODCALLING"];
-  n52 [label="METHODCALLING"];
-  n53 [label="nextGen"];
-  n54 [label="RETURN"];
-  n54 [label="RETURN"];
-  n55 [label="current"];
-  n56 [label="VARDEC"];
-  n56 [label="VARDEC"];
-  n57 [label="f"];
-  n58 [label="Fibonacci"];
-  n59 [label="AFFECT"];
-  n59 [label="AFFECT"];
-  n60 [label="f"];
-  n61 [label="NEW"];
-  n61 [label="NEW"];
-  n62 [label="Fibonacci"];
-  n63 [label="f"];
-  n64 [label="f"];
+  n51 [label="DO"];
+  n51 [label="DO"];
+  n52 [label="THIS"];
+  n52 [label="THIS"];
+  n53 [label="METHODCALLING"];
+  n53 [label="METHODCALLING"];
+  n54 [label="nextGen"];
+  n55 [label="RETURN"];
+  n55 [label="RETURN"];
+  n56 [label="current"];
+  n57 [label="VARDEC"];
+  n57 [label="VARDEC"];
+  n58 [label="f"];
+  n59 [label="Fibonacci"];
+  n60 [label="AFFECT"];
+  n60 [label="AFFECT"];
+  n61 [label="f"];
+  n62 [label="NEW"];
+  n62 [label="NEW"];
+  n63 [label="Fibonacci"];
+  n64 [label="DO"];
+  n64 [label="DO"];
   n65 [label="f"];
-  n66 [label="WRITE"];
-  n66 [label="WRITE"];
-  n67 [label="f"];
+  n66 [label="METHODCALLING"];
+  n66 [label="METHODCALLING"];
+  n67 [label="init"];
+  n68 [label="DO"];
+  n68 [label="DO"];
+  n69 [label="f"];
+  n70 [label="METHODCALLING"];
+  n70 [label="METHODCALLING"];
+  n71 [label="nextGen"];
+  n72 [label="DO"];
+  n72 [label="DO"];
+  n73 [label="f"];
+  n74 [label="METHODCALLING"];
+  n74 [label="METHODCALLING"];
+  n75 [label="nextGen"];
+  n76 [label="WRITE"];
+  n76 [label="WRITE"];
+  n77 [label="f"];
+  n78 [label="METHODCALLING"];
+  n78 [label="METHODCALLING"];
+  n79 [label="nextGenAndGet"];
 
   n0 -> n1 // "PROGRAM" -> "CLASS"
   n1 -> n2 // "CLASS" -> "Fibonacci"
@@ -153,22 +173,34 @@ digraph {
   n47 -> n48 // "METHODDEC" -> "nextGenAndGet"
   n47 -> n49 // "METHODDEC" -> "INT"
   n47 -> n50 // "METHODDEC" -> "BLOCK"
-  n50 -> n51 // "BLOCK" -> "THIS"
-  n51 -> n52 // "THIS" -> "METHODCALLING"
-  n52 -> n53 // "METHODCALLING" -> "nextGen"
-  n50 -> n54 // "BLOCK" -> "RETURN"
-  n54 -> n55 // "RETURN" -> "current"
-  n0 -> n56 // "PROGRAM" -> "VARDEC"
-  n56 -> n57 // "VARDEC" -> "f"
-  n56 -> n58 // "VARDEC" -> "Fibonacci"
-  n0 -> n59 // "PROGRAM" -> "AFFECT"
-  n59 -> n60 // "AFFECT" -> "f"
-  n59 -> n61 // "AFFECT" -> "NEW"
-  n61 -> n62 // "NEW" -> "Fibonacci"
-  n0 -> n63 // "PROGRAM" -> "f"
-  n0 -> n64 // "PROGRAM" -> "f"
-  n0 -> n65 // "PROGRAM" -> "f"
-  n0 -> n66 // "PROGRAM" -> "WRITE"
-  n66 -> n67 // "WRITE" -> "f"
+  n50 -> n51 // "BLOCK" -> "DO"
+  n51 -> n52 // "DO" -> "THIS"
+  n52 -> n53 // "THIS" -> "METHODCALLING"
+  n53 -> n54 // "METHODCALLING" -> "nextGen"
+  n50 -> n55 // "BLOCK" -> "RETURN"
+  n55 -> n56 // "RETURN" -> "current"
+  n0 -> n57 // "PROGRAM" -> "VARDEC"
+  n57 -> n58 // "VARDEC" -> "f"
+  n57 -> n59 // "VARDEC" -> "Fibonacci"
+  n0 -> n60 // "PROGRAM" -> "AFFECT"
+  n60 -> n61 // "AFFECT" -> "f"
+  n60 -> n62 // "AFFECT" -> "NEW"
+  n62 -> n63 // "NEW" -> "Fibonacci"
+  n0 -> n64 // "PROGRAM" -> "DO"
+  n64 -> n65 // "DO" -> "f"
+  n64 -> n66 // "DO" -> "METHODCALLING"
+  n66 -> n67 // "METHODCALLING" -> "init"
+  n0 -> n68 // "PROGRAM" -> "DO"
+  n68 -> n69 // "DO" -> "f"
+  n68 -> n70 // "DO" -> "METHODCALLING"
+  n70 -> n71 // "METHODCALLING" -> "nextGen"
+  n0 -> n72 // "PROGRAM" -> "DO"
+  n72 -> n73 // "DO" -> "f"
+  n72 -> n74 // "DO" -> "METHODCALLING"
+  n74 -> n75 // "METHODCALLING" -> "nextGen"
+  n0 -> n76 // "PROGRAM" -> "WRITE"
+  n76 -> n77 // "WRITE" -> "f"
+  n76 -> n78 // "WRITE" -> "METHODCALLING"
+  n78 -> n79 // "METHODCALLING" -> "nextGenAndGet"
 
 }
