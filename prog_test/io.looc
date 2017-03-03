@@ -1,0 +1,21 @@
+var x : string;
+var i : string;
+
+var entier : int;
+
+
+read x;
+read i;
+read entier;
+
+if entier < 0
+then
+  write "Erreur d'input";
+else
+  if entier == 0
+  then
+    write x;
+  else
+    write i;
+  fi
+fi

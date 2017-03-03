@@ -3,6 +3,7 @@ var v : int;
 var i : string;
 
 do foo.doo().ntm().bebe().kek();
+*/
 
 x := 0;
 
@@ -12,10 +13,24 @@ then
  write x;
 else
  write x+1+y*(z-u);
-fi*/
+fi
 
+{
+  var bloc : string;
+  bloc := "bloc anonyme";
+  if x!=1
+  then
+    bloc := "non 1";
+    write bloc;
+  else
+    write "error";
+  fi
+}
+
+/*
 v := -1+4*7*2-5;
 w:=(-1+4)*7*2-5;
 
 cOND1 := x==0 | y==2 & c!=5 | f!=6 ;
 cOND2 := x==0 | y==2 & (c!=5 | f!=6) ;
+*/

@@ -1,0 +1,15 @@
+var x : int;
+
+x := 0;
+
+{
+  var bloc : string;
+  bloc := "bloc anonyme";
+  if x!=1
+  then
+    bloc := "OK";
+    write bloc;
+  else
+    write "error";
+  fi
+}

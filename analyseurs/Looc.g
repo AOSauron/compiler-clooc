@@ -23,7 +23,7 @@ Maj : 06/02/17   22:24  */
    AFFECT;
    IF;
    FOR;
-   GROUP;
+   ANONYMOUSBLOC;
    WRITE;
    READ;
    RETURN;
@@ -69,7 +69,7 @@ method_args:   IDF ':' type (',' IDF ':' type)* -> ^(METHODARG ^(ARG IDF type) ^
 instruction:   IDF ':=' affectation ';' -> ^(AFFECT IDF affectation)
            |   'if' expression 'then' a+=instruction* ('else' b+=instruction*)? 'fi' -> ^(IF expression ^(DO $a*) ^(ELSE $b*)?)
            |   'for' IDF 'in' expression '..' expression 'do' instruction+ 'end' -> ^(FOR IDF expression expression ^(DO instruction+))
-           |   '{' var_decl* instruction+ '}' -> ^(GROUP var_decl* instruction+)
+           |   '{' var_decl* instruction+ '}' -> ^(ANONYMOUSBLOC var_decl* instruction+)
            |   'do' expression ';' -> expression
            |   print
            |   read
@@ -93,15 +93,19 @@ expression:   'this' expressionbis -> ^(THIS expressionbis?)
           |   exprio1 expressionbis -> exprio1
           ;
 
-exprio1 : exprio2 ( '&'^ exprio2)* ;
+//exprio1 : exprio2 ( '&'^ exprio2)* ;
 
-exprio2 : exprio4 ( '|'^ exprio4)* ;
+//exprio2 : exprio4 ( '|'^ exprio4)* ;
 
-exprio4 : exprio5 ( '=='^ exprio5 | '!='^ exprio5 | '<'^ exprio5 | '<='^ exprio5 | '>'^ exprio5 | '>='^ exprio5)* ;
+exprio1 : exprio2 ( '+'^ exprio2 | '-'^ exprio2)* ;
 
-exprio5 : exprio6 ( '+'^ exprio6 | '-'^ exprio6)* ;
+exprio2 : exprio4 ( '*'^ exprio4)* ;
 
-exprio6 : exprio7 ( '*'^ exprio7 /*|  '/'^ exprio7 | '%'^ exprio7*/)* ;
+exprio4 : exprio7 ( '=='^ exprio7 | '!='^ exprio7 | '<'^ exprio7 | '<='^ exprio7 | '>'^ exprio7 | '>='^ exprio7)* ;
+
+//exprio5 : exprio6 ( '+'^ exprio6 | '-'^ exprio6)* ;
+
+//exprio6 : exprio7 ( '*'^ exprio7 /*|  '/'^ exprio7 | '%'^ exprio7*/)* ;
 
 exprio7 : ('-'^)? exprio8 ;
 
