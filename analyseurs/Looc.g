@@ -82,7 +82,7 @@ expression:   'this' expressionbis -> ^(THIS expressionbis?)
           |   'super' expressionbis -> ^(SUPER expressionbis?)
           |   STRING_CST expressionbis -> ^(STRING_CST expressionbis?)
           |   'new' IDFC expressionbis -> ^(NEW IDFC expressionbis?)
-          |   exprio1 expressionbis -> exprio1
+          |   exprio1 expressionbis -> ^(exprio1 expressionbis?)
           ;
 
 exprio1 : exprio2 ( '+'^ exprio2 | '-'^ exprio2)* ;
