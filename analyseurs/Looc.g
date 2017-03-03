@@ -1,9 +1,11 @@
 /*  GRAMMAIRE POUR LE LANGAGE LOOC POUR PROJET DE COMPILATION TELECOM NANCY 2016-2017
 Authors :
-GARCIA Guillaume
+
 DUBOIS Nicolas
-ZAMBAUX Gauthier
+GARCIA Guillaume
 HINSBERGER Laure
+ZAMBAUX Gauthier
+
 Maj : 06/02/17   22:24  */
 
  grammar Looc;
@@ -24,7 +26,7 @@ Maj : 06/02/17   22:24  */
    AFFECT;
    IF;
    FOR;
-   ANONYMOUSBLOC;
+   ANONYMOUSBLOCK;
    WRITE;
    READ;
    RETURN;
@@ -61,10 +63,10 @@ method_decl:   'method' IDF '(' method_args? ')' (':' type)? '{' var_decl* instr
 method_args:   IDF ':' type (',' IDF ':' type)* -> ^(METHODARG ^(ARG IDF type) ^(ARG IDF type)*);
 
 instruction:   IDF ':=' affectation ';' -> ^(AFFECT IDF affectation)
-           |   'if' expression 'then' a+=instruction* ('else' b+=instruction*)? 'fi' -> ^(IF expression ^(THEN $a*) ^(ELSE $b*)?)
+           |   'if' expression 'then' a+=instruction+ ('else' b+=instruction+)? 'fi' -> ^(IF expression ^(THEN $a+) ^(ELSE $b+)?)
            |   'for' IDF 'in' expression '..' expression 'do' instruction+ 'end' -> ^(FOR IDF expression expression ^(DO instruction+))
-           |   '{' var_decl* instruction+ '}' -> ^(ANONYMOUSBLOC var_decl* instruction+)
-           |   'do' expression ';' -> expression
+           |   '{' var_decl* instruction+ '}' -> ^(ANONYMOUSBLOCK var_decl* instruction+)
+           |   'do' expression ';' -> ^( DO expression )
            |   print
            |   read
            |   returnstate
@@ -100,7 +102,7 @@ exprio8 : INT_CST -> ^(INT_CST)
         | '(' expression ')' -> expression
         ;
 
-expressionbis:   '.' IDF '(' (expression)? (',' expression)* ')' expressionbis -> ^(METHODCALLING IDF ^(ARG (expression)*)? (expressionbis)?)
+expressionbis:   '.' IDF '(' (expression)? (',' expression)* ')' expressionbis -> ^( METHODCALLING ^( ARG (expression)*)? (expressionbis)?)
               |   /*Le mot vide*/
               ;
 
