@@ -82,8 +82,10 @@ then
     echo "[CLOOC] /!\ ANTLR/antlr-3.3-complete.jar ne semble pas être patché correctement pour java 8. /!\ "
     echo "[CLOOC] Voulez-vous patcher ce fichier avec le correctif patch/patch-antlr-3.3.patch ?"
     echo "ATTENTION : Ce patch modifie de façon définitive l'archive antlr-3.3-complete.jar. Une version d'origine est disponible sous patch/antlr-3.3-complete-unpatch.jar si besoin."
+    echo "ATTENTION : APPAREMMENT CE PATCH CAUSE UN PROBLEME SI LA VERSION DE JAVA EST INFERIEURE A 8 ! Votre version de java est : "
+    java -version
     while true; do
-      read -p "Patcher ? Oui(o/O/y/Y/Entrée) ou Non(n/N) : " rep
+      read -p "Patcher ? Oui(o/O/y/Y/Entrée) (java 8 ou +) ou Non(n/N) (java 7 ou -) : " rep
       case $rep in
         ""|[OoyY]* ) echo "[CLOOC] Lancement du patch ... "
                   patch --verbose ANTLR/antlr-3.3-complete.jar < patch/patch-antlr-3.3.patch
