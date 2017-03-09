@@ -59,11 +59,12 @@ public class Clooc {
             tablor.init();
 
             //Affichage des TDS
-            tablor.prettyprint();
+            tablor.printTDS();
 
             //Génération de l'arbre en DOT
             DOTTreeGenerator gen = new DOTTreeGenerator();
             StringTemplate st = gen.toDOT(tree);
+
             file = new File(args[2]);
             fileWriter = new FileWriter(file);
             printWriter = new PrintWriter(fileWriter);

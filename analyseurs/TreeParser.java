@@ -11,8 +11,9 @@ import java.util.Iterator;
 
 public class TreeParser {
 
+  private int countanoblock;
   private CommonTree ast;
-  private HashMap<String,LinkedList> table;
+  private HashMap<String,LinkedList> tableroot;
 
   public TreeParser(CommonTree ast) {
     this.ast=ast;
@@ -21,11 +22,22 @@ public class TreeParser {
 
   /*
    * Lance l'exploration de tout l'arbre !
+   *
    */
   public void init() {
     System.out.println("Tree to parse : " + this.ast.toStringTree());
-    table = new HashMap<String,LinkedList>();
-    explorer(ast);
+    tableroot = new HashMap<String,LinkedList>();
+    countanoblock = 0;
+    explorer(ast, tableroot);
+  }
+
+
+  /*
+   * Affiche dans la sortie standard toutes les TDS produites par init()
+   *
+   */
+  public void printTDS() {
+    prettyprint(tableroot, "root");
   }
 
 
@@ -33,7 +45,7 @@ public class TreeParser {
    * Explorateur récursif de sous-arbre. Effectue des contrôles sémantiques !
    *
    */
-  public void explorer(CommonTree tree) {
+  public void explorer(CommonTree tree, HashMap<String,LinkedList> table) {
 
     int nbchlid = tree.getChildCount();
     String node = tree.getText();
@@ -68,20 +80,20 @@ public class TreeParser {
       }
 
       // Calcul des bornes
-      int min = calculator((CommonTree) tree.getChild(1));
-      int max = calculator((CommonTree) tree.getChild(2));
+      int min = calculator((CommonTree) tree.getChild(1), table);
+      int max = calculator((CommonTree) tree.getChild(2), table);
       // Controle : vérifier que max >= min
 
       // Boucle FOR en elle-même
       for (int i = min ; i <= max ; i++) {
         index.set(1, i);
-        explorer((CommonTree) tree.getChild(3));
+        explorer((CommonTree) tree.getChild(3), table);
       }
 
       // On reset la valeur de l'indice à celle d'avant la boucle
       index.set(1, backup);
 
-      //On return pour éviter de reboucler sur les fils déjà parcourus...
+      // On return pour éviter de reboucler sur les fils déjà parcourus...
       return;
     }
 
@@ -90,14 +102,14 @@ public class TreeParser {
      */
     if (node.equals("IF")) {
       // On récupère la valeur de retour du calcul logique de la condition
-      int cond = calculator((CommonTree) tree.getChild(0));
+      int cond = calculator((CommonTree) tree.getChild(0), table);
 
-      //On effectue le IF en lui-même
+      // On effectue le IF en lui-même
       if (cond > 0) {
-        explorer((CommonTree) tree.getChild(1));
+        explorer((CommonTree) tree.getChild(1), table);
       }
 
-      //On return pour éviter de reboucler sur les fils déjà parcourus...
+      // On return pour éviter de reboucler sur les fils déjà parcourus...
       return;
     }
 
@@ -112,10 +124,10 @@ public class TreeParser {
       // Cas d'un int, on parse directement en int
       if (infos.getFirst().toString().equals("INT")) {
         if (nbchlidnode > 0) {
-          //Cas d'une expression arithm/logique
-          value = calculator((CommonTree) tree.getChild(1));
+          // Cas d'une expression arithm/logique
+          value = calculator((CommonTree) tree.getChild(1), table);
         } else {
-          //Cas d'un int simple
+          // Cas d'un int simple
           value = (int) Integer.parseInt(tree.getChild(1).getText());
         }
       }
@@ -125,15 +137,75 @@ public class TreeParser {
       }
       infos.set(1, value);
 
-      //On break maintenant pour éviter des appels récursifs inutiles.
+      // On break maintenant pour éviter des appels récursifs inutiles.
       return;
     }
+
 
     /*
      * CLASS
      */
     if (node.equals("CLASS")) {
-      
+      int nbchlidnode = tree.getChildCount();
+      String classname = tree.getChild(0).getText();
+      String classinher;
+      CommonTree block;
+
+      // Cas d'une classe de base
+      if (nbchlidnode == 2) {
+        block = (CommonTree) tree.getChild(1);
+      }
+      // Cas d'une classe qui hérite d'une autre
+      else if (nbchlidnode == 3) {
+        classinher = tree.getChild(1).getText();
+
+        // CONTROLE SEMANTIQUE : UNE CLASSE NE PEUT PAS HERITER D'ELLE-MEME
+        if (classinher.equals(classname)) {
+          System.out.println("Erreur : une classe ne peut pas hériter d'elle-même. classe : " + classname);
+          System.exit(0);
+        }
+
+        block = (CommonTree) tree.getChild(2);
+      }
+      else System.out.println("Erreur dans l'AST ... class_decl : " + classname);
+
+      // Création d'une sous-TDS (nouvel espace de noms)
+      return;
+    }
+
+    /*
+     * METHODEC
+     */
+    if (node.equals("METHODEC")) {
+
+      // Création d'une sous-TDS (nouvel espace de noms)
+      return;
+    }
+
+    /*
+     * ANONYMOUSBLOCK
+     */
+    if (node.equals("ANONYMOUSBLOCK")) {
+      countanoblock += 1;
+      int nbchlidnode = tree.getChildCount();
+      String anoname = "ANOBLOCK" + countanoblock;
+
+      // Création d'une sous-TDS (nouvel espace de noms)
+      LinkedList infos = new LinkedList();
+      HashMap<String,LinkedList> soustable = new HashMap<String,LinkedList>();
+
+      // Remplie la sous-TDS en explorant le bloc anonyme
+      if (nbchlidnode > 0) {
+        for (int k=0; k<=nbchlidnode-1; k++) {
+          explorer((CommonTree) tree.getChild(k), soustable);
+        }
+      }
+
+      // Ajouter la sous-TDS à la TDS parente
+      infos.add("ANOBLOCK"); // Type d'entrée
+      infos.add(soustable);
+      table.put(anoname,infos);
+      return;
     }
 
     //Condition d'arrêt de la récursion + Parcours des autres noeuds
@@ -142,7 +214,7 @@ public class TreeParser {
     }
     else {
       for (int k=0; k<=nbchlid-1; k++) {
-        explorer((CommonTree) tree.getChild(k));
+        explorer((CommonTree) tree.getChild(k), table);
       }
     }
   }
@@ -152,7 +224,7 @@ public class TreeParser {
    * Calulette récursive du compilateur, résoud les expressions arithmétiques/logiques.
    *
    */
-  public int calculator(CommonTree expr) {
+  public int calculator(CommonTree expr, HashMap<String,LinkedList> table) {
     int res;
     res = 0; // A virer plus tard !
 
@@ -170,43 +242,43 @@ public class TreeParser {
 
     //Cas de l'opérateur unaire -
     if (expr.getText().equals("-")) {
-      res = - calculator((CommonTree) expr.getChild(0));
+      res = - calculator((CommonTree) expr.getChild(0), table);
     }
     // Logique ==     :   1 = true; 0 = false
     if (expr.getText().equals("==")) {
-      res =  (calculator((CommonTree) expr.getChild(0)) == calculator((CommonTree) expr.getChild(1))) ? 1 : 0 ;
+      res =  (calculator((CommonTree) expr.getChild(0), table) == calculator((CommonTree) expr.getChild(1), table)) ? 1 : 0 ;
     }
     // Logique >=     :   1 = true; 0 = false
     if (expr.getText().equals(">=")) {
-      res =  (calculator((CommonTree) expr.getChild(0)) >= calculator((CommonTree) expr.getChild(1))) ? 1 : 0 ;
+      res =  (calculator((CommonTree) expr.getChild(0), table) >= calculator((CommonTree) expr.getChild(1), table)) ? 1 : 0 ;
     }
     // Logique <=     :   1 = true; 0 = false
     if (expr.getText().equals("<=")) {
-      res =  (calculator((CommonTree) expr.getChild(0)) <= calculator((CommonTree) expr.getChild(1))) ? 1 : 0 ;
+      res =  (calculator((CommonTree) expr.getChild(0), table) <= calculator((CommonTree) expr.getChild(1), table)) ? 1 : 0 ;
     }
     // Logique >     :   1 = true; 0 = false
     if (expr.getText().equals(">")) {
-      res =  (calculator((CommonTree) expr.getChild(0)) > calculator((CommonTree) expr.getChild(1))) ? 1 : 0 ;
+      res =  (calculator((CommonTree) expr.getChild(0), table) > calculator((CommonTree) expr.getChild(1), table)) ? 1 : 0 ;
     }
     // Logique <     :   1 = true; 0 = false
     if (expr.getText().equals("<")) {
-      res =  (calculator((CommonTree) expr.getChild(0)) < calculator((CommonTree) expr.getChild(1))) ? 1 : 0 ;
+      res =  (calculator((CommonTree) expr.getChild(0), table) < calculator((CommonTree) expr.getChild(1), table)) ? 1 : 0 ;
     }
     // Logique !=     :   1 = true; 0 = false
     if (expr.getText().equals("!=")) {
-      res =  (calculator((CommonTree) expr.getChild(0)) != calculator((CommonTree) expr.getChild(1))) ? 1 : 0 ;
+      res =  (calculator((CommonTree) expr.getChild(0), table) != calculator((CommonTree) expr.getChild(1), table)) ? 1 : 0 ;
     }
     //Arithmétique +
     if (expr.getText().equals("+")) {
-      res =  (calculator((CommonTree) expr.getChild(0)) + calculator((CommonTree) expr.getChild(1)));
+      res =  (calculator((CommonTree) expr.getChild(0), table) + calculator((CommonTree) expr.getChild(1), table));
     }
     //Arithmétique -
     if (expr.getText().equals("-")) {
-      res =  (calculator((CommonTree) expr.getChild(0)) - calculator((CommonTree) expr.getChild(1)));
+      res =  (calculator((CommonTree) expr.getChild(0), table) - calculator((CommonTree) expr.getChild(1), table));
     }
     //Arithmétique *
     if (expr.getText().equals("*")) {
-      res =  (calculator((CommonTree) expr.getChild(0)) * calculator((CommonTree) expr.getChild(1)));
+      res =  (calculator((CommonTree) expr.getChild(0), table) * calculator((CommonTree) expr.getChild(1), table));
     }
 
     return res;
@@ -217,14 +289,22 @@ public class TreeParser {
    * Pretty printer de TDS.
    *
    */
-   public void prettyprint() {
-     System.out.println("=================== TDS : " + "root" + " ====================");
+   public void prettyprint(HashMap<String,LinkedList> table, String name) {
+     System.out.println("");
+     System.out.println("====================== TDS : " + name + " =======================");
      Iterator it = (Iterator) table.keySet().iterator();
      while (it.hasNext()) {
        String key = (String) it.next();
        LinkedList infos = table.get(key);
        String type = infos.get(0).toString();
        String valeur;
+       if (infos.get(1) instanceof HashMap) {
+         HashMap<String,LinkedList> soustable = (HashMap<String,LinkedList>) infos.get(1);
+         System.out.println("Idf : " + key + " || Type : " + type + " ||");
+         System.out.println("=========================================================");
+         prettyprint(soustable, key);
+         return;
+       }
        try {
          valeur = infos.get(1).toString();
        }
@@ -233,6 +313,7 @@ public class TreeParser {
        }
        System.out.println("Idf : " + key + " || Type : " + type + " || Valeur : " + valeur + " ||");
      }
-     System.out.println("===================================================");
+     System.out.println("=========================================================");
+     System.out.println("");
    }
 }
