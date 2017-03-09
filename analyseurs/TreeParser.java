@@ -37,13 +37,35 @@ public class TreeParser {
     }
 
     // FOR
-    /*
     if (tree.getText().equals("FOR")) {
-      LinkedList infos = new LinkedList();
-      infos.add(tree.getChild(1));
-      infos.add(null);
-      table.put(tree.getChild(0).getText(),infos);
-    } */
+      // On récupère les infos sur l'indice
+      LinkedList index = table.get(tree.getChild(0).getText());
+
+      // Récupère la valeur de l'indice avant FOR
+      Object backup;
+      try {
+        backup = (int) index.get(1);
+      }
+      catch (NullPointerException ne) {
+        backup = null;
+      }
+
+      // Calcul des bornes
+      int min = calculator((CommonTree) tree.getChild(1));
+      int max = calculator((CommonTree) tree.getChild(2));
+
+      // Boucle FOR en elle-même
+      for (int i = min ; i <= max ; i++) {
+        index.set(1, i);
+        explorer((CommonTree) tree.getChild(3));
+      }
+
+      // On reset la valeur de l'indice à celle d'avant la boucle
+      index.set(1, backup);
+
+      //On return pour éviter de reboucler sur les fils déjà parcourus...
+      return;
+    }
 
     // AFFECT
     if (tree.getText().equals("AFFECT")) {
@@ -51,7 +73,6 @@ public class TreeParser {
       Object value;
       int nbchlidnode = tree.getChild(1).getChildCount();
 
-      //System.out.println("DEBUG : " tree.getChild(0).getText() + nbchlidnode + infos);
       // Cas d'un int, on parse directement en int
       if (infos.getFirst().toString().equals("INT")) {
         if (nbchlidnode > 0) {
@@ -59,7 +80,7 @@ public class TreeParser {
           value = calculator((CommonTree) tree.getChild(1));
         } else {
           //Cas d'un int simple
-          value = Integer.parseInt(tree.getChild(1).getText());
+          value = (int) Integer.parseInt(tree.getChild(1).getText());
         }
       }
       // Les autres cas, on parse en String.
@@ -69,8 +90,8 @@ public class TreeParser {
       infos.set(1, value);
     }
 
+    //Condition d'arrêt de la récursion
     if (nbchlid==0) {
-      //System.out.println("Fin de l'arbre : " + tree.getParent() +" = "+ tree.getText());
       return;
     }
     else {
@@ -139,7 +160,6 @@ public class TreeParser {
     if (expr.getText().equals("*")) {
       res =  (calculator((CommonTree) expr.getChild(0)) * calculator((CommonTree) expr.getChild(1)));
     }
-
 
     return res;
   }
