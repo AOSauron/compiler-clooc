@@ -18,6 +18,7 @@ public class TreeParser {
     this.ast=ast;
   }
 
+
   /*
    * Lance l'exploration de tout l'arbre !
    */
@@ -27,6 +28,7 @@ public class TreeParser {
     explorer(ast);
   }
 
+
   /*
    * Explorateur récursif de sous-arbre. Effectue des contrôles sémantiques !
    *
@@ -34,12 +36,14 @@ public class TreeParser {
   public void explorer(CommonTree tree) {
 
     int nbchlid = tree.getChildCount();
+    String node = tree.getText();
+
     System.out.println("TDS partielle :" + table.toString());
 
     /*
      * VARDEC
      */
-    if (tree.getText().equals("VARDEC")) {
+    if (node.equals("VARDEC")) {
       LinkedList infos = new LinkedList();
       infos.add(tree.getChild(1));
       infos.add(null);
@@ -50,7 +54,7 @@ public class TreeParser {
     /*
      * FOR
      */
-    if (tree.getText().equals("FOR")) {
+    if (node.equals("FOR")) {
       // On récupère les infos sur l'indice
       LinkedList index = table.get(tree.getChild(0).getText());
 
@@ -84,7 +88,7 @@ public class TreeParser {
     /*
      * IF
      */
-    if (tree.getText().equals("IF")) {
+    if (node.equals("IF")) {
       // On récupère la valeur de retour du calcul logique de la condition
       int cond = calculator((CommonTree) tree.getChild(0));
 
@@ -100,7 +104,7 @@ public class TreeParser {
     /*
      * AFFECT
      */
-    if (tree.getText().equals("AFFECT")) {
+    if (node.equals("AFFECT")) {
       LinkedList infos = table.get(tree.getChild(0).getText());
       Object value;
       int nbchlidnode = tree.getChild(1).getChildCount();
@@ -123,6 +127,13 @@ public class TreeParser {
 
       //On break maintenant pour éviter des appels récursifs inutiles.
       return;
+    }
+
+    /*
+     * CLASS
+     */
+    if (node.equals("CLASS")) {
+      
     }
 
     //Condition d'arrêt de la récursion + Parcours des autres noeuds

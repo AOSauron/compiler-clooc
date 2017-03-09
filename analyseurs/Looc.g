@@ -59,7 +59,7 @@ type:   IDFC -> ^(IDFC)
     |   'string' -> ^(STRING)
     ;
 
-method_decl:   'method' IDF '(' method_args? ')' (':' type)? '{' var_decl* instruction+ '}' -> ^(METHODDEC IDF method_args? type? var_decl* ^(BLOCK instruction+));
+method_decl:   'method' IDF '(' method_args? ')' (':' type)? '{' var_decl* instruction+ '}' -> ^(METHODDEC IDF method_args? type? ^(BLOCK var_decl* instruction+));
 
 method_args:   IDF ':' type (',' IDF ':' type)* -> ^(METHODARGS ^(ARG IDF type) ^(ARG IDF type)*);
 
