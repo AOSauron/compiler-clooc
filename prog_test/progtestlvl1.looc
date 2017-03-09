@@ -8,6 +8,7 @@ var n : int;
 var total : int;
 var i : int;
 
+i := 3;
 n := 10;
 total := 0;
 

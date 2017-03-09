@@ -1,5 +1,6 @@
 var a : int;
 var i : int;
+var variable : int;
 a := 89;
 i := 0;
 
@@ -7,7 +8,7 @@ for i in (5+6) .. a
 do
   write "Ceci est une boucle for.";
   /* var variable : bool; */
-  variable := (a == 90);
+  variable := -(a == 90);
 end
 
 
