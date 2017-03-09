@@ -1,6 +1,13 @@
 import org.antlr.runtime.tree.*;
 import java.util.LinkedList;
 import java.util.HashMap;
+import java.util.Iterator;
+
+/*
+ * Parseur d'AST : le parcours et crée les TDS nécessaires. Les remplit en conséquence.
+ * @author : Guillaume Garcia
+ * Pour Clooc - PCL 2017 - TELECOM Nancy
+ */
 
 public class TreeParser {
 
@@ -22,21 +29,27 @@ public class TreeParser {
 
   /*
    * Explorateur récursif de sous-arbre. Effectue des contrôles sémantiques !
+   *
    */
   public void explorer(CommonTree tree) {
 
     int nbchlid = tree.getChildCount();
-    System.out.println("TDS " + table.toString());
+    System.out.println("TDS partielle :" + table.toString());
 
-    // VARDEC
+    /*
+     * VARDEC
+     */
     if (tree.getText().equals("VARDEC")) {
       LinkedList infos = new LinkedList();
       infos.add(tree.getChild(1));
       infos.add(null);
       table.put(tree.getChild(0).getText(),infos);
+      return;
     }
 
-    // FOR
+    /*
+     * FOR
+     */
     if (tree.getText().equals("FOR")) {
       // On récupère les infos sur l'indice
       LinkedList index = table.get(tree.getChild(0).getText());
@@ -53,6 +66,7 @@ public class TreeParser {
       // Calcul des bornes
       int min = calculator((CommonTree) tree.getChild(1));
       int max = calculator((CommonTree) tree.getChild(2));
+      // Controle : vérifier que max >= min
 
       // Boucle FOR en elle-même
       for (int i = min ; i <= max ; i++) {
@@ -67,7 +81,25 @@ public class TreeParser {
       return;
     }
 
-    // AFFECT
+    /*
+     * IF
+     */
+    if (tree.getText().equals("IF")) {
+      // On récupère la valeur de retour du calcul logique de la condition
+      int cond = calculator((CommonTree) tree.getChild(0));
+
+      //On effectue le IF en lui-même
+      if (cond > 0) {
+        explorer((CommonTree) tree.getChild(1));
+      }
+
+      //On return pour éviter de reboucler sur les fils déjà parcourus...
+      return;
+    }
+
+    /*
+     * AFFECT
+     */
     if (tree.getText().equals("AFFECT")) {
       LinkedList infos = table.get(tree.getChild(0).getText());
       Object value;
@@ -88,9 +120,12 @@ public class TreeParser {
         value = tree.getChild(1).getText();
       }
       infos.set(1, value);
+
+      //On break maintenant pour éviter des appels récursifs inutiles.
+      return;
     }
 
-    //Condition d'arrêt de la récursion
+    //Condition d'arrêt de la récursion + Parcours des autres noeuds
     if (nbchlid==0) {
       return;
     }
@@ -101,8 +136,10 @@ public class TreeParser {
     }
   }
 
+
   /*
    * Calulette récursive du compilateur, résoud les expressions arithmétiques/logiques.
+   *
    */
   public int calculator(CommonTree expr) {
     int res;
@@ -163,4 +200,28 @@ public class TreeParser {
 
     return res;
   }
+
+
+  /*
+   * Pretty printer de TDS.
+   *
+   */
+   public void prettyprint() {
+     System.out.println("=================== TDS : " + "root" + " ====================");
+     Iterator it = (Iterator) table.keySet().iterator();
+     while (it.hasNext()) {
+       String key = (String) it.next();
+       LinkedList infos = table.get(key);
+       String type = infos.get(0).toString();
+       String valeur;
+       try {
+         valeur = infos.get(1).toString();
+       }
+       catch (NullPointerException ne) {
+         valeur = "null";
+       }
+       System.out.println("Idf : " + key + " || Type : " + type + " || Valeur : " + valeur + " ||");
+     }
+     System.out.println("===================================================");
+   }
 }

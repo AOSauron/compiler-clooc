@@ -11,6 +11,13 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.io.FileOutputStream;
 
+/*
+ * Compilateur Clooc. Classe Main.
+ * @author : Guillaume Garcia
+ * Clooc - PCL 2017 - TELECOM Nancy
+ */
+
+
 public class Clooc {
     public static void main(String[] args) throws Exception {
 
@@ -26,7 +33,7 @@ public class Clooc {
         if (args[0].equals("-T")) {
           AST=true;
         }
-        
+
         //Ouvre le fichier passé en paramètre
         try {
           if (AST) {
@@ -48,9 +55,11 @@ public class Clooc {
             CommonTree tree = (CommonTree) parser.program().getTree();
 
             //Création de la TDS/contrôles sémantiques.
-            //full_tree_simple = tree.toStringTree();
             TreeParser tablor = new TreeParser(tree);
             tablor.init();
+
+            //Affichage des TDS
+            tablor.prettyprint();
 
             //Génération de l'arbre en DOT
             DOTTreeGenerator gen = new DOTTreeGenerator();
