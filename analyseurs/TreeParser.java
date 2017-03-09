@@ -26,6 +26,7 @@ public class TreeParser {
    */
   public void init() {
     System.out.println("Tree to parse : " + this.ast.toStringTree());
+    System.out.println("");
     tableroot = new HashMap<String,LinkedList>();
     countanoblock = 0;
     explorer(ast, tableroot);
@@ -132,7 +133,10 @@ public class TreeParser {
         }
       }
       // Les autres cas, on parse en String.
-      else  {
+      else if (nbchlidnode > 0) { //Cas d'un New : Crée une TDS pour chaque new ?
+        value = tree.getChild(1).getChild(0).getText();
+      }
+      else {
         value = tree.getChild(1).getText();
       }
       infos.set(1, value);
@@ -150,6 +154,7 @@ public class TreeParser {
       String classname = tree.getChild(0).getText();
       String classinher;
       CommonTree block;
+      int nbchlidofblock;
 
       // Cas d'une classe de base
       if (nbchlidnode == 2) {
@@ -167,18 +172,87 @@ public class TreeParser {
 
         block = (CommonTree) tree.getChild(2);
       }
-      else System.out.println("Erreur dans l'AST ... class_decl : " + classname);
+      else {
+        System.out.println("Erreur dans l'AST ... class_decl : " + classname);
+        block = null;
+        System.exit(0);
+      }
+
+      nbchlidofblock = block.getChildCount();
 
       // Création d'une sous-TDS (nouvel espace de noms)
+      LinkedList infos = new LinkedList();
+      HashMap<String,LinkedList> soustable = new HashMap<String,LinkedList>();
+
+      // Remplie la sous-TDS en explorant le corps de la classe
+      if (nbchlidofblock > 0) {
+        explorer((CommonTree) block, soustable);
+      }
+
+      // Ajouter la sous-TDS à la TDS parente
+      infos.add("CLASS"); // Type d'entrée
+      infos.add(soustable);
+      table.put(classname,infos);
       return;
     }
 
     /*
      * METHODEC
      */
-    if (node.equals("METHODEC")) {
+    if (node.equals("METHODDEC")) {
+      int nbchlidnode = tree.getChildCount();
+      String methodname = tree.getChild(0).getText();
+      String type = "NULL";
+      CommonTree methodargs;
+      CommonTree block = null;
+      int nbchlidofblock;
+      LinkedList args = new LinkedList();
+
+      // Cas d'une méthode sans argument et sans type de retour
+      if (nbchlidnode == 2) {
+        block = (CommonTree) tree.getChild(1);
+        type = "void";
+      }
+
+      // Cas d'une méthode sans argument et avec type de retour
+      if (nbchlidnode == 3 && !(tree.getChild(1).getText().equals("METHODARGS"))) {
+        block = (CommonTree) tree.getChild(2);
+        type = tree.getChild(1).getText();
+      }
+
+      // Cas d'une méthode avec argument et sans type de retour
+      if (nbchlidnode == 3 && tree.getChild(1).getText().equals("METHODARGS")) {
+        block = (CommonTree) tree.getChild(2);
+        methodargs = (CommonTree) tree.getChild(1);
+        type = "void";
+        args = parsemethodargs((CommonTree) methodargs);
+      }
+
+      // Cas d'une méthode avec argument et avec type de retour
+      if (nbchlidnode == 4) {
+        block = (CommonTree) tree.getChild(3);
+        methodargs = (CommonTree) tree.getChild(1);
+        type = tree.getChild(2).getText();
+        args = parsemethodargs((CommonTree) methodargs);
+      }
+
+      nbchlidofblock = block.getChildCount();
 
       // Création d'une sous-TDS (nouvel espace de noms)
+      LinkedList infos = new LinkedList();
+      HashMap<String,LinkedList> soustable = new HashMap<String,LinkedList>();
+
+      // Remplie la sous-TDS en explorant le corps de la méthode
+      if (nbchlidofblock > 0) {
+        explorer((CommonTree) block, soustable);
+      }
+
+      // Ajouter la sous-TDS à la TDS parente
+      infos.add("METHOD"); // Type d'objet
+      infos.add(soustable); // Sous-TDS
+      infos.add(args); // Arguements éventuels
+      infos.add(type); // Type de retour
+      table.put(methodname,infos);
       return;
     }
 
@@ -188,7 +262,7 @@ public class TreeParser {
     if (node.equals("ANONYMOUSBLOCK")) {
       countanoblock += 1;
       int nbchlidnode = tree.getChildCount();
-      String anoname = "ANOBLOCK" + countanoblock;
+      String anoname = "ANOBLOCK-" + countanoblock;
 
       // Création d'une sous-TDS (nouvel espace de noms)
       LinkedList infos = new LinkedList();
@@ -241,7 +315,7 @@ public class TreeParser {
     }
 
     //Cas de l'opérateur unaire -
-    if (expr.getText().equals("-")) {
+    if (expr.getText().equals("-") && expr.getChildCount() == 1) {
       res = - calculator((CommonTree) expr.getChild(0), table);
     }
     // Logique ==     :   1 = true; 0 = false
@@ -272,8 +346,8 @@ public class TreeParser {
     if (expr.getText().equals("+")) {
       res =  (calculator((CommonTree) expr.getChild(0), table) + calculator((CommonTree) expr.getChild(1), table));
     }
-    //Arithmétique -
-    if (expr.getText().equals("-")) {
+    //Arithmétique - (différencié de l'opérateur unaire - en comptant les fils)
+    if (expr.getText().equals("-") && expr.getChildCount() > 1) {
       res =  (calculator((CommonTree) expr.getChild(0), table) - calculator((CommonTree) expr.getChild(1), table));
     }
     //Arithmétique *
@@ -286,12 +360,36 @@ public class TreeParser {
 
 
   /*
+   * Parse les sous-arbres METHODARGS et retourne une LinkedList d'arguements.
+   *
+   */
+   public LinkedList parsemethodargs(CommonTree args) {
+     LinkedList arglist = new LinkedList();
+     int nbarg = args.getChildCount();
+     String type;
+     String idf;
+
+     for (int i = 0 ; i <= nbarg-1 ; i++) {
+       LinkedList argument = new LinkedList();
+       idf = args.getChild(i).getChild(0).getText();
+       type = args.getChild(i).getChild(1).getText();
+       argument.add(idf);
+       argument.add(type);
+       arglist.add(argument);
+     }
+
+     return arglist;
+   }
+
+
+  /*
    * Pretty printer de TDS.
    *
    */
    public void prettyprint(HashMap<String,LinkedList> table, String name) {
      System.out.println("");
-     System.out.println("====================== TDS : " + name + " =======================");
+     System.out.println("============================ TDS : " + name + " ==============================");
+     HashMap<String,HashMap<String,LinkedList>> listtds= new HashMap<String,HashMap<String,LinkedList>>();
      Iterator it = (Iterator) table.keySet().iterator();
      while (it.hasNext()) {
        String key = (String) it.next();
@@ -300,20 +398,31 @@ public class TreeParser {
        String valeur;
        if (infos.get(1) instanceof HashMap) {
          HashMap<String,LinkedList> soustable = (HashMap<String,LinkedList>) infos.get(1);
-         System.out.println("Idf : " + key + " || Type : " + type + " ||");
-         System.out.println("=========================================================");
-         prettyprint(soustable, key);
-         return;
+         if (type.equals("METHOD")) {
+           String returntype = infos.get(3).toString();
+           LinkedList args = (LinkedList) infos.get(2);
+           System.out.println("Idf : " + key + " || Type : " + type + " || Type de retour : " + returntype + " || Arguments : " + args + " ||");
+         } else System.out.println("Idf : " + key + " || Type : " + type + " ||");
+         listtds.put(key, soustable);
        }
-       try {
-         valeur = infos.get(1).toString();
+       else {
+         try {
+           valeur = infos.get(1).toString();
+         }
+         catch (NullPointerException ne) {
+           valeur = "null";
+         }
+         System.out.println("Idf : " + key + " || Type : " + type + " || Valeur : " + valeur + " ||");
        }
-       catch (NullPointerException ne) {
-         valeur = "null";
-       }
-       System.out.println("Idf : " + key + " || Type : " + type + " || Valeur : " + valeur + " ||");
      }
-     System.out.println("=========================================================");
+     System.out.println("======================================================================");
      System.out.println("");
+
+     Iterator iter = (Iterator) listtds.keySet().iterator();
+     while (iter.hasNext()) {
+       String tdsname = (String) iter.next();
+       HashMap<String,LinkedList> soustds = listtds.get(tdsname);
+       prettyprint(soustds, tdsname);
+     }
    }
 }
