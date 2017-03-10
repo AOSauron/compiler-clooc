@@ -67,7 +67,8 @@ public class TreeParser {
     /*
      * FOR
      */
-    if (node.equals("FOR")) {
+
+    if (node.equals("FOR")) {/*
       // On récupère les infos sur l'indice
       LinkedList index = table.get(tree.getChild(0).getText());
 
@@ -93,7 +94,7 @@ public class TreeParser {
 
       // On reset la valeur de l'indice à celle d'avant la boucle
       index.set(1, backup);
-
+*/
       // On return pour éviter de reboucler sur les fils déjà parcourus...
       return;
     }
@@ -101,14 +102,14 @@ public class TreeParser {
     /*
      * IF
      */
-    if (node.equals("IF")) {
+    if (node.equals("IF")) { /*
       // On récupère la valeur de retour du calcul logique de la condition
       int cond = calculator((CommonTree) tree.getChild(0), table);
-
+      */
       // On effectue le IF en lui-même
-      if (cond > 0) {
-        explorer((CommonTree) tree.getChild(1), table);
-      }
+      //if (cond > 0) {
+        //explorer((CommonTree) tree.getChild(1), table);
+      //}
 
       // On return pour éviter de reboucler sur les fils déjà parcourus...
       return;
@@ -152,7 +153,7 @@ public class TreeParser {
     if (node.equals("CLASS")) {
       int nbchlidnode = tree.getChildCount();
       String classname = tree.getChild(0).getText();
-      String classinher;
+      String classinher = "";
       CommonTree block;
       int nbchlidofblock;
 
@@ -192,6 +193,7 @@ public class TreeParser {
       // Ajouter la sous-TDS à la TDS parente
       infos.add("CLASS"); // Type d'entrée
       infos.add(soustable);
+      infos.add(classinher);
       table.put(classname,infos);
       return;
     }
@@ -402,6 +404,9 @@ public class TreeParser {
            String returntype = infos.get(3).toString();
            LinkedList args = (LinkedList) infos.get(2);
            System.out.println("Idf : " + key + " || Type : " + type + " || Type de retour : " + returntype + " || Arguments : " + args + " ||");
+         } else if (type.equals("CLASS")) {
+           String herit = infos.get(2).toString();
+           System.out.println("Idf : " + key + " || Type : " + type + " || Herite de : " + herit + " ||");
          } else System.out.println("Idf : " + key + " || Type : " + type + " ||");
          listtds.put(key, soustable);
        }
