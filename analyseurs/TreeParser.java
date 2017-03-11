@@ -12,6 +12,8 @@ import java.util.Iterator;
 public class TreeParser {
 
   private int countanoblock;
+  private int countfor;
+  private int countif;
   private CommonTree ast;
   private HashMap<String,LinkedList> tableroot;
 
@@ -95,6 +97,16 @@ public class TreeParser {
       // On reset la valeur de l'indice à celle d'avant la boucle
       index.set(1, backup);
 */
+      countfor++;
+      String forname = "FOR-" +countfor;
+      CommonTree min;
+      CommonTree max;
+      String index;
+
+      var = tree.getChild(0).toString();
+      min = (CommonTree) tree.getChild(1);
+      max = (CommonTree) tree.getChild(2);
+
       // On return pour éviter de reboucler sur les fils déjà parcourus...
       return;
     }
@@ -102,16 +114,27 @@ public class TreeParser {
     /*
      * IF
      */
-    if (node.equals("IF")) { /*
+    if (node.equals("IF")) {
       // On récupère la valeur de retour du calcul logique de la condition
-      int cond = calculator((CommonTree) tree.getChild(0), table);
-      */
-      // On effectue le IF en lui-même
-      //if (cond > 0) {
-        //explorer((CommonTree) tree.getChild(1), table);
-      //}
+      countif++;
+      String ifname = "IF-" + countif;
+      CommonTree cond;
 
-      // On return pour éviter de reboucler sur les fils déjà parcourus...
+      //Récupère la condition dans un arbre.
+      cond = (CommonTree) tree.getChild(0);
+
+      // Création d'une sous-TDS (nouvel espace de noms)
+      LinkedList infos = new LinkedList();
+      HashMap<String,LinkedList> soustable = new HashMap<String,LinkedList>();
+
+      //Explore le block then
+      explorer((CommonTree) tree.getChild(1), soustable);
+
+      // Ajouter la sous-TDS à la TDS parente
+      infos.add("IF"); // Type d'entrée
+      infos.add(soustable); // Sous espace de noms
+      infos.add(cond); // Condition (sous-arbre)
+      table.put(ifname,infos);
       return;
     }
 
@@ -157,6 +180,10 @@ public class TreeParser {
       CommonTree block;
       int nbchlidofblock;
 
+      // Création d'une sous-TDS (nouvel espace de noms)
+      LinkedList infos = new LinkedList();
+      HashMap<String,LinkedList> soustable = new HashMap<String,LinkedList>();
+
       // Cas d'une classe de base
       if (nbchlidnode == 2) {
         block = (CommonTree) tree.getChild(1);
@@ -180,10 +207,6 @@ public class TreeParser {
       }
 
       nbchlidofblock = block.getChildCount();
-
-      // Création d'une sous-TDS (nouvel espace de noms)
-      LinkedList infos = new LinkedList();
-      HashMap<String,LinkedList> soustable = new HashMap<String,LinkedList>();
 
       // Remplie la sous-TDS en explorant le corps de la classe
       if (nbchlidofblock > 0) {
@@ -262,7 +285,7 @@ public class TreeParser {
      * ANONYMOUSBLOCK
      */
     if (node.equals("ANONYMOUSBLOCK")) {
-      countanoblock += 1;
+      countanoblock++;
       int nbchlidnode = tree.getChildCount();
       String anoname = "ANOBLOCK-" + countanoblock;
 
@@ -407,7 +430,12 @@ public class TreeParser {
          } else if (type.equals("CLASS")) {
            String herit = infos.get(2).toString();
            System.out.println("Idf : " + key + " || Type : " + type + " || Herite de : " + herit + " ||");
-         } else System.out.println("Idf : " + key + " || Type : " + type + " ||");
+         } else if (type.equals("IF")) {
+           String cond = ((CommonTree)infos.get(2)).toStringTree();
+           System.out.println("Idf : " + key + " || Type : " + type + " || Condition : " + cond + " ||");
+         } else if (type.equals("FOR")) {
+
+         }System.out.println("Idf : " + key + " || Type : " + type + " ||");
          listtds.put(key, soustable);
        }
        else {

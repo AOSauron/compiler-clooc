@@ -12,7 +12,6 @@ class Math =
     var retval : int;
     var i : int;
 
-    /*
     if b == 0
     then
       return (1);
@@ -22,7 +21,7 @@ class Math =
     for i in 1 .. b
     do
       retval := retval * a;
-    end */
+    end
 
     return (retval);
   }
