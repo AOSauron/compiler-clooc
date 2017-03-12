@@ -18,7 +18,7 @@ class Math =
     fi
 
     retval := 1;
-    for i in 1 .. b
+    for i in 3*5 .. 5
     do
       retval := retval * a;
     end

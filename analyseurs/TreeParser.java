@@ -103,21 +103,44 @@ public class TreeParser {
       CommonTree max;
       String index;
 
-      var = tree.getChild(0).toString();
+      index = tree.getChild(0).toString();
       min = (CommonTree) tree.getChild(1);
       max = (CommonTree) tree.getChild(2);
 
-      // On return pour éviter de reboucler sur les fils déjà parcourus...
+      // CONTROLE SEMTANTIQUE : La borne sup ne peut pas être inférieure (stricte) à la borne inf
+      if (isCalulableInt(min, table) && isCalulableInt(max, table)) {
+        int mini = calculator((CommonTree) min, table);
+        int maxi = calculator((CommonTree) max, table);
+        if (maxi < mini) {
+          System.out.println("Erreur : - Boucle For - Les bornes de l'indice " + index + " ne sont pas correctes" );
+        }
+      }
+
+      // Création d'une sous-TDS (nouvel espace de noms)
+      LinkedList infos = new LinkedList();
+      HashMap<String,LinkedList> soustable = new HashMap<String,LinkedList>();
+
+      //Explore le block do
+      explorer((CommonTree) tree.getChild(3), soustable);
+
+      // Ajouter la sous-TDS à la TDS parente
+      infos.add("FOR"); // Type d'entrée
+      infos.add(soustable); // Sous espace de noms
+      infos.add(index); // Condition (sous-arbre)
+      infos.add(min); // Borne inf
+      infos.add(max); //Borne sup
+      table.put(forname, infos);
       return;
     }
 
     /*
-     * IF
+     * IF & ELSE
      */
     if (node.equals("IF")) {
       // On récupère la valeur de retour du calcul logique de la condition
       countif++;
       String ifname = "IF-" + countif;
+      int nbchlidnode = tree.getChildCount();
       CommonTree cond;
 
       //Récupère la condition dans un arbre.
@@ -125,15 +148,22 @@ public class TreeParser {
 
       // Création d'une sous-TDS (nouvel espace de noms)
       LinkedList infos = new LinkedList();
-      HashMap<String,LinkedList> soustable = new HashMap<String,LinkedList>();
+      HashMap<String,LinkedList> soustableif = new HashMap<String,LinkedList>();
+      HashMap<String,LinkedList> soustableelse = new HashMap<String,LinkedList>();
 
       //Explore le block then
-      explorer((CommonTree) tree.getChild(1), soustable);
+      explorer((CommonTree) tree.getChild(1), soustableif);
+
+      //On explore le block ELSE si il existe
+      if (nbchlidnode == 3) {
+        explorer((CommonTree) tree.getChild(3), soustableelse);
+      }
 
       // Ajouter la sous-TDS à la TDS parente
       infos.add("IF"); // Type d'entrée
-      infos.add(soustable); // Sous espace de noms
+      infos.add(soustableif); // Sous espace de noms pour IF
       infos.add(cond); // Condition (sous-arbre)
+      infos.add(soustableelse); // Bloc pour ELSE (vide si pas de else)
       table.put(ifname,infos);
       return;
     }
@@ -142,10 +172,11 @@ public class TreeParser {
      * AFFECT
      */
     if (node.equals("AFFECT")) {
-      LinkedList infos = table.get(tree.getChild(0).getText());
-      Object value;
-      int nbchlidnode = tree.getChild(1).getChildCount();
+      //LinkedList infos = table.get(tree.getChild(0).getText());
+      //CommonTree value;
+      //int nbchlidnode = tree.getChild(1).getChildCount();
 
+      /*
       // Cas d'un int, on parse directement en int
       if (infos.getFirst().toString().equals("INT")) {
         if (nbchlidnode > 0) {
@@ -156,14 +187,18 @@ public class TreeParser {
           value = (int) Integer.parseInt(tree.getChild(1).getText());
         }
       }
+
       // Les autres cas, on parse en String.
       else if (nbchlidnode > 0) { //Cas d'un New : Crée une TDS pour chaque new ?
         value = tree.getChild(1).getChild(0).getText();
       }
       else {
         value = tree.getChild(1).getText();
-      }
-      infos.set(1, value);
+      } */
+
+      //value = (CommonTree) tree.getChild(1);
+
+      //infos.set(1, value);
 
       // On break maintenant pour éviter des appels récursifs inutiles.
       return;
@@ -408,7 +443,42 @@ public class TreeParser {
 
 
   /*
-   * Pretty printer de TDS.
+   * Test si l'arbre exploré peut être parsé en int immédiatement.
+   *
+   */
+   public Boolean isCalulableInt(CommonTree tocalc, HashMap<String,LinkedList> table) {
+     int res = 0;
+
+     if (tocalc.getChildCount()==0) {
+       try {
+         res = Integer.parseInt(tocalc.getText());
+         return true;
+       }
+       catch (Exception e) {
+         try {
+           LinkedList infos = table.get(tocalc.getText());
+           res = (int) infos.get(1);
+           return true;
+         }
+         catch (NullPointerException ne) {
+           return false;
+         }
+       }
+     }
+     else {
+       try {
+         res = calculator((CommonTree) tocalc, table);
+         return true;
+       }
+       catch (NullPointerException nep) {
+         return false;
+       }
+     }
+   }
+
+
+  /*
+   * Pretty printer de TDS. Ne print que les TDS non-vides.
    *
    */
    public void prettyprint(HashMap<String,LinkedList> table, String name) {
@@ -431,11 +501,17 @@ public class TreeParser {
            String herit = infos.get(2).toString();
            System.out.println("Idf : " + key + " || Type : " + type + " || Herite de : " + herit + " ||");
          } else if (type.equals("IF")) {
+           String keyelse = "ELSE-" + countif;
            String cond = ((CommonTree)infos.get(2)).toStringTree();
+           HashMap<String,LinkedList> elsetable = (HashMap<String,LinkedList>) infos.get(3);
+           listtds.put(keyelse, elsetable);
            System.out.println("Idf : " + key + " || Type : " + type + " || Condition : " + cond + " ||");
          } else if (type.equals("FOR")) {
-
-         }System.out.println("Idf : " + key + " || Type : " + type + " ||");
+           String index = (String) infos.get(2);
+           String min = ((CommonTree)infos.get(3)).toStringTree();
+           String max = ((CommonTree)infos.get(4)).toStringTree();
+           System.out.println("Idf : " + key + " || Type : " + type + " || Index : " + index + " || Min : " + min + " || Max : " + max + " ||");
+         } else System.out.println("Idf : " + key + " || Type : " + type + " ||");
          listtds.put(key, soustable);
        }
        else {
@@ -455,7 +531,10 @@ public class TreeParser {
      while (iter.hasNext()) {
        String tdsname = (String) iter.next();
        HashMap<String,LinkedList> soustds = listtds.get(tdsname);
-       prettyprint(soustds, tdsname);
+       // On ne print que les TDS non vides
+       if (!(soustds.isEmpty())) {
+         prettyprint(soustds, tdsname);
+       }
      }
    }
 }
