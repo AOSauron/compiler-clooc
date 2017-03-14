@@ -101,6 +101,7 @@ public class TreeParser {
         int maxi = calculator((CommonTree) max, table);
         if (maxi < mini) {
           System.out.println("Erreur : - Boucle For - Les bornes de l'indice " + index + " ne sont pas correctes" );
+          System.exit(1);
         }
       }
       catch (NoSuchIdfException e) {
@@ -179,33 +180,45 @@ public class TreeParser {
      * AFFECT
      */
     if (nodename.equals("AFFECT")) {
-      //LinkedList infos = table.get(tree.getChild(0).getText());
-      //CommonTree value;
-      //int nbchlidnode = tree.getChild(1).getChildCount();
 
-      /*
+      Object value = null;
+      LinkedList infos = null;
+      int nbchlidnode = tree.getChild(1).getChildCount();
+
+      // CONTROLE SEMANTIQUE : VERIFIE QU'UN IDF EXISTE BIEN POUR LUI FAIRE UN AFFECT
+      try {
+        infos = table.get(tree.getChild(0).getText());
+      }
+      catch (NullPointerException ne) {
+        System.out.println("Erreur : référence indéfinie vers la variable " + tree.getChild(0));
+        System.exit(1);
+      }
+
       // Cas d'un int, on parse directement en int
       if (infos.getFirst().toString().equals("INT")) {
-        if (nbchlidnode > 0) {
-          // Cas d'une expression arithm/logique
-          value = calculator((CommonTree) tree.getChild(1), table);
-        } else {
-          // Cas d'un int simple
-          value = (int) Integer.parseInt(tree.getChild(1).getText());
+        // Cas d'une expression arithm/logique
+        try {
+          value = (int) calculator((CommonTree) tree.getChild(1), table);
+        }
+        // CONTROLE SEMANTIQUE : VERIFIE QU'UN IDF EXISTE BIEN DANS LE MEMBRE DE DROITE
+        catch (NoSuchIdfException e) {
+          System.out.println("Erreur : référence indéfinie vers la variable " + tree.getChild(0));
+        }
+        // Cas d'une variable abstraite qui sera définie à l'exécution
+        catch (NullPointerException ne) {
+          value = (CommonTree) tree.getChild(1);
         }
       }
 
       // Les autres cas, on parse en String.
       else if (nbchlidnode > 0) { //Cas d'un New : Crée une TDS pour chaque new ?
-        value = tree.getChild(1).getChild(0).getText();
+        value = (String) tree.getChild(1).getChild(0).getText();
       }
       else {
-        value = tree.getChild(1).getText();
-      } */
+        value = (String) tree.getChild(1).getText();
+      }
 
-      //value = (CommonTree) tree.getChild(1);
-
-      //infos.set(1, value);
+      infos.set(1, value);
 
       return;
     }
@@ -241,7 +254,7 @@ public class TreeParser {
         // CONTROLE SEMANTIQUE : UNE CLASSE NE PEUT PAS HERITER D'ELLE-MEME
         if (classinher.equals(classname)) {
           System.out.println("Erreur : une classe ne peut pas hériter d'elle-même : " + classname + " inherit " + classname);
-          System.exit(0);
+          System.exit(1);
         }
 
         // Récupérer la TDS de la classe mère (forcément dans les child de root, vu la grammaire, donc frère ce ce noeud, donc ici node=root)
@@ -257,7 +270,7 @@ public class TreeParser {
         }
         catch (NoSuchIdfException e) {
           System.out.println("Erreur : référence indéfinie à la classe mère : " + classinher);
-          System.exit(0);
+          System.exit(1);
         }
 
         // Récupère le bloc à traiter plus bas
@@ -266,7 +279,7 @@ public class TreeParser {
       else {
         System.out.println("Erreur dans l'AST ... class_decl : " + classname);
         block = null;
-        System.exit(0);
+        System.exit(1);
       }
 
       nbchlidofblock = block.getChildCount();
@@ -420,7 +433,9 @@ public class TreeParser {
           LinkedList infos = table.get(expr.getText());
           res = (int) infos.get(1);
         }
+        // CONTROLE SEMANTIQUE : VERIFIER QU'UN IDF EXISTE DANS UN EXPRESSION CALCULATOIRE
         catch (NullPointerException ne) {
+          System.out.println("Erreur : référence indéfinie vers la variable : " + expr.getText());
           throw new NoSuchIdfException("Cet IDF n'existe pas.");
         }
       }
