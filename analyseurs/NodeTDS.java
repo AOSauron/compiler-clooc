@@ -1,16 +1,17 @@
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.HashMap;
 
 public class NodeTDS {
 
   private String id;
   private final List<NodeTDS> fils = new ArrayList<>();
-  private final NodeTDS parent;
+  private final List<NodeTDS> parent = new ArrayList<>();
   private HashMap<String,LinkedList> table;
 
-  public NodeTDS(NodeTDS parent, HashMap<String,LinkedList> table) {
-    this.parent = parent;
-    this.table = table;
+  public NodeTDS(NodeTDS parent) {
+    this.parent.add(parent);
   }
 
   public String getId() {
@@ -21,24 +22,82 @@ public class NodeTDS {
     this.id = id;
   }
 
+  public void setTable(HashMap<String,LinkedList> table) {
+    this.table=table;
+  }
+
+  public HashMap<String,LinkedList> getTable() {
+    return table;
+  }
+
   public List<NodeTDS> getChildren() {
     return fils;
   }
 
-  public NodeTDS getParent() {
+  public List<NodeTDS> getParent() {
     return parent;
   }
 
   /*
-   * Ajoute un fils à ce noeud.
+   * Cherche le noeuds avec l'id ID et le renvoie
+   */
+   public NodeTDS getChild(String id) throws NoSuchIdfException {
+     NodeTDS child;
+     String idtocheck;
+     List<NodeTDS> children;
+     int size;
+
+     // Vérifie que le noeud a des parents et récupère le nombre d'enfant
+     try {
+       children = this.getChildren();
+       size = children.size();
+     }
+     catch (NullPointerException e) {
+       throw new NoSuchIdfException();
+     }
+
+     for (int i = 0; i < size; i++) {
+       child = children.get(i);
+       idtocheck = child.getId();
+       if (id.equals(idtocheck)) return child;
+     }
+
+     // Si le for n'a rien retourné c'est qu'il n'y a aucun fils correspondant à l'id fourni. Donc on throw une exception.
+     throw new NoSuchIdfException();
+   }
+
+  /*
+   * Ajoute un fils à ce noeud. (linkage statique simple)
    */
   public void addChild(NodeTDS fils) {
     this.fils.add(fils);
   }
 
   /*
+   * Ajoute un parent à ce neoud (linkage dynamique? comme par ex un classe qui hérite d'une autre)
+   */
+   public void addParent(NodeTDS parent) {
+     this.parent.add(parent);
+   }
+
+   /*
+    * Retourne true si le noeud a un parent (minimum), false sinon (=root)
+    */
+    public Boolean hasParent(NodeTDS node) {
+      try {
+        node.getParent();
+        return true;
+      }
+      catch (NullPointerException e) {
+          return false;
+      }
+    }
+
+
+  /*
    * Print le noeud courant ainsi que ses fils de façon récursive. Ne print pas les TDS vides
    */
+   /*
   public void printTree() {
     System.out.println("");
     System.out.println("============================ TDS : " + id + " ==============================");
@@ -94,5 +153,5 @@ public class NodeTDS {
         prettyprint(soustds, tdsname);
       }
     }
-  }
+  }*/
 }

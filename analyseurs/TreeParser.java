@@ -16,6 +16,7 @@ public class TreeParser {
   private int countif;
   private CommonTree ast;
   private HashMap<String,LinkedList> tableroot;
+  private NodeTDS root;
 
   public TreeParser(CommonTree ast) {
     this.ast=ast;
@@ -29,9 +30,14 @@ public class TreeParser {
   public void init() {
     System.out.println("Tree to parse : " + this.ast.toStringTree());
     System.out.println("");
+
     tableroot = new HashMap<String,LinkedList>();
+    root = new NodeTDS(null);
+    root.setId("root");
+    root.setTable(tableroot);
     countanoblock = 0;
-    explorer(ast, tableroot);
+
+    explorer(ast, root);
   }
 
 
@@ -39,64 +45,46 @@ public class TreeParser {
    * Affiche dans la sortie standard toutes les TDS produites par init()
    *
    */
-  public void printTDS() {
-    prettyprint(tableroot, "root");
-  }
+  //public void printTDS() {
+    //prettyprint(tableroot, "root");
+  //}
 
 
   /*
    * Explorateur récursif de sous-arbre. Effectue des contrôles sémantiques !
    *
    */
-  public void explorer(CommonTree tree, HashMap<String,LinkedList> table) {
+  public void explorer(CommonTree tree, NodeTDS node) {
 
+    //Récupère la TDS du node passé en paramètre.
+    HashMap<String,LinkedList> table = node.getTable();
     int nbchlid = tree.getChildCount();
-    String node = tree.getText();
+    String nodename = tree.getText();
 
     System.out.println("TDS partielle :" + table.toString());
 
     /*
      * VARDEC
      */
-    if (node.equals("VARDEC")) {
+    if (nodename.equals("VARDEC")) {
+
       LinkedList infos = new LinkedList();
+
       infos.add(tree.getChild(1));
       infos.add(null);
+
       table.put(tree.getChild(0).getText(),infos);
+
       return;
+
     }
 
     /*
      * FOR
      */
 
-    if (node.equals("FOR")) {/*
-      // On récupère les infos sur l'indice
-      LinkedList index = table.get(tree.getChild(0).getText());
+    if (nodename.equals("FOR")) {
 
-      // Récupère la valeur de l'indice avant FOR
-      Object backup;
-      try {
-        backup = (int) index.get(1);
-      }
-      catch (NullPointerException ne) {
-        backup = null;
-      }
-
-      // Calcul des bornes
-      int min = calculator((CommonTree) tree.getChild(1), table);
-      int max = calculator((CommonTree) tree.getChild(2), table);
-      // Controle : vérifier que max >= min
-
-      // Boucle FOR en elle-même
-      for (int i = min ; i <= max ; i++) {
-        index.set(1, i);
-        explorer((CommonTree) tree.getChild(3), table);
-      }
-
-      // On reset la valeur de l'indice à celle d'avant la boucle
-      index.set(1, backup);
-*/
       countfor++;
       String forname = "FOR-" +countfor;
       CommonTree min;
@@ -108,38 +96,48 @@ public class TreeParser {
       max = (CommonTree) tree.getChild(2);
 
       // CONTROLE SEMTANTIQUE : La borne sup ne peut pas être inférieure (stricte) à la borne inf
-      if (isCalulableInt(min, table) && isCalulableInt(max, table)) {
+      try {
         int mini = calculator((CommonTree) min, table);
         int maxi = calculator((CommonTree) max, table);
         if (maxi < mini) {
           System.out.println("Erreur : - Boucle For - Les bornes de l'indice " + index + " ne sont pas correctes" );
         }
       }
+      catch (NoSuchIdfException e) {
+        // ALLER CHERCHER L'IDF DANS LES TDS PARENTES.
+      }
 
       // Création d'une sous-TDS (nouvel espace de noms)
       LinkedList infos = new LinkedList();
       HashMap<String,LinkedList> soustable = new HashMap<String,LinkedList>();
-
-      //Explore le block do
-      explorer((CommonTree) tree.getChild(3), soustable);
+      NodeTDS child = new NodeTDS(node);
 
       // Ajouter la sous-TDS à la TDS parente
+      child.setId(forname);
+      child.setTable(soustable);
+      node.addChild(child);
+
+      //Explore le block do
+      explorer((CommonTree) tree.getChild(3), child);
+
       infos.add("FOR"); // Type d'entrée
-      infos.add(soustable); // Sous espace de noms
       infos.add(index); // Condition (sous-arbre)
       infos.add(min); // Borne inf
       infos.add(max); //Borne sup
+
       table.put(forname, infos);
+
       return;
     }
 
     /*
      * IF & ELSE
      */
-    if (node.equals("IF")) {
-      // On récupère la valeur de retour du calcul logique de la condition
+    if (nodename.equals("IF")) {
+
       countif++;
       String ifname = "IF-" + countif;
+      String elsename = "ELSE-" + countif;
       int nbchlidnode = tree.getChildCount();
       CommonTree cond;
 
@@ -150,28 +148,37 @@ public class TreeParser {
       LinkedList infos = new LinkedList();
       HashMap<String,LinkedList> soustableif = new HashMap<String,LinkedList>();
       HashMap<String,LinkedList> soustableelse = new HashMap<String,LinkedList>();
+      NodeTDS childthen = new NodeTDS(node);
+      NodeTDS childelse = new NodeTDS(node);
 
-      //Explore le block then
-      explorer((CommonTree) tree.getChild(1), soustableif);
+      // Ajouter la sous-TDS à la TDS parente
+      childthen.setId(ifname);
+      childelse.setId(elsename);
+      childthen.setTable(soustableif);
+      childelse.setTable(soustableelse); // Vide si pas de else
+      node.addChild(childthen);
+      node.addChild(childelse);
+
+      //Explore le block THEN
+      explorer((CommonTree) tree.getChild(1), childthen);
 
       //On explore le block ELSE si il existe
       if (nbchlidnode == 3) {
-        explorer((CommonTree) tree.getChild(3), soustableelse);
+        explorer((CommonTree) tree.getChild(3), childelse);
       }
 
-      // Ajouter la sous-TDS à la TDS parente
       infos.add("IF"); // Type d'entrée
-      infos.add(soustableif); // Sous espace de noms pour IF
       infos.add(cond); // Condition (sous-arbre)
-      infos.add(soustableelse); // Bloc pour ELSE (vide si pas de else)
+
       table.put(ifname,infos);
+
       return;
     }
 
     /*
      * AFFECT
      */
-    if (node.equals("AFFECT")) {
+    if (nodename.equals("AFFECT")) {
       //LinkedList infos = table.get(tree.getChild(0).getText());
       //CommonTree value;
       //int nbchlidnode = tree.getChild(1).getChildCount();
@@ -200,7 +207,6 @@ public class TreeParser {
 
       //infos.set(1, value);
 
-      // On break maintenant pour éviter des appels récursifs inutiles.
       return;
     }
 
@@ -208,7 +214,8 @@ public class TreeParser {
     /*
      * CLASS
      */
-    if (node.equals("CLASS")) {
+    if (nodename.equals("CLASS")) {
+
       int nbchlidnode = tree.getChildCount();
       String classname = tree.getChild(0).getText();
       String classinher = "";
@@ -218,21 +225,42 @@ public class TreeParser {
       // Création d'une sous-TDS (nouvel espace de noms)
       LinkedList infos = new LinkedList();
       HashMap<String,LinkedList> soustable = new HashMap<String,LinkedList>();
+      NodeTDS child = new NodeTDS(node);
 
       // Cas d'une classe de base
       if (nbchlidnode == 2) {
         block = (CommonTree) tree.getChild(1);
       }
+
       // Cas d'une classe qui hérite d'une autre
       else if (nbchlidnode == 3) {
-        classinher = tree.getChild(1).getText();
+
+        // Récupère le nom de la classe mère, servira pour retrouver sa TDS via cet id plus bas
+        classinher = tree.getChild(1).getText();  // Ceci est un IDENTIFICATEUR !
 
         // CONTROLE SEMANTIQUE : UNE CLASSE NE PEUT PAS HERITER D'ELLE-MEME
         if (classinher.equals(classname)) {
-          System.out.println("Erreur : une classe ne peut pas hériter d'elle-même. classe : " + classname);
+          System.out.println("Erreur : une classe ne peut pas hériter d'elle-même : " + classname + " inherit " + classname);
           System.exit(0);
         }
 
+        // Récupérer la TDS de la classe mère (forcément dans les child de root, vu la grammaire, donc frère ce ce noeud, donc ici node=root)
+        NodeTDS motherclass;
+
+        // CONTROLE SEMTANTIQUE : VERIFIER QUE LA CLASSE PARENTE EXISTE
+        try {
+          // Récupération effective
+          motherclass = node.getChild(classinher);
+
+          // Ajoute comme parent la classe mère à ce nouveau noeud créé (linkage statique)
+          child.addParent(motherclass);
+        }
+        catch (NoSuchIdfException e) {
+          System.out.println("Erreur : référence indéfinie à la classe mère : " + classinher);
+          System.exit(0);
+        }
+
+        // Récupère le bloc à traiter plus bas
         block = (CommonTree) tree.getChild(2);
       }
       else {
@@ -243,23 +271,29 @@ public class TreeParser {
 
       nbchlidofblock = block.getChildCount();
 
+      // Ajouter la sous-TDS à la TDS parente
+      child.setId(classname);
+      child.setTable(soustable);
+      node.addChild(child);
+
       // Remplie la sous-TDS en explorant le corps de la classe
       if (nbchlidofblock > 0) {
-        explorer((CommonTree) block, soustable);
+        explorer((CommonTree) block, child);
       }
 
-      // Ajouter la sous-TDS à la TDS parente
       infos.add("CLASS"); // Type d'entrée
-      infos.add(soustable);
-      infos.add(classinher);
+      infos.add(classinher); // Vide si pas d'inherit
+
       table.put(classname,infos);
+
       return;
     }
 
     /*
      * METHODEC
      */
-    if (node.equals("METHODDEC")) {
+    if (nodename.equals("METHODDEC")) {
+
       int nbchlidnode = tree.getChildCount();
       String methodname = tree.getChild(0).getText();
       String type = "NULL";
@@ -275,13 +309,13 @@ public class TreeParser {
       }
 
       // Cas d'une méthode sans argument et avec type de retour
-      if (nbchlidnode == 3 && !(tree.getChild(1).getText().equals("METHODARGS"))) {
+      else if (nbchlidnode == 3 && !(tree.getChild(1).getText().equals("METHODARGS"))) {
         block = (CommonTree) tree.getChild(2);
         type = tree.getChild(1).getText();
       }
 
       // Cas d'une méthode avec argument et sans type de retour
-      if (nbchlidnode == 3 && tree.getChild(1).getText().equals("METHODARGS")) {
+      else if (nbchlidnode == 3 && tree.getChild(1).getText().equals("METHODARGS")) {
         block = (CommonTree) tree.getChild(2);
         methodargs = (CommonTree) tree.getChild(1);
         type = "void";
@@ -289,7 +323,7 @@ public class TreeParser {
       }
 
       // Cas d'une méthode avec argument et avec type de retour
-      if (nbchlidnode == 4) {
+      else if (nbchlidnode == 4) {
         block = (CommonTree) tree.getChild(3);
         methodargs = (CommonTree) tree.getChild(1);
         type = tree.getChild(2).getText();
@@ -301,25 +335,32 @@ public class TreeParser {
       // Création d'une sous-TDS (nouvel espace de noms)
       LinkedList infos = new LinkedList();
       HashMap<String,LinkedList> soustable = new HashMap<String,LinkedList>();
+      NodeTDS child = new NodeTDS(node);
+
+      // Ajouter la sous-TDS à la TDS parente
+      child.setId(methodname);
+      child.setTable(soustable);
+      node.addChild(child);
 
       // Remplie la sous-TDS en explorant le corps de la méthode
       if (nbchlidofblock > 0) {
-        explorer((CommonTree) block, soustable);
+        explorer((CommonTree) block, child);
       }
 
-      // Ajouter la sous-TDS à la TDS parente
       infos.add("METHOD"); // Type d'objet
-      infos.add(soustable); // Sous-TDS
       infos.add(args); // Arguements éventuels
-      infos.add(type); // Type de retour
+      infos.add(type); // Type de retour éventuel (void si vide)
+
       table.put(methodname,infos);
+
       return;
     }
 
     /*
      * ANONYMOUSBLOCK
      */
-    if (node.equals("ANONYMOUSBLOCK")) {
+    if (nodename.equals("ANONYMOUSBLOCK")) {
+
       countanoblock++;
       int nbchlidnode = tree.getChildCount();
       String anoname = "ANOBLOCK-" + countanoblock;
@@ -327,18 +368,24 @@ public class TreeParser {
       // Création d'une sous-TDS (nouvel espace de noms)
       LinkedList infos = new LinkedList();
       HashMap<String,LinkedList> soustable = new HashMap<String,LinkedList>();
+      NodeTDS child = new NodeTDS(node);
+
+      // Ajouter la sous-TDS à la TDS parente
+      child.setId(anoname);
+      child.setTable(soustable);
+      node.addChild(child);
 
       // Remplie la sous-TDS en explorant le bloc anonyme
       if (nbchlidnode > 0) {
         for (int k=0; k<=nbchlidnode-1; k++) {
-          explorer((CommonTree) tree.getChild(k), soustable);
+          explorer((CommonTree) tree.getChild(k), child);
         }
       }
 
-      // Ajouter la sous-TDS à la TDS parente
       infos.add("ANOBLOCK"); // Type d'entrée
-      infos.add(soustable);
+
       table.put(anoname,infos);
+
       return;
     }
 
@@ -348,7 +395,7 @@ public class TreeParser {
     }
     else {
       for (int k=0; k<=nbchlid-1; k++) {
-        explorer((CommonTree) tree.getChild(k), table);
+        explorer((CommonTree) tree.getChild(k), node);
       }
     }
   }
@@ -358,7 +405,7 @@ public class TreeParser {
    * Calulette récursive du compilateur, résoud les expressions arithmétiques/logiques.
    *
    */
-  public int calculator(CommonTree expr, HashMap<String,LinkedList> table) {
+  public int calculator(CommonTree expr, HashMap<String,LinkedList> table) throws NoSuchIdfException {
     int res;
     res = 0; // A virer plus tard !
 
@@ -369,8 +416,13 @@ public class TreeParser {
         return res;
       }
       catch (Exception e) {
-       LinkedList infos = table.get(expr.getText());
-       res = (int) infos.get(1);
+        try {
+          LinkedList infos = table.get(expr.getText());
+          res = (int) infos.get(1);
+        }
+        catch (NullPointerException ne) {
+          throw new NoSuchIdfException("Cet IDF n'existe pas.");
+        }
       }
     }
 
@@ -470,7 +522,7 @@ public class TreeParser {
          res = calculator((CommonTree) tocalc, table);
          return true;
        }
-       catch (NullPointerException nep) {
+       catch (NoSuchIdfException nidf) {
          return false;
        }
      }
@@ -480,7 +532,7 @@ public class TreeParser {
   /*
    * Pretty printer de TDS. Ne print que les TDS non-vides.
    *
-   */
+   *//*
    public void prettyprint(HashMap<String,LinkedList> table, String name) {
      System.out.println("");
      System.out.println("============================ TDS : " + name + " ==============================");
@@ -536,5 +588,5 @@ public class TreeParser {
          prettyprint(soustds, tdsname);
        }
      }
-   }
+   }*/
 }

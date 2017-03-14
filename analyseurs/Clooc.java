@@ -59,7 +59,7 @@ public class Clooc {
             tablor.init();
 
             //Affichage des TDS
-            tablor.printTDS();
+            //tablor.printTDS();
 
             //Génération de l'arbre en DOT
             DOTTreeGenerator gen = new DOTTreeGenerator();
