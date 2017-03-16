@@ -24,6 +24,7 @@ public class Clooc {
         boolean AST=false;
         InputStream in;
         File file;
+        File loocfile;
         FileWriter fileWriter;
         PrintWriter printWriter;
         String path_table;
@@ -51,6 +52,11 @@ public class Clooc {
           LoocParser parser = new LoocParser(tokens);
 
           if (AST) {
+            // Ouverture du .dot
+            file = new File(args[2]);
+            fileWriter = new FileWriter(file);
+            printWriter = new PrintWriter(fileWriter);
+
             //Récupération de l'arbre brut
             CommonTree tree = (CommonTree) parser.program().getTree();
 
@@ -59,19 +65,27 @@ public class Clooc {
             tablor.init();
 
             //Affichage des TDS
-            //tablor.printTDS();
+            tablor.prettyprintTDS();
 
             //Génération de l'arbre en DOT
             DOTTreeGenerator gen = new DOTTreeGenerator();
             StringTemplate st = gen.toDOT(tree);
 
-            file = new File(args[2]);
-            fileWriter = new FileWriter(file);
-            printWriter = new PrintWriter(fileWriter);
             printWriter.print(st);
             fileWriter.flush();
             fileWriter.close();
             System.out.println("Fin de la construction. L'AST a été produit dans le fichier " + args[2] + " au format DOT. Vous pouvez l'afficher avec graphviz (ZGRViewer est recommandé).");
+
+            //Génération de code en Assembleur microPIUP
+            loocfile = new File(args[1]);
+            try {
+              tablor.getAsmGen().openFile(loocfile);
+            }
+            catch (IOException ioe) {
+              System.out.println("Erreur lors de la création du fichier .asm");
+              System.exit(1);
+            }
+
           }
           else {
             //Simple parsing du code

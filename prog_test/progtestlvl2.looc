@@ -18,9 +18,10 @@ class Math =
     fi
 
     retval := 1;
-    for i in 3*5 .. 5
+    for i in 3*5 .. 50
     do
-      retval := retval * a;
+      write "ok";
+      /*retval := retval * a;*/
     end
 
     return (retval);

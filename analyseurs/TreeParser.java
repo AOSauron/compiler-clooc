@@ -1,10 +1,12 @@
 import org.antlr.runtime.tree.*;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.HashMap;
 import java.util.Iterator;
 
 /*
  * Parseur d'AST : le parcours et crée les TDS nécessaires. Les remplit en conséquence.
+ * Va générer également du code en assembleur, en faisant appel à un générateur ASM maison.
  * @author : Guillaume Garcia
  * Pour Clooc - PCL 2017 - TELECOM Nancy
  */
@@ -17,6 +19,7 @@ public class TreeParser {
   private CommonTree ast;
   private HashMap<String,LinkedList> tableroot;
   private NodeTDS root;
+  private AsmGenerator asmgen;
 
   public TreeParser(CommonTree ast) {
     this.ast=ast;
@@ -24,15 +27,17 @@ public class TreeParser {
 
 
   /*
-   * Lance l'exploration de tout l'arbre !
+   * Print la table du noeud passé en paramètre ainsi que celle des ses fils.
    *
    */
   public void init() {
     System.out.println("Tree to parse : " + this.ast.toStringTree());
     System.out.println("");
 
+    asmgen = new AsmGenerator();
     tableroot = new HashMap<String,LinkedList>();
     root = new NodeTDS(null);
+
     root.setId("root");
     root.setTable(tableroot);
     countanoblock = 0;
@@ -42,12 +47,61 @@ public class TreeParser {
 
 
   /*
+   * Lance le print de toutes les TDS
+   *
+   */
+   public void prettyprintTDS() {
+     System.out.println(" **** Début de la Table Ses Symboles **** ");
+     System.out.println("");
+     printTDS(root);
+     System.out.println("");
+     System.out.println(" **** Fin de la Table Ses Symboles **** ");
+   }
+
+
+  /*
    * Affiche dans la sortie standard toutes les TDS produites par init()
    *
    */
-  //public void printTDS() {
-    //prettyprint(tableroot, "root");
-  //}
+  public void printTDS(NodeTDS rootnode) {
+
+    List<NodeTDS> children = rootnode.getChildren();
+    NodeTDS child;
+    int size;
+
+    // Print la TDS
+    rootnode.printNode();
+
+    // On arrête la récursion sur les noeuds qui n'ont pas de fils.
+    if (children.isEmpty()) {
+      return;
+    }
+
+    // On parcours les fils.
+    size = children.size();
+    for (int i = 0; i < size; i++) {
+      child = children.get(i);
+      printTDS(child);
+    }
+  }
+
+
+  /*
+   * Retourne la TDS root
+   *
+   */
+   public HashMap<String,LinkedList> getTable() {
+     return tableroot;
+   }
+
+
+  /*
+   * Retourne l'AsmGenerator du TreeParser.
+   *
+   */
+  public AsmGenerator getAsmGen() {
+    return asmgen;
+  }
 
 
   /*
@@ -211,7 +265,7 @@ public class TreeParser {
       }
 
       // Les autres cas, on parse en String.
-      else if (nbchlidnode > 0) { //Cas d'un New : Crée une TDS pour chaque new ?
+      else if (nbchlidnode > 0) { // Cas d'un New : Crée une TDS pour chaque new ?
         value = (String) tree.getChild(1).getChild(0).getText();
       }
       else {
@@ -253,7 +307,7 @@ public class TreeParser {
 
         // CONTROLE SEMANTIQUE : UNE CLASSE NE PEUT PAS HERITER D'ELLE-MEME
         if (classinher.equals(classname)) {
-          System.out.println("Erreur : une classe ne peut pas hériter d'elle-même : " + classname + " inherit " + classname);
+          System.out.println("Erreur : une classe ne peut pas heriter d'elle-même : " + classname + " inherit " + classname);
           System.exit(1);
         }
 
@@ -269,7 +323,7 @@ public class TreeParser {
           child.addParent(motherclass);
         }
         catch (NoSuchIdfException e) {
-          System.out.println("Erreur : référence indéfinie à la classe mère : " + classinher);
+          System.out.println("Erreur : référence indéfinie à la classe mère " + classinher + " dans la déclaration de la classe " + classname);
           System.exit(1);
         }
 
@@ -289,9 +343,14 @@ public class TreeParser {
       child.setTable(soustable);
       node.addChild(child);
 
-      // Remplie la sous-TDS en explorant le corps de la classe
+      // Remplie la sous-TDS en explorant le corps de la classe s'il est non vide
       if (nbchlidofblock > 0) {
         explorer((CommonTree) block, child);
+      }
+
+      // CONTROLE SEMANTIQUE : On déclenche un warning si une classe vide est déclarée.
+      else {
+        System.out.println("Warning : la classe " + classname + " est vide.");
       }
 
       infos.add("CLASS"); // Type d'entrée
@@ -420,6 +479,7 @@ public class TreeParser {
    */
   public int calculator(CommonTree expr, HashMap<String,LinkedList> table) throws NoSuchIdfException {
     int res;
+    LinkedList infos;
     res = 0; // A virer plus tard !
 
     // Arrêt de la récursion : test d'abord si c'est un entier, ensuite s'il s'agit d'une variable de la TDS
@@ -430,13 +490,20 @@ public class TreeParser {
       }
       catch (Exception e) {
         try {
-          LinkedList infos = table.get(expr.getText());
-          res = (int) infos.get(1);
+          infos = table.get(expr.getText());
         }
         // CONTROLE SEMANTIQUE : VERIFIER QU'UN IDF EXISTE DANS UN EXPRESSION CALCULATOIRE
         catch (NullPointerException ne) {
           System.out.println("Erreur : référence indéfinie vers la variable : " + expr.getText());
           throw new NoSuchIdfException("Cet IDF n'existe pas.");
+        }
+        // Récupère le contenu de la variable,
+        try {
+          res = (int) infos.get(1);
+        }
+        // CONTROLE SEMANTIQUE : Lance un Warning si le contenu de la variable est null.
+        catch (NullPointerException nea) {
+          System.out.println("Warning : la variable " + expr.getText() + " peut ne pas avoir été initialisée.");
         }
       }
     }
@@ -542,66 +609,4 @@ public class TreeParser {
        }
      }
    }
-
-
-  /*
-   * Pretty printer de TDS. Ne print que les TDS non-vides.
-   *
-   *//*
-   public void prettyprint(HashMap<String,LinkedList> table, String name) {
-     System.out.println("");
-     System.out.println("============================ TDS : " + name + " ==============================");
-     HashMap<String,HashMap<String,LinkedList>> listtds= new HashMap<String,HashMap<String,LinkedList>>();
-     Iterator it = (Iterator) table.keySet().iterator();
-     while (it.hasNext()) {
-       String key = (String) it.next();
-       LinkedList infos = table.get(key);
-       String type = infos.get(0).toString();
-       String valeur;
-       if (infos.get(1) instanceof HashMap) {
-         HashMap<String,LinkedList> soustable = (HashMap<String,LinkedList>) infos.get(1);
-         if (type.equals("METHOD")) {
-           String returntype = infos.get(3).toString();
-           LinkedList args = (LinkedList) infos.get(2);
-           System.out.println("Idf : " + key + " || Type : " + type + " || Type de retour : " + returntype + " || Arguments : " + args + " ||");
-         } else if (type.equals("CLASS")) {
-           String herit = infos.get(2).toString();
-           System.out.println("Idf : " + key + " || Type : " + type + " || Herite de : " + herit + " ||");
-         } else if (type.equals("IF")) {
-           String keyelse = "ELSE-" + countif;
-           String cond = ((CommonTree)infos.get(2)).toStringTree();
-           HashMap<String,LinkedList> elsetable = (HashMap<String,LinkedList>) infos.get(3);
-           listtds.put(keyelse, elsetable);
-           System.out.println("Idf : " + key + " || Type : " + type + " || Condition : " + cond + " ||");
-         } else if (type.equals("FOR")) {
-           String index = (String) infos.get(2);
-           String min = ((CommonTree)infos.get(3)).toStringTree();
-           String max = ((CommonTree)infos.get(4)).toStringTree();
-           System.out.println("Idf : " + key + " || Type : " + type + " || Index : " + index + " || Min : " + min + " || Max : " + max + " ||");
-         } else System.out.println("Idf : " + key + " || Type : " + type + " ||");
-         listtds.put(key, soustable);
-       }
-       else {
-         try {
-           valeur = infos.get(1).toString();
-         }
-         catch (NullPointerException ne) {
-           valeur = "null";
-         }
-         System.out.println("Idf : " + key + " || Type : " + type + " || Valeur : " + valeur + " ||");
-       }
-     }
-     System.out.println("======================================================================");
-     System.out.println("");
-
-     Iterator iter = (Iterator) listtds.keySet().iterator();
-     while (iter.hasNext()) {
-       String tdsname = (String) iter.next();
-       HashMap<String,LinkedList> soustds = listtds.get(tdsname);
-       // On ne print que les TDS non vides
-       if (!(soustds.isEmpty())) {
-         prettyprint(soustds, tdsname);
-       }
-     }
-   }*/
 }

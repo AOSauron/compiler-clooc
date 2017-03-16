@@ -2,6 +2,8 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.HashMap;
+import java.util.Iterator;
+import org.antlr.runtime.tree.*;
 
 public class NodeTDS {
 
@@ -97,61 +99,63 @@ public class NodeTDS {
   /*
    * Print le noeud courant ainsi que ses fils de façon récursive. Ne print pas les TDS vides
    */
-   /*
-  public void printTree() {
+  public void printNode() {
+
+    HashMap<String,LinkedList> tds = this.getTable();
+    String idtds = this.getId();
+    Iterator it = (Iterator) tds.keySet().iterator();
+
+    // Si la TDS est vide on ne la print pas.
+    if (tds.isEmpty()) {
+      return;
+    }
+
     System.out.println("");
-    System.out.println("============================ TDS : " + id + " ==============================");
-    Iterator it = (Iterator) table.keySet().iterator();
+    System.out.println("============================ TDS : " + idtds + " ==============================");
 
     while (it.hasNext()) {
       String key = (String) it.next();
-      LinkedList infos = table.get(key);
+      LinkedList infos = tds.get(key);
       String type = infos.get(0).toString();
-      String valeur;
 
       // Parsing selon le type
       if (type.equals("METHOD")) {
-        String returntype = infos.get(3).toString();
-        LinkedList args = (LinkedList) infos.get(2);
+        String returntype = infos.get(2).toString();
+        LinkedList args = (LinkedList) infos.get(1);
         System.out.println("Idf : " + key + " || Type : " + type + " || Type de retour : " + returntype + " || Arguments : " + args + " ||");
-      } else if (type.equals("CLASS")) {
-        String herit = infos.get(2).toString();
+      }
+      else if (type.equals("CLASS")) {
+        String herit = infos.get(1).toString();
         System.out.println("Idf : " + key + " || Type : " + type + " || Herite de : " + herit + " ||");
-      } else if (type.equals("IF")) {
-        String keyelse = "ELSE-" + countif;
-        String cond = ((CommonTree)infos.get(2)).toStringTree();
-        listtds.put(keyelse, elsetable);
+      }
+      else if (type.equals("IF")) {
+        String cond = ((CommonTree) infos.get(1)).toStringTree();
         System.out.println("Idf : " + key + " || Type : " + type + " || Condition : " + cond + " ||");
-      } else if (type.equals("FOR")) {
-        String index = (String) infos.get(2);
-        String min = ((CommonTree)infos.get(3)).toStringTree();
-        String max = ((CommonTree)infos.get(4)).toStringTree();
+      }
+      else if (type.equals("FOR")) {
+        String index = (String) infos.get(1);
+        String min = ((CommonTree) infos.get(2)).toStringTree();
+        String max = ((CommonTree) infos.get(3)).toStringTree();
         System.out.println("Idf : " + key + " || Type : " + type + " || Index : " + index + " || Min : " + min + " || Max : " + max + " ||");
-      } else {
+      }
+      else if (type.equals("ANOBLOCK")) {
         System.out.println("Idf : " + key + " || Type : " + type + " ||");
       }
-
-      // Récup valeur
-      try {
-        valeur = infos.get(1).toString();
+      else { // C'est donc le cas d'une variable de tout type.
+        String valeur;
+        try {
+          valeur = infos.get(1).toString();
+        }
+        catch (NullPointerException ne) {
+          valeur = "null";
+        }
+        System.out.println("Idf : " + key + " || Type : " + type + " || Valeur : " + valeur + " ||");
       }
-      catch (NullPointerException ne) {
-        valeur = "null";
-      }
-      System.out.println("Idf : " + key + " || Type : " + type + " || Valeur : " + valeur + " ||");
     }
 
     System.out.println("======================================================================");
     System.out.println("");
 
-    Iterator iter = (Iterator) listtds.keySet().iterator();
-    while (iter.hasNext()) {
-      String tdsname = (String) iter.next();
-      HashMap<String,LinkedList> soustds = listtds.get(tdsname);
-      // On ne print que les TDS non vides
-      if (!(soustds.isEmpty())) {
-        prettyprint(soustds, tdsname);
-      }
-    }
-  }*/
+    return;
+  }
 }
