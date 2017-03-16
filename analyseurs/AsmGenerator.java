@@ -8,7 +8,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 /*
- *
+ * Générateur de code assembleur. Ouvre un fichier source .asm et le remplit de ce code.
  * @author : Guillaume Garcia
  * Pour Clooc - PCL 2017 - TELECOM Nancy
  */
