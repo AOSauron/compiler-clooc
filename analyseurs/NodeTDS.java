@@ -5,6 +5,13 @@ import java.util.HashMap;
 import java.util.Iterator;
 import org.antlr.runtime.tree.*;
 
+/*
+ * Arbre pour stocker les TDS, ansi que leur id et leur porté/linkage statique (en étudiant le lien filial).
+ * Cet arbre se modélise comme des noeuds possédent 1 ou + parents et une liste de fils éventuellement vide.
+ * @author : Guillaume Garcia
+ * Pour Clooc - PCL 2017 - TELECOM Nancy
+ */
+
 public class NodeTDS {
 
   private String id;
@@ -16,26 +23,45 @@ public class NodeTDS {
     this.parent.add(parent);
   }
 
+  /*
+   * Retourne l'id du noeud et donc de la TDS
+   */
   public String getId() {
     return id;
   }
 
+  /*
+   * Change l'id u noeud et donc de la TDS
+   */
   public void setId(String id) {
     this.id = id;
   }
 
+  /*
+   * Change la TDS du noeud, permet de charger une TDS dans 1 noeud (1 TDS/noeud max)
+   */
   public void setTable(HashMap<String,LinkedList> table) {
     this.table=table;
   }
 
+  /*
+   * Retroune la TDS contenue dans ce noeud de l'arbre
+   */
   public HashMap<String,LinkedList> getTable() {
     return table;
   }
 
+  /*
+   * Retourne la liste des fils (peut être nulle)
+   */
   public List<NodeTDS> getChildren() {
     return fils;
   }
 
+  /*
+   * Retourne la liste des parents.
+   * La plupart du temps les noeuds n'ont qu'un seul parent, mais dans certains cas (ex : classe héritant d'une autre) ils en ont 2.
+   */
   public List<NodeTDS> getParent() {
     return parent;
   }

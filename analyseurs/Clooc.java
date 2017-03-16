@@ -13,10 +13,11 @@ import java.io.FileOutputStream;
 
 /*
  * Compilateur Clooc. Classe Main.
+ * Analyse lexicalement, syntaxiquement puis sémantiquement un programme looc passé en paramètre.
+ * Produit un AST au format png, et génére du code source assembleur microPIUP. 
  * @author : Guillaume Garcia
  * Clooc - PCL 2017 - TELECOM Nancy
  */
-
 
 public class Clooc {
     public static void main(String[] args) throws Exception {

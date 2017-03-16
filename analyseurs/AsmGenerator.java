@@ -7,23 +7,31 @@ import java.io.PrintWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 
-
+/*
+ *
+ * @author : Guillaume Garcia
+ * Pour Clooc - PCL 2017 - TELECOM Nancy
+ */
 
 public class AsmGenerator {
 
   private File file;
   private FileWriter fileWriter;
   private PrintWriter printWriter;
+  private String asmname;
 
   public AsmGenerator() {
 
   }
 
+  /*
+   * Ouvre un fichier .asm source pour y générer du code assembleur.
+   * Ce fichier pourra ensuite être compilé en binaire par le jar microPIUP.jar d'A. Parodi
+   */
   public void openFile(File loocfile) throws IOException {
 
     int index = -1;
     String purename;
-    String asmname;
 
     try {
       purename = loocfilename.getName();
@@ -46,6 +54,10 @@ public class AsmGenerator {
     printWriter = new PrintWriter(fileWriter);
 
     return;
+  }
+
+  public File getFile() {
+    return file;
   }
 
 
