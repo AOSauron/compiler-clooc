@@ -1,6 +1,9 @@
+//package com.tncy.clooc.main;
+
 import org.antlr.runtime.*;
 import org.antlr.runtime.tree.*;
 import org.antlr.stringtemplate.*;
+import java.util.Arrays;
 import java.io.InputStream;
 import java.io.FileInputStream;
 import java.io.File;
@@ -11,6 +14,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.io.FileOutputStream;
 
+
 /*
  * Compilateur Clooc. Classe Main.
  * Analyse lexicalement, syntaxiquement puis sémantiquement un programme looc passé en paramètre.
@@ -19,7 +23,7 @@ import java.io.FileOutputStream;
  * Clooc - PCL 2017 - TELECOM Nancy
  */
 
-public class Clooc {
+public class CloocMain {
     public static void main(String[] args) throws Exception {
 
         boolean AST=false;
