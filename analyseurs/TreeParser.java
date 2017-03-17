@@ -43,6 +43,10 @@ public class TreeParser {
     countanoblock = 0;
 
     explorer(ast, root);
+
+    String test = asmgen.toHexString("Hello World !");
+    String test3 = asmgen.toHexString(345);
+    System.out.println("TEST : " + test + " ET : " + test3);
   }
 
 
