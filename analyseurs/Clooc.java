@@ -14,7 +14,7 @@ import java.io.FileOutputStream;
 /*
  * Compilateur Clooc. Classe Main.
  * Analyse lexicalement, syntaxiquement puis sémantiquement un programme looc passé en paramètre.
- * Produit un AST au format png, et génére du code source assembleur microPIUP. 
+ * Produit un AST au format png, et génére du code source assembleur microPIUP.
  * @author : Guillaume Garcia
  * Clooc - PCL 2017 - TELECOM Nancy
  */
@@ -77,16 +77,11 @@ public class Clooc {
             fileWriter.close();
             System.out.println("Fin de la construction. L'AST a été produit dans le fichier " + args[2] + " au format DOT. Vous pouvez l'afficher avec graphviz (ZGRViewer est recommandé).");
 
-            //Génération de code en Assembleur microPIUP
-            loocfile = new File(args[1]);
-            try {
+            // Génération de code en Assembleur microPIUP si aucune erreur sémantique n'est détectée
+            if (tablor.getNbError() == 0) {
+              loocfile = new File(args[1]);
               tablor.getAsmGen().openFile(loocfile);
             }
-            catch (IOException ioe) {
-              System.out.println("Erreur lors de la création du fichier .asm");
-              System.exit(1);
-            }
-
           }
           else {
             //Simple parsing du code

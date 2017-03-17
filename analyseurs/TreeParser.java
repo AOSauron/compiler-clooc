@@ -20,6 +20,7 @@ public class TreeParser {
   private HashMap<String,LinkedList> tableroot;
   private NodeTDS root;
   private AsmGenerator asmgen;
+  private int nbError = 0;
 
   public TreeParser(CommonTree ast) {
     this.ast=ast;
@@ -109,6 +110,15 @@ public class TreeParser {
 
 
   /*
+   * Retourne le nombre d'erreurs sémantiques détectées
+   *
+   */
+  public int getNbError() {
+    return nbError;
+  }
+
+
+  /*
    * Explorateur récursif de sous-arbre. Effectue des contrôles sémantiques !
    *
    */
@@ -159,7 +169,7 @@ public class TreeParser {
         int maxi = calculator((CommonTree) max, table);
         if (maxi < mini) {
           System.out.println("Erreur : - Boucle For - Les bornes de l'indice " + index + " ne sont pas correctes" );
-          System.exit(1);
+          nbError++;
         }
       }
       catch (NoSuchIdfException e) {
@@ -223,7 +233,7 @@ public class TreeParser {
 
       //On explore le block ELSE si il existe
       if (nbchlidnode == 3) {
-        explorer((CommonTree) tree.getChild(3), childelse);
+        explorer((CommonTree) tree.getChild(2), childelse);
       }
 
       infos.add("IF"); // Type d'entrée
@@ -249,7 +259,7 @@ public class TreeParser {
       }
       catch (NullPointerException ne) {
         System.out.println("Erreur : référence indéfinie vers la variable " + tree.getChild(0));
-        System.exit(1);
+        nbError++;
       }
 
       // Cas d'un int, on parse directement en int
@@ -261,6 +271,7 @@ public class TreeParser {
         // CONTROLE SEMANTIQUE : VERIFIE QU'UN IDF EXISTE BIEN DANS LE MEMBRE DE DROITE
         catch (NoSuchIdfException e) {
           System.out.println("Erreur : référence indéfinie vers la variable " + tree.getChild(0));
+          nbError++;
         }
         // Cas d'une variable abstraite qui sera définie à l'exécution
         catch (NullPointerException ne) {
@@ -312,7 +323,7 @@ public class TreeParser {
         // CONTROLE SEMANTIQUE : UNE CLASSE NE PEUT PAS HERITER D'ELLE-MEME
         if (classinher.equals(classname)) {
           System.out.println("Erreur : une classe ne peut pas heriter d'elle-même : " + classname + " inherit " + classname);
-          System.exit(1);
+          nbError++;
         }
 
         // Récupérer la TDS de la classe mère (forcément dans les child de root, vu la grammaire, donc frère ce ce noeud, donc ici node=root)
@@ -328,7 +339,7 @@ public class TreeParser {
         }
         catch (NoSuchIdfException e) {
           System.out.println("Erreur : référence indéfinie à la classe mère " + classinher + " dans la déclaration de la classe " + classname);
-          System.exit(1);
+          nbError++;
         }
 
         // Récupère le bloc à traiter plus bas
@@ -429,6 +440,23 @@ public class TreeParser {
 
       table.put(methodname,infos);
 
+      if (!(type.equals("void"))) {
+        // CONTROLE SÉMANTIQUE : PLACEMENT DU RETURN DANS UNE METHODE TYPÉE
+        if (!(find(block, "RETURN", 0))) {
+          System.out.println("Erreur : il est possible que la méthode " + methodname + " ne retourne rien.");
+          nbError++;
+        }
+
+        // CONTROLE SÉMANTIQUE : COHÉRENCE DES TYPES POUR UNE MÉTHODE
+
+      } else {
+        // CONTROLE SÉMANTIQUE : ABSENCE DE VALEUR RENVOYÉE POUR UNE MÉTHODE DE TYPE VOID
+        if (!(find(block, "RETURN", 1))) {
+          System.out.println("");
+          nbError++;
+        }
+      }
+
       return;
     }
 
@@ -474,6 +502,39 @@ public class TreeParser {
         explorer((CommonTree) tree.getChild(k), node);
       }
     }
+  }
+
+
+  /*
+   * Recherche un token dans un arbre et ses branches
+   *
+   */
+  public boolean find(CommonTree block, String token, int mode) {
+    int nbChildren = block.getChildCount();
+    for (int i=0; i<nbChildren;i++) {
+      if (block.getChild(i).toString().equals(token)) {
+        switch (mode) {
+          case 0:
+            return true;
+            break;
+          case 1:
+            if (block.getChild().getChildCount() > 0) {
+              return false;
+            }
+            break;
+        }
+      }
+    }
+    if (mode == 1) {
+      return false;
+    }
+    for (int i=0; i<nbChildren;i++) {
+      CommonTree child = (CommonTree) block.getChild(i);
+      if ((token.equals("RETURN") && !(child.getText().equals("IF"))) || !(token.equals("RETURN"))) {
+        return find(child, token);
+      }
+    }
+    return false;
   }
 
 

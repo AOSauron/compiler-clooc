@@ -111,7 +111,7 @@ then
         ""|[OoyY]* ) echo "[CLOOC] Création des analyseurs lexical et syntaxique à partir de la grammaire Looc.g ..."
                   java -jar ../ANTLR/antlr-3.3-complete.jar Looc.g #&> /dev/null
                   echo "[CLOOC] Compilation de la classe Clooc.java ..."
-                  javac -encoding ISO-8859-1 LoocLexer.java TreeParser.java LoocParser.java Clooc.java #&> /dev/null
+                  javac LoocLexer.java TreeParser.java LoocParser.java Clooc.java #&> /dev/null
                   echo "[CLOOC] Compilation terminée."
                   break;;
         [Nn]* ) break;;
@@ -119,9 +119,10 @@ then
             continue;;
       esac
   done
+  #-encoding ISO-8859-1
   echo "[CLOOC] Vérification du programme $filelooc  ..."
   rm -f .result &> /dev/null
-  java Clooc $fullpath &> .result
+  java Clooc $fullpath #&> .result
   ERROR=$(<.result)
   if [[ -z $ERROR ]]; then
     echo "[CLOOC] - OK - Le programme $filelooc valide la grammaire Looc.g"
