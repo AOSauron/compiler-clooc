@@ -506,32 +506,37 @@ public class TreeParser {
 
 
   /*
-   * Recherche un token dans un arbre et ses branches
+   * Recherche un token dans un arbre et ses branches, selon divers modes.
    *
    */
   public boolean find(CommonTree block, String token, int mode) {
+
     int nbChildren = block.getChildCount();
+
+    // Récupère les fils du noeud (arbre) courant
     for (int i=0; i<nbChildren;i++) {
-      if (block.getChild(i).toString().equals(token)) {
+      if (((CommonTree)block.getChild(i)).toString().equals(token)) {
         switch (mode) {
           case 0:
             return true;
-            break;
           case 1:
-            if (block.getChild().getChildCount() > 0) {
+            if (((CommonTree) block.getChild(1)).getChildCount() > 0) {
               return false;
             }
             break;
         }
       }
     }
+
     if (mode == 1) {
       return false;
     }
+
+    // Parcours de ses fils
     for (int i=0; i<nbChildren;i++) {
       CommonTree child = (CommonTree) block.getChild(i);
       if ((token.equals("RETURN") && !(child.getText().equals("IF"))) || !(token.equals("RETURN"))) {
-        return find(child, token);
+        return find((CommonTree) child, token, 1);
       }
     }
     return false;
