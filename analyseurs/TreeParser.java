@@ -19,7 +19,7 @@ public class TreeParser {
   private CommonTree ast;
   private HashMap<String,LinkedList> tableroot;
   private NodeTDS root;
-  private AsmGenerator asmgen;
+  //private AsmGenerator asmgen;
 
   public TreeParser(CommonTree ast) {
     this.ast=ast;
@@ -31,10 +31,8 @@ public class TreeParser {
    *
    */
   public void init() {
-    System.out.println("Tree to parse : " + this.ast.toStringTree());
-    System.out.println("");
 
-    asmgen = new AsmGenerator();
+    //asmgen = new AsmGenerator();
     tableroot = new HashMap<String,LinkedList>();
     root = new NodeTDS(null);
 
@@ -51,11 +49,13 @@ public class TreeParser {
    *
    */
    public void prettyprintTDS() {
-     System.out.println(" **** Début de la Table Ses Symboles **** ");
+     System.out.println("");
+     System.out.println(" **** Début de la Table Des Symboles **** ");
      System.out.println("");
      printTDS(root);
      System.out.println("");
-     System.out.println(" **** Fin de la Table Ses Symboles **** ");
+     System.out.println(" **** Fin de la Table Des Symboles **** ");
+     System.out.println("");
    }
 
 
@@ -98,10 +98,10 @@ public class TreeParser {
   /*
    * Retourne l'AsmGenerator du TreeParser.
    *
-   */
+   */ /*
   public AsmGenerator getAsmGen() {
     return asmgen;
-  }
+  }*/
 
 
   /*
@@ -114,8 +114,6 @@ public class TreeParser {
     HashMap<String,LinkedList> table = node.getTable();
     int nbchlid = tree.getChildCount();
     String nodename = tree.getText();
-
-    System.out.println("TDS partielle :" + table.toString());
 
     /*
      * VARDEC
