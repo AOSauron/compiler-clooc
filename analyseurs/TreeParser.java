@@ -16,6 +16,7 @@ public class TreeParser {
   private int countanoblock;
   private int countfor;
   private int countif;
+  private boolean warn;
   private CommonTree ast;
   private HashMap<String,LinkedList> tableroot;
   private NodeTDS root;
@@ -23,6 +24,7 @@ public class TreeParser {
 
   public TreeParser(CommonTree ast) {
     this.ast=ast;
+    warn = false;
   }
 
 
@@ -30,8 +32,9 @@ public class TreeParser {
    * Print la table du noeud passé en paramètre ainsi que celle des ses fils.
    *
    */
-  public void init() {
+  public void init(boolean warnings) {
 
+    warn = warnings;
     asmgen = new AsmGenerator();
     tableroot = new HashMap<String,LinkedList>();
     root = new NodeTDS(null);
@@ -348,7 +351,7 @@ public class TreeParser {
 
       // CONTROLE SEMANTIQUE : On déclenche un warning si une classe vide est déclarée.
       else {
-        System.out.println("Warning : la classe " + classname + " est vide.");
+        if (warn) System.out.println("Warning : la classe " + classname + " est vide.");
       }
 
       infos.add("CLASS"); // Type d'entrée
@@ -501,7 +504,7 @@ public class TreeParser {
         }
         // CONTROLE SEMANTIQUE : Lance un Warning si le contenu de la variable est null.
         catch (NullPointerException nea) {
-          System.out.println("Warning : la variable " + expr.getText() + " peut ne pas avoir été initialisée.");
+            if (warn) System.out.println("Warning : la variable " + expr.getText() + " peut ne pas avoir été initialisée.");
         }
       }
     }
