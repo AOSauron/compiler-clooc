@@ -55,11 +55,13 @@ public class TreeParser {
    *
    */
    public void prettyprintTDS() {
-     System.out.println(" **** Début de la Table Ses Symboles **** ");
+     System.out.println("");
+     System.out.println(" **** Début de la Table Des Symboles **** ");
      System.out.println("");
      printTDS(root);
      System.out.println("");
-     System.out.println(" **** Fin de la Table Ses Symboles **** ");
+     System.out.println(" **** Fin de la Table Des Symboles **** ");
+     System.out.println("");
    }
 
 
