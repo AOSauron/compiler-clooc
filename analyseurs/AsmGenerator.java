@@ -8,7 +8,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 /*
- *
+ * Générateur de code assembleur. Ouvre un fichier source .asm et le remplit de ce code.
  * @author : Guillaume Garcia
  * Pour Clooc - PCL 2017 - TELECOM Nancy
  */
@@ -19,6 +19,7 @@ public class AsmGenerator {
   private FileWriter fileWriter;
   private PrintWriter printWriter;
   private String asmname;
+  private String tab = "\t";
 
   public AsmGenerator() {
 
@@ -28,13 +29,13 @@ public class AsmGenerator {
    * Ouvre un fichier .asm source pour y générer du code assembleur.
    * Ce fichier pourra ensuite être compilé en binaire par le jar microPIUP.jar d'A. Parodi
    */
-  public void openFile(File loocfile) throws IOException {
+  public void openFile(File loocfile) {
 
     int index = -1;
     String purename;
 
     try {
-      purename = loocfilename.getName();
+      purename = loocfile.getName();
       // Si le fichier a une extension on la tronque (on tronque la dernière extension.)
       if ((index = loocfile.getName().lastIndexOf(".")) != -1) {
         purename = loocfile.getName().substring(0, loocfile.getName().lastIndexOf("."));
@@ -48,21 +49,75 @@ public class AsmGenerator {
     // On ajoute l'extension .asm
     asmname = "../assemblage/sources/" + purename + ".asm";
 
-    // Ouverture du fichier
-    file = new File(asmname);
-    fileWriter = new FileWriter(file);
-    printWriter = new PrintWriter(fileWriter);
+    try {
+      // Ouverture du fichier
+      file = new File(asmname);
+      fileWriter = new FileWriter(file);
+      printWriter = new PrintWriter(fileWriter);
+    }
+    catch (IOException ioe) {
+      System.out.println("IOException - Erreur lors de l'ouverture du fichier soure " + asmname + " pour la génération de code assembleur");
+      System.exit(1);
+    }
 
     return;
   }
 
+  /*
+   * Retourne le fichier source .asm (type File)
+   */
   public File getFile() {
     return file;
   }
 
+  /*
+   * Fermeture du fichier et des writer.
+   */
+  public void closeFile() throws IOException {
+    try {
+      fileWriter.flush();
+      fileWriter.close();
+      printWriter.close();
+      return;
+    }
+    catch (IOException ioe) {
+      System.out.println("IOException - Erreur lors de la fermeture du fichier soure " + asmname + " après la génération du code assembleur")
+      System.exit(1);
+    }
+  }
 
-  public void translate(CommonTree treeToConvert) {
+  public String translate(CommonTree treeToConvert) {
+    return "";
+  }
 
+  /*
+   * Convertit une chaine de caractère en son image hexadécimale
+   */
+  public String toHexString(String sample) {
+
+    int c = 0; // Equivalent à un char
+    char s = ' '; // Séparateur
+    StringBuffer buff = new StringBuffer(sample.length());
+
+    for (int k = 0; k < sample.length(); k++) {
+      c = sample.charAt(k);
+      buff.append(Integer.toHexString(c));
+    }
+
+    return buff.toString();
+  }
+
+  /*
+   * Convertit un int en son image hexadécimale (sous format string)
+   * Taille maximale : 65535
+   */
+  public String toHexString(int sample) {
+
+    String result;
+    result = Integer.toHexString(sample);
+    result = "0x" + result;
+
+    return result;
   }
 
 }
