@@ -175,7 +175,7 @@ public class Clooc {
         }
 
         //Création de la TDS/contrôles sémantiques.
-        if (verbose) System.out.println(" Etape 2 - Analyse sémantique");
+        if (verbose) System.out.println(" Etape 2 - Analyse sémantique\n");
         tablor = new TreeParser(tree);
         tablor.init(warnings);
 
