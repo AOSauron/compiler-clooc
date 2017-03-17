@@ -47,7 +47,7 @@ public class AsmGenerator {
     }
 
     // On ajoute l'extension .asm
-    asmname = "../assemblage/sources/" + purename + ".asm";
+    asmname = purename + ".asm";
 
     try {
       // Ouverture du fichier

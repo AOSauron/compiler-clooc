@@ -155,7 +155,7 @@ public class TreeParser {
         int mini = calculator((CommonTree) min, table);
         int maxi = calculator((CommonTree) max, table);
         if (maxi < mini) {
-          System.out.println("Erreur : - Boucle For - Les bornes de l'indice " + index + " ne sont pas correctes" );
+          System.out.println("ligne " + tree.getLine() + " : Erreur : Les bornes de l'indice " + index + " de la boucle for ne sont pas correctes" );
           System.exit(1);
         }
       }
@@ -245,7 +245,7 @@ public class TreeParser {
         infos = table.get(tree.getChild(0).getText());
       }
       catch (NullPointerException ne) {
-        System.out.println("Erreur : référence indéfinie vers la variable " + tree.getChild(0));
+        System.out.println("ligne " + tree.getLine() + " : Erreur : référence indéfinie vers la variable " + tree.getChild(0));
         System.exit(1);
       }
 
@@ -257,7 +257,7 @@ public class TreeParser {
         }
         // CONTROLE SEMANTIQUE : VERIFIE QU'UN IDF EXISTE BIEN DANS LE MEMBRE DE DROITE
         catch (NoSuchIdfException e) {
-          System.out.println("Erreur : référence indéfinie vers la variable " + tree.getChild(0));
+          System.out.println("ligne " + tree.getLine() + " : Erreur : référence indéfinie vers la variable " + tree.getChild(0));
         }
         // Cas d'une variable abstraite qui sera définie à l'exécution
         catch (NullPointerException ne) {
@@ -308,7 +308,7 @@ public class TreeParser {
 
         // CONTROLE SEMANTIQUE : UNE CLASSE NE PEUT PAS HERITER D'ELLE-MEME
         if (classinher.equals(classname)) {
-          System.out.println("Erreur : une classe ne peut pas heriter d'elle-même : " + classname + " inherit " + classname);
+          System.out.println("ligne " + tree.getLine() + " : Erreur : une classe ne peut pas heriter d'elle-même : " + classname + " inherit " + classname);
           System.exit(1);
         }
 
@@ -324,7 +324,7 @@ public class TreeParser {
           child.addParent(motherclass);
         }
         catch (NoSuchIdfException e) {
-          System.out.println("Erreur : référence indéfinie à la classe mère " + classinher + " dans la déclaration de la classe " + classname);
+          System.out.println("ligne " + tree.getLine() + " : Erreur : référence indéfinie à la classe mère " + classinher + " dans la déclaration de la classe " + classname);
           System.exit(1);
         }
 
@@ -351,7 +351,7 @@ public class TreeParser {
 
       // CONTROLE SEMANTIQUE : On déclenche un warning si une classe vide est déclarée.
       else {
-        if (warn) System.out.println("Warning : la classe " + classname + " est vide.");
+        if (warn) System.out.println("ligne " + tree.getLine() + " : Warning : la classe " + classname + " est vide.");
       }
 
       infos.add("CLASS"); // Type d'entrée
@@ -495,7 +495,7 @@ public class TreeParser {
         }
         // CONTROLE SEMANTIQUE : VERIFIER QU'UN IDF EXISTE DANS UN EXPRESSION CALCULATOIRE
         catch (NullPointerException ne) {
-          System.out.println("Erreur : référence indéfinie vers la variable : " + expr.getText());
+          System.out.println("ligne " + expr.getLine() + " : Erreur : référence indéfinie vers la variable : " + expr.getText());
           throw new NoSuchIdfException("Cet IDF n'existe pas.");
         }
         // Récupère le contenu de la variable,
@@ -504,7 +504,7 @@ public class TreeParser {
         }
         // CONTROLE SEMANTIQUE : Lance un Warning si le contenu de la variable est null.
         catch (NullPointerException nea) {
-            if (warn) System.out.println("Warning : la variable " + expr.getText() + " peut ne pas avoir été initialisée.");
+            if (warn) System.out.println("ligne " + expr.getLine() + " : Warning : la variable " + expr.getText() + " peut ne pas avoir été initialisée.");
         }
       }
     }
