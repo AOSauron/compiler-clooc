@@ -4,7 +4,8 @@ java -jar ../ANTLR/antlr-3.3-complete.jar Looc.g && javac *.java
 echo "[RELEASING JAR] Formation du Jar clooc.jar SANS les lib antlr et asmMicroPIUP ..."
 jar cvmf MANIFEST.MF clooc.jar *.class > /dev/null
 echo "[RELEASING JAR] Copie de ce jar dans le répertoire build/"
-mv -v clooc.jar ../build/clooc/main
+mkdir -v ../build/clooc/main/
+mv -v clooc.jar ../build/clooc/main/
 cd ../build/clooc
 mkdir -v lib/
 cp -v ../../ANTLR/antlr-3.3-complete.jar ./lib
