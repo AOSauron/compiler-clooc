@@ -81,7 +81,7 @@ public class AsmGenerator {
       return;
     }
     catch (IOException ioe) {
-      System.out.println("IOException - Erreur lors de la fermeture du fichier soure " + asmname + " après la génération du code assembleur")
+      System.out.println("IOException - Erreur lors de la fermeture du fichier soure " + asmname + " après la génération du code assembleur");
       System.exit(1);
     }
   }
