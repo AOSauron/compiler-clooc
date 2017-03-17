@@ -6,6 +6,7 @@
 
 class Math =
 (
+  var ntm : int;
   method pow(a : int, b : int) : int
   {
     var retval : int;
@@ -14,12 +15,15 @@ class Math =
     if b == 0
     then
       return (1);
+    else
+      return (0);
     fi
 
     retval := 1;
-    for i in 1 .. b
+    for i in 3*5 .. 50
     do
-      retval := retval * a;
+      write "ok";
+      /*retval := retval * a;*/
     end
 
     return (retval);

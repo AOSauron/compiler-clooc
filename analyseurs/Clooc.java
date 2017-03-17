@@ -11,25 +11,31 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.io.FileOutputStream;
 
-
+/*
+ * Compilateur Clooc. Classe Main.
+ * Analyse lexicalement, syntaxiquement puis sémantiquement un programme looc passé en paramètre.
+ * Produit un AST au format png, et génére du code source assembleur microPIUP.
+ * @author : Guillaume Garcia
+ * Clooc - PCL 2017 - TELECOM Nancy
+ */
 
 public class Clooc {
     public static void main(String[] args) throws Exception {
 
-        //System.setOut(new PrintStream(new FileOutputStream("test.txt")));
         boolean AST=false;
         InputStream in;
         File file;
+        File loocfile;
         FileWriter fileWriter;
         PrintWriter printWriter;
-        PrintStream old;
-        PrintStream ps;
-        //ByteArrayOutputStream baos;
+        String path_table;
+        String full_tree_simple;
 
         //Flag pour construction AST
         if (args[0].equals("-T")) {
           AST=true;
         }
+
         //Ouvre le fichier passé en paramètre
         try {
           if (AST) {
@@ -38,30 +44,48 @@ public class Clooc {
           }
           else {
             in = new FileInputStream(new File(args[0]));
-            //System.out.println("Analyse du programme " + args[0] + " ...");
           }
 
+          //Création des analyseurs syntaxique et léxical
           ANTLRInputStream input = new ANTLRInputStream(in);
           LoocLexer lexer = new LoocLexer(input);
           CommonTokenStream tokens = new CommonTokenStream(lexer);
           LoocParser parser = new LoocParser(tokens);
 
           if (AST) {
-            CommonTree tree = (CommonTree) parser.program().getTree();
-            DOTTreeGenerator gen = new DOTTreeGenerator();
-            StringTemplate st = gen.toDOT(tree);
-            //System.out.println(st);
+            // Ouverture du .dot
             file = new File(args[2]);
             fileWriter = new FileWriter(file);
             printWriter = new PrintWriter(fileWriter);
+
+            //Récupération de l'arbre brut
+            CommonTree tree = (CommonTree) parser.program().getTree();
+
+            //Création de la TDS/contrôles sémantiques.
+            TreeParser tablor = new TreeParser(tree);
+            tablor.init();
+
+            //Affichage des TDS
+            tablor.prettyprintTDS();
+
+            //Génération de l'arbre en DOT
+            DOTTreeGenerator gen = new DOTTreeGenerator();
+            StringTemplate st = gen.toDOT(tree);
+
             printWriter.print(st);
             fileWriter.flush();
             fileWriter.close();
             System.out.println("Fin de la construction. L'AST a été produit dans le fichier " + args[2] + " au format DOT. Vous pouvez l'afficher avec graphviz (ZGRViewer est recommandé).");
+
+            // Génération de code en Assembleur microPIUP si aucune erreur sémantique n'est détectée
+            if (tablor.getNbError() == 0) {
+              loocfile = new File(args[1]);
+              tablor.getAsmGen().openFile(loocfile);
+            }
           }
           else {
+            //Simple parsing du code
             parser.program();
-            //System.out.println("Fin de vérification. Si aucun message d'erreur, le programme est validé (looc).");
           }
         }
         catch (ArrayIndexOutOfBoundsException e) {

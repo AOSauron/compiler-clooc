@@ -5,7 +5,9 @@ x := 0;
 {
   var bloc : string;
   bloc := "bloc anonyme";
-  if x!=1
+  var y : int;
+  y := 3;
+  if y!=1
   then
     bloc := "OK";
     write bloc;
@@ -13,3 +15,5 @@ x := 0;
     write "error";
   fi
 }
+
+var j : string;

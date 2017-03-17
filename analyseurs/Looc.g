@@ -6,7 +6,8 @@ GARCIA Guillaume
 HINSBERGER Laure
 ZAMBAUX Gauthier
 
-Maj : 06/02/17   22:24  */
+Maj : 09/03/17   14:55
+*/
 
  grammar Looc;
 
@@ -45,11 +46,19 @@ Maj : 06/02/17   22:24  */
 }
 
 
-program:   (class_decl)* (var_decl)* (instruction)+ -> ^(PROGRAM (class_decl)* (var_decl)* (instruction)+);
+program:   (class_decl)* decl_ins* -> ^(PROGRAM (class_decl)* decl_ins*);
 
 class_decl:   'class' IDFC ('inherit' IDFC)? '=' '(' class_item_decl ')' -> ^(CLASS IDFC (IDFC)? class_item_decl);
 
-class_item_decl:   (var_decl)* (method_decl)* -> ^(BLOCK (var_decl)* (method_decl)*);
+class_item_decl:   decl* -> ^(BLOCK decl*);
+
+decl:   var_decl
+    |   method_decl
+    ;
+
+decl_ins:   var_decl
+        |   instruction
+        ;
 
 var_decl:   'var' IDF ':' type ';' -> ^(VARDEC IDF type);
 
@@ -58,14 +67,15 @@ type:   IDFC -> ^(IDFC)
     |   'string' -> ^(STRING)
     ;
 
-method_decl:   'method' IDF '(' method_args? ')' (':' type)? '{' var_decl* instruction+ '}' -> ^(METHODDEC IDF method_args? type? var_decl* ^(BLOCK instruction+));
+method_decl:   'method' IDF '(' method_args? ')' (':' type)? '{' decl_ins* '}' -> ^(METHODDEC IDF method_args? type? ^(BLOCK decl_ins*));
+/* On autorise syntaxiquement la déclaration de méthode vide, mais un warning (sémantique) sera renvoyé */
 
 method_args:   IDF ':' type (',' IDF ':' type)* -> ^(METHODARGS ^(ARG IDF type) ^(ARG IDF type)*);
 
 instruction:   IDF ':=' affectation ';' -> ^(AFFECT IDF affectation)
            |   'if' expression 'then' a+=instruction+ ('else' b+=instruction+)? 'fi' -> ^(IF expression ^(THEN $a+) ^(ELSE $b+)?)
            |   'for' IDF 'in' expression '..' expression 'do' instruction+ 'end' -> ^(FOR IDF expression expression ^(DO instruction+))
-           |   '{' var_decl* instruction+ '}' -> ^(ANONYMOUSBLOCK var_decl* instruction+)
+           |   '{' decl_ins* '}' -> ^(ANONYMOUSBLOCK decl_ins*)  /* On autorise syntaxiquement la déclaration de blocs vides, mais un warning (sémantique) sera renvoyé */
            |   'do' expression ';' -> ^( DO  expression )
            |   print
            |   read
@@ -78,7 +88,7 @@ affectation:   expression
 
 print:   'write' expression ';' -> ^(WRITE expression);
 
-read:   'read' INT_CST ';' -> ^(READ INT_CST); //'read' IDF ';' -> ^(READ IDF);  //Contradiction dans le sujet !!!!!
+read:   'read' IDF ';' -> ^(READ IDF);
 
 returnstate:   'return' '(' expression ')' ';' -> ^(RETURN expression);
 
