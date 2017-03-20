@@ -166,11 +166,21 @@ public class Clooc {
           System.out.println("Fin de la construction. L'AST a été produit dans le fichier " + purename + " au format DOT.");
           Runtime runtime = Runtime.getRuntime();
           System.out.println("Exportation de l'arbre au format PNG ...");
-          try {runtime.exec(new String[] {"dot", "-Tpng", purename, "-o", purenamepng, "&>", "/dev/null"}); }
-          catch (IOException e) {System.out.println("Le programme dot (graphviz) ne semble pas être installé. Lancez `sudo apt-get install graphviz`"); System.exit(1);}
+          try {
+            runtime.exec(new String[] {"dot", "-Tpng", purename, "-o", purenamepng, "&>", "/dev/null"});
+          }
+          catch (IOException e) {
+            System.out.println("Le programme dot (graphviz) ne semble pas être installé. Lancez `sudo apt-get install graphviz` .");
+            System.exit(1);
+          }
           System.out.println("Affichage de l'arbre.");
-          try {runtime.exec(new String[] {"eog", purenamepng, "&>", "/dev/null", "&"});}
-          catch (IOException e) {System.out.println("Le programme eog (ImageViewer for Gnome) ne semble pas être installé. Lancez `sudo apt-get install eog`"); System.exit(1);}
+          try {
+            runtime.exec(new String[] {"eog", purenamepng, "&>", "/dev/null", "&"});
+          }
+          catch (IOException e) {
+            System.out.println("Le programme eog (ImageViewer for Gnome) ne semble pas être installé. Lancez `sudo apt-get install eog` .");
+            System.exit(1);
+          }
           return;
         }
 

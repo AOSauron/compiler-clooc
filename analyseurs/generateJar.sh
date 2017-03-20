@@ -11,7 +11,7 @@ cd clooc/
 echo "[RELEASING JAR] Build de one-jar ..."
 jar xvf one-jar-boot-0.97.jar > /dev/null
 rm -v one-jar-boot-0.97.jar
-rm -rf ./src
+rm -rvf ./src
 echo "One-Jar-Main-Class: Clooc" >> boot-manifest.mf
 echo "" >> boot-manifest.mf
 mkdir -v main/
@@ -24,7 +24,7 @@ jar -cvfm ../../clooc.jar boot-manifest.mf . > /dev/null
 cd ..
 echo "[RELEASING JAR] Suppression des dossiers du build ..."
 cd ..
+rm -rf build/clooc
 echo "[RELEASING JAR] Terminé. Pour lancer :"
 java -jar clooc.jar
-rm -rf build/clooc
 cd analyseurs
