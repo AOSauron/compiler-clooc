@@ -1,0 +1,7 @@
+var entier : int;
+var sum : int;
+
+entier := 4;
+sum := 7;
+
+sum := sum + entier;

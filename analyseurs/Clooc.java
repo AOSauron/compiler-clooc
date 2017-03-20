@@ -30,16 +30,18 @@ public class Clooc {
         String purenamepng;
         File file;
         File loocfile = null;
+        File asmfile = null;
         FileWriter fileWriter = null;
         PrintWriter printWriter = null;
-        String path_table;
-        String full_tree_simple;
+        String asmfilename = "";
         String filename = "";
+        String pathtoasm = "";
         boolean AST = false;
         boolean analyse = false;
         boolean warnings = false;
         boolean src = false;
         boolean verbose = false;
+        boolean dir = false;
         InputStream in = null;
         TreeParser tablor = null;
         CommonTree tree = null;
@@ -51,19 +53,20 @@ public class Clooc {
         if (nargs == 0) {
           System.out.println("Clooc - Compilateur Looc - v1.5");
           System.out.println("");
-          System.out.println("Usage : java -jar clooc.jar fichier     ->  Compilation classique, analyse et produit de l'assembleur exécutable microPIUP.");
-          System.out.println("        java -jar clooc.jar -W fichier  ->  Affiche les warnings lors de la compilation.");
-          System.out.println("        java -jar clooc.jar -v fichier  ->  Mode verbeux : Affiche la Table Des Symboles et autres messages lors de la compilation.");
-          System.out.println("        java -jar clooc.jar -s fichier  ->  Compilation classique mais produit de l'assembleur source microPIUP/ASM.");
-          System.out.println("        java -jar clooc.jar -a fichier  ->  Effectue seulement les analyses syntaxique et lexicale.");
-          System.out.println("        java -jar clooc.jar -T fichier  ->  Effectue les analyses syntaxique et lexicale et produit l'AST sous format DOT puis PNG.");
+          System.out.println("Usage : java -jar clooc.jar fichier               ->  Compilation classique, analyse et produit de l'assembleur exécutable microPIUP.");
+          System.out.println("        java -jar clooc.jar -d fichier dest/dir/  ->  Compilation classique, le fichier assembleur est produit dans un dossier indiqué.");
+          System.out.println("        java -jar clooc.jar -W fichier            ->  Affiche les warnings lors de la compilation.");
+          System.out.println("        java -jar clooc.jar -v fichier            ->  Mode verbeux : Affiche la Table Des Symboles et autres lors de la compilation.");
+          System.out.println("        java -jar clooc.jar -s fichier            ->  Compilation classique mais produit de l'assembleur source microPIUP/ASM.");
+          System.out.println("        java -jar clooc.jar -a fichier            ->  Effectue seulement les analyses syntaxique et lexicale.");
+          System.out.println("        java -jar clooc.jar -T fichier            ->  Effectue analyses syntaxique/lexicale et produit l'AST sous format DOT puis PNG.");
           System.out.println("");
-          System.out.println("Les options -W et -v peuvent être combinées : -Wv ou -vW .");
+          System.out.println("Les options -W, -v, -s et -d peuvent être combinées.");
           System.out.println("");
-          System.out.println("Auteurs : G.Garcia - G.Zambaux - L.Hinsberger - N.Dubois - @TNCY-2016\n");
+          System.out.println("Auteurs : G.Garcia - G.Zambaux - L.Hinsberger - N.Dubois - @TNCY-2017\n");
           System.exit(1);
         }
-        else if (nargs > 2) {
+        else if (nargs > 3) {
           System.out.println("Erreur : trop d'arguments.");
         }
         else if (nargs == 2) {
@@ -92,15 +95,150 @@ public class Clooc {
               verbose = true;
               warnings = true;
               break;
+            case "-Wvs":
+              verbose = true;
+              warnings = true;
+              src = true;
+              break;
+            case "-Wsv":
+              verbose = true;
+              warnings = true;
+              src = true;
+              break;
+            case "-sWv":
+              verbose = true;
+              warnings = true;
+              src = true;
+              break;
+            case "-svW":
+              verbose = true;
+              warnings = true;
+              src = true;
+              break;
+            case "-vsW":
+              verbose = true;
+              warnings = true;
+              src = true;
+              break;
+            case "-vWs":
+              verbose = true;
+              warnings = true;
+              src = true;
+              break;
+            case "-vs":
+              verbose = true;
+              src = true;
+              break;
+            case "-sv":
+              verbose = true;
+              src = true;
+              break;
+            case "-sW":
+              src = true;
+              warnings = true;
+              break;
+            case "-Ws":
+              src = true;
+              warnings = true;
+              break;
             default:
-              System.out.println("Erreur : option illégale.");
+              System.out.println("Erreur : options illégales.");
+              System.exit(1);
+          }
+        }
+        else if (nargs == 3) {
+          opt = args[0];
+          switch (opt) {
+            case "-d":
+              dir = true;
+              break;
+            case "-Wd":
+              warnings = true;
+              dir = true;
+              break;
+            case "-vd":
+              verbose = true;
+              dir = true;
+              break;
+            case "-sd":
+              dir = true;
+              src = true;
+              break;
+            case "-Wvsd":
+              verbose = true;
+              warnings = true;
+              src = true;
+              dir = true;
+              break;
+            case "-Wsvd":
+              verbose = true;
+              warnings = true;
+              src = true;
+              dir = true;
+              break;
+            case "-sWvd":
+              verbose = true;
+              warnings = true;
+              src = true;
+              dir = true;
+              break;
+            case "-svWd":
+              verbose = true;
+              warnings = true;
+              src = true;
+              dir = true;
+              break;
+            case "-vsWd":
+              verbose = true;
+              warnings = true;
+              src = true;
+              dir = true;
+              break;
+            case "-vWsd":
+              verbose = true;
+              warnings = true;
+              src = true;
+              dir = true;
+              break;
+            case "-vsd":
+              verbose = true;
+              src = true;
+              dir = true;
+              break;
+            case "-svd":
+              verbose = true;
+              src = true;
+              dir = true;
+              break;
+            case "-sWd":
+              src = true;
+              warnings = true;
+              dir = true;
+              break;
+            case "-Wsd":
+              src = true;
+              warnings = true;
+              dir = true;
+              break;
+            case "-vWd":
+              verbose = true;
+              warnings = true;
+              dir = true;
+              break;
+            case "-Wvd":
+              verbose = true;
+              warnings = true;
+              dir = true;
+              break;
+            default:
+              System.out.println("Erreur : options illégales, pour l'option -d il faut indiquer un dossier de destination");
               System.exit(1);
           }
         }
 
         //Ouvre le fichier passé en paramètre
         try {
-          if (AST || src || warnings || analyse || verbose) {
+          if (AST || src || warnings || analyse || verbose || dir) {
             filename = args[1];
             loocfile = new File(filename);
             in = new FileInputStream(new File(filename));
@@ -118,6 +256,22 @@ public class Clooc {
             System.out.println("Le fichier " + filename + " n'existe pas.");
           }
           System.exit(1);
+        }
+
+        // Vérifie le 3e argument si option -d
+        if (dir) {
+          try {
+            pathtoasm = args[2];
+            asmfile = new File(pathtoasm);
+          }
+          catch (ArrayIndexOutOfBoundsException e) {
+            System.out.println("Arguements attendus attendus après option -d : dossier de destination.");
+            System.exit(1);
+          }
+          if (!asmfile.exists() || !asmfile.isDirectory()) {
+            System.out.println("Le dossier " + pathtoasm + " n'existe pas, ou alors il s'agit d'un fichier.");
+            System.exit(1);
+          }
         }
 
         //Création des analyseurs syntaxique et léxical
@@ -198,7 +352,13 @@ public class Clooc {
 
         // Génération de code en Assembleur microPIUP si aucune erreur sémantique n'est détectée
         if (tablor.getNbError() == 0) {
+          if (dir) {
+            tablor.getAsmGen().setOtpion(true);
+            tablor.getAsmGen().setPath(pathtoasm);
+          }
           tablor.getAsmGen().openFile(loocfile);
+          // Tratement
+          tablor.getAsmGen().closeFile();
         }
         else if (tablor.getNbError() > 0) {
           System.out.println(tablor.getNbError() + " erreurs dans le fichier " + filename + ".");

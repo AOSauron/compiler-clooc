@@ -1,0 +1,47 @@
+ff10  origine
+ff10  debut d'execution
+6f80   emplacement : 65296  (0xff10)  ligne n° 14	INITPILE	LDW SP, #STACKA	//Initialise le pointeur de pile
+1000   emplacement : 65298  (0xff12) 
+6680   emplacement : 65300  (0xff14)  ligne n° 15			LDW R6, #IT_PRGA
+ff46   emplacement : 65302  (0xff16) 
+6650   emplacement : 65304  (0xff18)  ligne n° 16			STW R6, @VECTA1
+0088   emplacement : 65306  (0xff1a) 
+6980   emplacement : 65308  (0xff1c)  ligne n° 17			LDW R9, #IT_PRGB
+ff58   emplacement : 65310  (0xff1e) 
+6950   emplacement : 65312  (0xff20)  ligne n° 18			STW R9, @VECTA2
+008c   emplacement : 65314  (0xff22) 
+0700   emplacement : 65316  (0xff24)  ligne n° 19			ENI
+6180   emplacement : 65318  (0xff26)  ligne n° 21	MAIN_PRGA	LDW R1, #INITC
+0000   emplacement : 65320  (0xff28) 
+6280   emplacement : 65322  (0xff2a)  ligne n° 22			LDW R2, #SEUIL
+006f   emplacement : 65324  (0xff2c) 
+6380   emplacement : 65326  (0xff2e)  ligne n° 23			LDW R3, #0x0010
+0010   emplacement : 65328  (0xff30) 
+0600   emplacement : 65330  (0xff32)  ligne n° 26	BOUCLE		DSI
+6150   emplacement : 65332  (0xff34)  ligne n° 27			STW R1, @CNTMA
+ff00   emplacement : 65334  (0xff36) 
+0700   emplacement : 65336  (0xff38)  ligne n° 28			ENI
+e131   emplacement : 65338  (0xff3a)  ligne n° 29			ADD R1, R3, R1
+4f21   emplacement : 65340  (0xff3c)  ligne n° 30			CMP R2, R1	//5.A, risquerait de fausser le resultat si SR est modifi} par le prog dinterruption
+0480   emplacement : 65342  (0xff3e)  ligne n° 31			JGE #BOUCLE-$-2
+fff2   emplacement : 65344  (0xff40) 
+0950   emplacement : 65346  (0xff42)  ligne n° 32	END		JEA @MAIN_PRGA
+ff26   emplacement : 65348  (0xff44) 
+64d0   emplacement : 65350  (0xff46)  ligne n° 35	IT_PRGA		LDW R4, @CNTIA
+ff02   emplacement : 65352  (0xff48) 
+6580   emplacement : 65354  (0xff4a)  ligne n° 36			LDW R5, #0x0002
+0002   emplacement : 65356  (0xff4c) 
+e454   emplacement : 65358  (0xff4e)  ligne n° 37			ADD R4, R5, R4
+6450   emplacement : 65360  (0xff50)  ligne n° 38			STW R4, @CNTIA
+ff02   emplacement : 65362  (0xff52) 
+0700   emplacement : 65364  (0xff54)  ligne n° 39			ENI		//Autoriser } nouveau les interruptions
+0300   emplacement : 65366  (0xff56)  ligne n° 40			RTI		//Et non RTS car on veut SR (sauv} en pile).
+67d0   emplacement : 65368  (0xff58)  ligne n° 43	IT_PRGB		LDW R7, @CNTMA
+ff00   emplacement : 65370  (0xff5a) 
+6880   emplacement : 65372  (0xff5c)  ligne n° 44			LDW R8, #0x0001
+0001   emplacement : 65374  (0xff5e) 
+f787   emplacement : 65376  (0xff60)  ligne n° 45			SUB R7, R8, R7
+6750   emplacement : 65378  (0xff62)  ligne n° 46			STW R7, @CNTMA
+ff00   emplacement : 65380  (0xff64) 
+0700   emplacement : 65382  (0xff66)  ligne n° 47			ENI
+0300   emplacement : 65384  (0xff68)  ligne n° 48			RTI

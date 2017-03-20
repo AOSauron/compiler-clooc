@@ -20,6 +20,8 @@ public class AsmGenerator {
   private PrintWriter printWriter;
   private String asmname;
   private String tab = "\t";
+  private String path;
+  private boolean optiond = false;
 
   public AsmGenerator() {
 
@@ -49,6 +51,15 @@ public class AsmGenerator {
     // On ajoute l'extension .asm
     asmname = purename + ".asm";
 
+    // Option -d
+    if (optiond) {
+      // Append au path le caractère / si il n'existe pas déjà
+      if (!path.substring(path.length()-1).equals("/")) {
+        path = path + "/";
+      }
+      asmname = path + asmname;
+    }
+
     try {
       // Ouverture du fichier
       file = new File(asmname);
@@ -68,6 +79,20 @@ public class AsmGenerator {
    */
   public File getFile() {
     return file;
+  }
+
+  /*
+   * Permet de propager l'option -d
+   */
+  public void setOtpion(boolean flag) {
+    this.optiond = flag;
+  }
+
+  /*
+   * Set le chemin où produire les fichiers assembleurs (source.asm et exec.iup)
+   */
+  public void setPath(String path) {
+    this.path = path;
   }
 
   /*
