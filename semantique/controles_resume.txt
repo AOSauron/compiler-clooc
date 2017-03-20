@@ -27,8 +27,8 @@ A FAIRE :
 - (Erreur) Vérifie la cohérence des types sur un return.
 - (Erreur) Vérifie qu'une méthode appellée existe dans l'arborescence des TDS parentes. (implicit declaration of function)
 - (Erreur) Vérifie le nombre d'arguments passés à une méthode.
-- (Erreur) Vérifie le type des arguements passés à une méthode.
-- (Erreur) Pas de redéclaration d'une methode (On suppose : SURCHARGE PAS AUTORISEE).
+- (Erreur) Vérifie le type des arguments passés à une méthode.
+- (Erreur) Pas de redéclaration d'une methode dans le même contexte (meme TDS).
 - (Erreur) Pas de redéclaration d'une variable globale ou locale.
 - (Erreur) Pas de redéclaration d'une classe.
 - (Warning) Lance un warning si une variable/methode redéfinit un symbole dans un contexte plus profond.
@@ -38,4 +38,15 @@ A FAIRE :
 - (Erreur) Vérifie que la variable retournée par une méthode existe (si non-cste_ent et non-cste_chaine)
 - (Erreur) Utilisation d'un autre symbole comme une methode (exemple : un int est utilisé 'comme' une methode)
 - (Warning) Lance un warning si une méthode est déclarée à la fois dans une classe et en dehors. (pas si mm méthode dans 2 classes.)
-- (Erreur) Vérifie qu'une classe fille ne surcharge aucun symbole (methode, attributs) de la classe mère dans le cas d'un inherit. PAS DE SURCHARGE.
+- (Warning) Lance un warning si une classe fille surcharge/redéfini un symbole (methode, attributs) de la classe mère dans le cas d'un inherit. Surcharge autorisée.
+- (Warning) Lance un warning si une méthode vide est déclarée.
+- (Warning) Lance un warning si un bloc anonyme est déclaré.
+- (Erreur) Vérifier qu'un appel à une méthode sans type de retour se fait par le mot-clé "do" : do n.foo();
+- (Erreur) Cohérence des types sur des affectations.
+- (Erreur) Contrôle de type dans les conditions (entier ou nil)
+- (Erreur) Une classe ne peut référencer que des classes déjà définies
+- (Erreur) Dans une classe, un symbole ne peut désigner à la fois un argument ou un attribut, et une methode.
+-
+
+- (Prendre en compte) Un objet peut être initialisé à nil (<=> null), celà revient à mettre null en java, mais ne déclenche pas le Warning 1-Guillaume
+- (Prendre en compte) Dans les contrôles de typage, considérer la notion de sous-types !
