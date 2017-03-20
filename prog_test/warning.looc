@@ -1,0 +1,9 @@
+class Empty =
+(
+
+)
+
+var nada : int;
+var niet : int;
+
+niet := 3*nada;

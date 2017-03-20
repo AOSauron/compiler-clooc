@@ -16,6 +16,7 @@ public class TreeParser {
   private int countanoblock;
   private int countfor;
   private int countif;
+  private boolean warn;
   private CommonTree ast;
   private HashMap<String,LinkedList> tableroot;
   private NodeTDS root;
@@ -24,6 +25,7 @@ public class TreeParser {
 
   public TreeParser(CommonTree ast) {
     this.ast=ast;
+    warn = false;
   }
 
 
@@ -31,10 +33,9 @@ public class TreeParser {
    * Print la table du noeud passé en paramètre ainsi que celle des ses fils.
    *
    */
-  public void init() {
-    System.out.println("Tree to parse : " + this.ast.toStringTree());
-    System.out.println("");
+  public void init(boolean warnings) {
 
+    warn = warnings;
     asmgen = new AsmGenerator();
     tableroot = new HashMap<String,LinkedList>();
     root = new NodeTDS(null);
@@ -44,10 +45,6 @@ public class TreeParser {
     countanoblock = 0;
 
     explorer(ast, root);
-
-    String test = asmgen.toHexString("Hello World !");
-    String test3 = asmgen.toHexString(345);
-    System.out.println("TEST : " + test + " ET : " + test3);
   }
 
 
@@ -56,11 +53,13 @@ public class TreeParser {
    *
    */
    public void prettyprintTDS() {
-     System.out.println(" **** Début de la Table Ses Symboles **** ");
+     System.out.println("");
+     System.out.println(" **** Début de la Table Des Symboles **** ");
      System.out.println("");
      printTDS(root);
      System.out.println("");
-     System.out.println(" **** Fin de la Table Ses Symboles **** ");
+     System.out.println(" **** Fin de la Table Des Symboles **** ");
+     System.out.println("");
    }
 
 
@@ -129,8 +128,6 @@ public class TreeParser {
     int nbchlid = tree.getChildCount();
     String nodename = tree.getText();
 
-    System.out.println("TDS partielle :" + table.toString());
-
     /*
      * VARDEC
      */
@@ -168,8 +165,8 @@ public class TreeParser {
         int mini = calculator((CommonTree) min, table);
         int maxi = calculator((CommonTree) max, table);
         if (maxi < mini) {
-          System.out.println("ligne"  + tree.getLine() + " : Erreur : - Boucle For - Les bornes de l'indice " + index + " ne sont pas correctes" );
           nbError++;
+          System.out.println("ligne " + tree.getLine() + " : Erreur : Les bornes de l'indice " + index + " de la boucle for ne sont pas correctes" );
         }
       }
       catch (NoSuchIdfException e) {
@@ -365,7 +362,7 @@ public class TreeParser {
 
       // CONTROLE SEMANTIQUE : On déclenche un warning si une classe vide est déclarée.
       else {
-        System.out.println("ligne"  + tree.getLine() + " : Warning : la classe " + classname + " est vide.");
+        if (warn) System.out.println("ligne " + tree.getLine() + " : Warning : la classe " + classname + " est vide.");
       }
 
       infos.add("CLASS"); // Type d'entrée
@@ -564,7 +561,7 @@ public class TreeParser {
         }
         // CONTROLE SEMANTIQUE : VERIFIER QU'UN IDF EXISTE DANS UN EXPRESSION CALCULATOIRE
         catch (NullPointerException ne) {
-          System.out.println("ligne"  + tree.getLine() + " : Erreur : référence indéfinie vers la variable : " + expr.getText());
+          System.out.println("ligne"  + expr.getLine() + " : Erreur : référence indéfinie vers la variable : " + expr.getText());
           throw new NoSuchIdfException("Cet IDF n'existe pas.");
         }
         // Récupère le contenu de la variable,
@@ -573,7 +570,7 @@ public class TreeParser {
         }
         // CONTROLE SEMANTIQUE : Lance un Warning si le contenu de la variable est null.
         catch (NullPointerException nea) {
-          System.out.println("ligne"  + tree.getLine() + " : Warning : la variable " + expr.getText() + " peut ne pas avoir été initialisée.");
+          if (warn) System.out.println("ligne " + expr.getLine() + " : Warning : la variable " + expr.getText() + " peut ne pas avoir été initialisée.");
         }
       }
     }
