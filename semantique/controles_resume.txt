@@ -37,3 +37,5 @@ A FAIRE :
 - (Erreur) Vérifie que le type d'une variable correspond au type d'une retour d'une méthode dans le cas d'une affectation de ce retour sur cette variable.
 - (Erreur) Vérifie que la variable retournée par une méthode existe (si non-cste_ent et non-cste_chaine)
 - (Erreur) Utilisation d'un autre symbole comme une methode (exemple : un int est utilisé 'comme' une methode)
+- (Warning) Lance un warning si une méthode est déclarée à la fois dans une classe et en dehors. (pas si mm méthode dans 2 classes.)
+- (Erreur) Vérifie qu'une classe fille ne surcharge aucun symbole (methode, attributs) de la classe mère dans le cas d'un inherit. PAS DE SURCHARGE.
