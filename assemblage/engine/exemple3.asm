@@ -7,7 +7,7 @@
 		VECTA1 EQU 0x0088 //Adresse du vecteur dinterruption IRQ2 : 4*(32+2)=0x0088
 		VECTA2 EQU 0x008C //Adresse du vecteur dinterruption IRQ3 : 4*(32+3)=0x008C
 
-	      	ORG	0xFF10
+	  ORG	0xFF10
 		START 	INITPILE
 
 //Main Program
@@ -19,8 +19,10 @@ INITPILE	LDW SP, #STACKA	//Initialise le pointeur de pile
 		ENI
 
 MAIN_PRGA	LDW R1, #INITC
-		LDW R2, #SEUIL
+		LDW R2, #2
 		LDW R3, #0x0010
+//INA		INP R1, R13
+//OUTA		OUT R2, R3
 
 BOUCLE		DSI
 		STW R1, @CNTMA
