@@ -20,12 +20,13 @@ public class TreeParser {
   private CommonTree ast;
   private HashMap<String,LinkedList> tableroot;
   private NodeTDS root;
-  private AsmGenerator asmgen;
-  private int nbError = 0;
+  private int nbError;
+
 
   public TreeParser(CommonTree ast) {
     this.ast=ast;
     warn = false;
+    nbError = 0;
   }
 
 
@@ -36,7 +37,6 @@ public class TreeParser {
   public void init(boolean warnings) {
 
     warn = warnings;
-    asmgen = new AsmGenerator();
     tableroot = new HashMap<String,LinkedList>();
     root = new NodeTDS(null);
 
@@ -45,6 +45,7 @@ public class TreeParser {
     countanoblock = 0;
 
     explorer(ast, root);
+
   }
 
 
@@ -98,16 +99,6 @@ public class TreeParser {
      return tableroot;
    }
 
-
-  /*
-   * Retourne l'AsmGenerator du TreeParser.
-   *
-   */
-  public AsmGenerator getAsmGen() {
-    return asmgen;
-  }
-
-
   /*
    * Retourne le nombre d'erreurs sémantiques détectées
    *
@@ -118,8 +109,16 @@ public class TreeParser {
 
 
   /*
-   * Explorateur récursif de sous-arbre. Effectue des contrôles sémantiques !
+   * Retourne la TDS (à appeller après avoir effectuer un init())
    *
+   */
+  public NodeTDS getTDS() {
+    return root;
+  }
+
+  /*
+   * Explorateur récursif de sous-arbre. Effectue des contrôles sémantiques !
+   * Range les données dans la TDS du node passé en paramètre.
    */
   public void explorer(CommonTree tree, NodeTDS node) {
 

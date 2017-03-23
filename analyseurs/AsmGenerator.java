@@ -8,7 +8,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 /*
- * Générateur de code assembleur. Ouvre un fichier source .asm et le remplit de ce code.
+ * Générateur de code assembleur à partir de l'AST et de la TDS. Ouvre un fichier source .asm et le remplit de ce code.
  * @author : Guillaume Garcia
  * Pour Clooc - PCL 2017 - TELECOM Nancy
  */
@@ -19,13 +19,21 @@ public class AsmGenerator {
   private FileWriter fileWriter;
   private PrintWriter printWriter;
   private String asmname;
-  private String tab = "\t";
+  private String tab;
+  private String nline;
   private String path;
-  private boolean optiond = false;
+  private boolean optiond;
+  private CommonTree ast;
+  private NodeTDS tds;
 
-  public AsmGenerator() {
-
+  public AsmGenerator(CommonTree ast, NodeTDS tds) {
+    this.ast = ast;
+    this.tds = tds;
+    tab = "\t";
+    nline = "\n";
+    optiond = false;
   }
+
 
   /*
    * Ouvre un fichier .asm source pour y générer du code assembleur.
@@ -74,6 +82,7 @@ public class AsmGenerator {
     return;
   }
 
+
   /*
    * Retourne le fichier source .asm (type File)
    */
@@ -81,12 +90,14 @@ public class AsmGenerator {
     return file;
   }
 
+
   /*
    * Permet de propager l'option -d
    */
-  public void setOtpion(boolean flag) {
+  public void setOption(boolean flag) {
     this.optiond = flag;
   }
+
 
   /*
    * Set le chemin où produire les fichiers assembleurs (source.asm et exec.iup)
@@ -94,6 +105,7 @@ public class AsmGenerator {
   public void setPath(String path) {
     this.path = path;
   }
+
 
   /*
    * Fermeture du fichier et des writer.
@@ -111,9 +123,162 @@ public class AsmGenerator {
     }
   }
 
-  public String translate(CommonTree treeToConvert) {
-    return "";
+
+  /*
+   * Lance la procédure de génération de code dans le fichier source .asm
+   */
+  public void initGen() {
+
+    // Directives de préassemblage
+    String sp = "SP EQU R15"; // Aliase du stack pointer
+    String org = "ORG 0x2000"; // Charge le programme d'assemblage à l'adresse 0x2000
+    String start = "START 0x2000"; // Lance le programme à l'adresse 0x2000
+    String newline = "NEWLINE RSW 1\n LDW R0, #0x0a00\n STW R0, @NEWLINE"; // Le caractère de retour à la ligne est desormais stocké dans l'etiquette NEWLINE
+    printWriter.print(sp + nline);
+    printWriter.print(org);
+    printWriter.print(start);
+    printWriter.print(nline + newline);
+
+    // Reste du progamme
+    exploreAndGen(ast, tds);
+
   }
+
+
+  /*
+   * Parcourt de nouveau l'arbre syntaxique ainsi que la TDS si aucune erreur sémantique/syntaxique
+   * Produit directement le code assembleur dans le fichier source .asm
+   */
+  public void exploreAndGen(CommonTree treeToConvert, NodeTDS tdsNode) {
+
+    //Récupère la TDS du node passé en paramètre.
+    HashMap<String,LinkedList> table = tdsNode.getTable();
+    int nbchlid = tree.getChildCount();
+    String nodename = tree.getText();
+    LinkedList infos = null;
+    String varname = null;
+    String type = null;
+    String instruction = null;
+    CommonTree subtree = null;
+
+    switch (nodename) {
+
+      case "VARDEC":
+
+        varname = treeToConvert.getChild(0).getText();
+        type = treeToConvert.getChild(1).getText();
+
+        // Les string seront déclarées à l'affectation ou lors d'un READ. (OK puisque controle sem passé avant)
+        if (type.equals("INT")) {
+          instruction = varname + " RSW 1";
+        }
+        else if (type.equals("NEW")) {
+          // A FAIRE
+        }
+
+        printWriter.print(instruction);
+        break;
+
+      case "AFFECT":
+
+        varname = treeToConvert.getChild(0).getText();
+        infos = table.get(varname);
+        type = infos.getFirst().toString();
+        subtree = treeToConvert.getChild(1);
+
+        if (type.equals("INT")){
+          if (subtree.getChildCount() == 0) {
+            instruction = tab + "LDW R0, #" + subtree.getText() + nline + "STW R0, @" + varname;
+          }
+          else { // Cas d'une opération arithmétique ou logique : résultat stocké dans R1 par calculatorInstr()
+            instruction = tab + calculatorInstr(subtree) + nline + "STW R1, @" +varname;
+          }
+        }
+        else if (type.equals("STRING")) {
+          instruction = tab + varname + " STRING " + subtree.getText();
+        }
+        else { // Cas d'un type classe
+          //A FAIRE
+        }
+
+        printWriter.print(instruction);
+        break;
+
+      case "WRITE":
+        break;
+
+      case "READ":
+        break;
+
+      default:
+        if (nbchlid==0) break; // Condition d'arrêt de la récursion
+        // Exploration plus profonde
+        for (int k=0; k<=nbchlid-1; k++) {
+          exploreAndGen((CommonTree) treeToConvert.getChild(k), tdsNode);
+        }
+        break;
+    }
+    return;
+  }
+
+
+  /*
+   * Convertit des instructions arithmétiques ou logiques en instructions assembleur.
+   * Par défaut, range le résultat dans R1
+   */
+  public String calculatorInstr(CommonTree treeCalc) {
+
+    String treename = treeCalc.getText();
+    String instruction = "";
+    String memberA = "";
+    String memberB = "";
+    int member1;
+    int member2;
+    int nboperand = treeCalc.getChildCount();
+
+    // Condition d'arrêt de la récursion (feuille)
+    if (nboperand == 0) {
+      // Cas d'un int pur
+      try {
+        member1 = Integer.parseInt(treeCalc.getText());
+        memberA = member1.toString();
+        memberA = "LDW R1, #" + memberA;
+        return memberA;
+      }
+      // Cas d'une variable nommée
+      catch (Exception e) {
+        memberA = "LDW R1, #" + treename;
+        return memberA;
+      }
+    }
+    // Opérations unaires
+    else if (nboperand == 1) {
+
+    }
+    // Opérations binaires
+    else if (nboperand == 2) {
+
+      switch (treename) {
+        case "+":
+          memberA = calculatorInstr(treeCalc.getChild(0));
+          memberB = calculatorInstr(treeCalc.getChild(1));
+          break;
+        case "-":
+          break;
+        case "*":
+          break;
+        default:
+          System.out.println("Pas de tel opérateur : " + treename);
+          break;
+      }
+
+
+    }
+
+
+
+  }
+
 
   /*
    * Convertit une chaine de caractère en son image hexadécimale
@@ -128,9 +293,9 @@ public class AsmGenerator {
       c = sample.charAt(k);
       buff.append(Integer.toHexString(c));
     }
-
     return buff.toString();
   }
+
 
   /*
    * Convertit un int en son image hexadécimale (sous format string)

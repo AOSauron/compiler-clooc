@@ -46,7 +46,11 @@ A FAIRE :
 - (Erreur) Contrôle de type dans les conditions (entier ou nil)
 - (Erreur) Une classe ne peut référencer que des classes déjà définies
 - (Erreur) Dans une classe, un symbole ne peut désigner à la fois un argument ou un attribut, et une methode.
--
+- (Warning) Variable set but not used
 
 - (Prendre en compte) Un objet peut être initialisé à nil (<=> null), celà revient à mettre null en java, mais ne déclenche pas le Warning 1-Guillaume
 - (Prendre en compte) Dans les contrôles de typage, considérer la notion de sous-types !
+
+
+- A GERER POUR L'EXECUTION :
+  - Division par zéro

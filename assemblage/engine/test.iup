@@ -1,9 +1,0 @@
-ffdc  origine
-ffdc  debut d'execution
-6f80   emplacement : 65500  (0xffdc)  ligne n° 12	DEBUT LDW SP, #STACKA
-1000   emplacement : 65502  (0xffde) 
-6080   emplacement : 65504  (0xffe0)  ligne n° 13	      LDW R0, #STDOUT
-0001   emplacement : 65506  (0xffe2) 
-6180   emplacement : 65508  (0xffe4)  ligne n° 14	      LDW R1, #4
-0004   emplacement : 65510  (0xffe6) 
-4910   emplacement : 65512  (0xffe8)  ligne n° 15	      OUT R1, R0

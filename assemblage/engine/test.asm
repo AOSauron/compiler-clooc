@@ -11,6 +11,13 @@
 //Test print
 DEBUT LDW SP, #STACKA
       LDW R0, #STDOUT
-      LDW R1, #4
-      OUT R1, R0
-      //TRP #1
+      LDW R1, #0x3031
+CHAINE string "TEST"
+      STW R1, @0xffe8
+      LDW R0, #CHAINE
+      TRP #66
+      //RTI
+//CHNE string "dr"
+      //LDW R0, #CHNE
+      //TRP #66
+      TRP #64

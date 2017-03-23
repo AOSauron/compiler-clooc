@@ -45,6 +45,8 @@ public class Clooc {
         InputStream in = null;
         TreeParser tablor = null;
         CommonTree tree = null;
+        NodeTDS tds = null;
+        AsmGenerator asmgen = null;
 
         nargs = args.length;
         index = -1;
@@ -352,13 +354,23 @@ public class Clooc {
 
         // Génération de code en Assembleur microPIUP si aucune erreur sémantique n'est détectée
         if (tablor.getNbError() == 0) {
+          tds = tablor.getTDS();
+          asmgen = new AsmGenerator(tree, tds);
+
+          // Set fu préfixe path
           if (dir) {
-            tablor.getAsmGen().setOtpion(true);
-            tablor.getAsmGen().setPath(pathtoasm);
+            asmgen.setOption(true);
+            asmgen.setPath(pathtoasm);
           }
-          tablor.getAsmGen().openFile(loocfile);
-          // Tratement
-          tablor.getAsmGen().closeFile();
+
+          // Ouverture du ficheir .asm
+          asmgen.openFile(loocfile);
+
+          // Génération de code
+          asmgen.initGen();
+
+          // Fermeture du fichier
+          asmgen.closeFile();
         }
         else if (tablor.getNbError() > 0) {
           System.out.println(tablor.getNbError() + " erreurs dans le fichier " + filename + ".");

@@ -1,7 +1,9 @@
 var entier : int;
 var sum : int;
 
-entier := 4;
+entier := 1;
 sum := 7;
 
 sum := sum + entier;
+
+write sum;
