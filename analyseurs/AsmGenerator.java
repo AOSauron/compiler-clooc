@@ -157,8 +157,8 @@ public class AsmGenerator {
 
     //Récupère la TDS du node passé en paramètre.
     HashMap<String,LinkedList> table = tdsNode.getTable();
-    int nbchlid = tree.getChildCount();
-    String nodename = tree.getText();
+    int nbchlid = treeToConvert.getChildCount();
+    String nodename = treeToConvert.getText();
     LinkedList infos = null;
     String varname = null;
     String type = null;
@@ -188,14 +188,14 @@ public class AsmGenerator {
         varname = treeToConvert.getChild(0).getText();
         infos = table.get(varname);
         type = infos.getFirst().toString();
-        subtree = treeToConvert.getChild(1);
+        subtree = (CommonTree) treeToConvert.getChild(1);
 
         if (type.equals("INT")){
           if (subtree.getChildCount() == 0) {
             instruction = tab + "LDW R0, #" + subtree.getText() + nline + "STW R0, @" + varname;
           }
           else { // Cas d'une opération arithmétique ou logique : résultat stocké dans R1 par calculatorInstr()
-            instruction = tab + calculatorInstr(subtree) + nline + "STW R1, @" +varname;
+            instruction = tab + calculatorInstr((CommonTree) subtree) + nline + "STW R1, @" +varname;
           }
         }
         else if (type.equals("STRING")) {
@@ -250,7 +250,7 @@ public class AsmGenerator {
 
       switch (treename) {
         case "-":
-          memberA = calculatorInstr(treeCalc.getChild(0));
+          memberA = calculatorInstr((CommonTree) treeCalc.getChild(0));
           try {
             Integer.parseInt(memberA);
             instruction = "LDW R1, #" + memberA;
@@ -274,13 +274,13 @@ public class AsmGenerator {
 
       switch (treename) {
         case "+":
-          memberA = calculatorInstr(treeCalc.getChild(0));
-          memberB = calculatorInstr(treeCalc.getChild(1));
+          memberA = calculatorInstr((CommonTree) treeCalc.getChild(0));
+          memberB = calculatorInstr((CommonTree) treeCalc.getChild(1));
 
           // Cas d'un int pur
           try {
             member1 = Integer.parseInt(treeCalc.getText());
-            memberA = member1.toString();
+            //memberA = member1.toString();
             memberA = "LDW R1, #" + memberA;
             return memberA;
           }
@@ -290,7 +290,7 @@ public class AsmGenerator {
             return memberA;
           }
 
-          break;
+          //break;
         case "-":
           break;
         case "*":
@@ -303,7 +303,7 @@ public class AsmGenerator {
 
     }
 
-
+    return "";
 
   }
 
