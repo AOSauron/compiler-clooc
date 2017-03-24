@@ -40,7 +40,7 @@ A FAIRE :
 - (Warning) Lance un warning si une méthode est déclarée à la fois dans une classe et en dehors. (pas si mm méthode dans 2 classes.)
 - (Warning) Lance un warning si une classe fille surcharge/redéfini un symbole (methode, attributs) de la classe mère dans le cas d'un inherit. Surcharge autorisée.
 - (Warning) Lance un warning si une méthode vide est déclarée.
-- (Warning) Lance un warning si un bloc anonyme est déclaré.
+- (Warning) Lance un warning si un bloc anonyme vide est déclaré.
 - (Erreur) Vérifier qu'un appel à une méthode sans type de retour se fait par le mot-clé "do" : do n.foo();
 - (Erreur) Cohérence des types sur des affectations.
 - (Erreur) Contrôle de type dans les conditions (entier ou nil)

@@ -300,6 +300,16 @@ public class TreeParser {
       CommonTree block;
       int nbchlidofblock;
 
+      // CONTROLE SEMANTIQUE : VÉRIFIE QUE LA CLASSE CONSIDÉRÉE N'EST PAS DÉJÀ DÉFINIE
+      try {
+        node.getChild(classname);
+      } catch (NoSuchIdfException e) {
+        System.out.println("ligne"  + tree.getLine() + " : Erreur : redéfinition de la classe " + classname);
+        nbError++;
+        // On ne parcourt pas la classe si elle est déjà définie
+        return;
+      }
+
       // Création d'une sous-TDS (nouvel espace de noms)
       LinkedList infos = new LinkedList();
       HashMap<String,LinkedList> soustable = new HashMap<String,LinkedList>();

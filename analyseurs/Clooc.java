@@ -353,7 +353,7 @@ public class Clooc {
         if (verbose) System.out.println(" Etape 3 - Génération de code source ASM/microPIUP");
 
         // Génération de code en Assembleur microPIUP si aucune erreur sémantique n'est détectée
-        if (tablor.getNbError() == 0) {
+        /*if (tablor.getNbError() == 0) {
           tds = tablor.getTDS();
           asmgen = new AsmGenerator(tree, tds);
 
@@ -375,7 +375,7 @@ public class Clooc {
         else if (tablor.getNbError() > 0) {
           System.out.println(tablor.getNbError() + " erreurs dans le fichier " + filename + ".");
           System.exit(1);
-        }
+        }*/
 
         //Compilation du fichier source :
         if (!src) {
