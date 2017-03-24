@@ -111,6 +111,10 @@ public class AsmGenerator {
    * Fermeture du fichier et des writer.
    */
   public void closeFile() throws IOException {
+
+    // Ajout de l'exit 0 à la fin du fichier
+    printWriter.print(tab + "TRP #64");
+
     try {
       fileWriter.flush();
       fileWriter.close();
@@ -130,10 +134,10 @@ public class AsmGenerator {
   public void initGen() {
 
     // Directives de préassemblage
-    String sp = "SP EQU R15"; // Aliase du stack pointer
+    String sp = "SP EQU R15"; // Alias du stack pointer
     String org = "ORG 0x2000"; // Charge le programme d'assemblage à l'adresse 0x2000
     String start = "START 0x2000"; // Lance le programme à l'adresse 0x2000
-    String newline = "NEWLINE RSW 1\n LDW R0, #0x0a00\n STW R0, @NEWLINE"; // Le caractère de retour à la ligne est desormais stocké dans l'etiquette NEWLINE
+    String newline = "NEWLINE RSW 1\n" + tab + "LDW R0, #0x0a00\n" + tab + "STW R0, @NEWLINE"; // Le caractère de retour à la ligne est desormais stocké dans l'etiquette NEWLINE
     printWriter.print(sp + nline);
     printWriter.print(org);
     printWriter.print(start);
@@ -195,7 +199,7 @@ public class AsmGenerator {
           }
         }
         else if (type.equals("STRING")) {
-          instruction = tab + varname + " STRING " + subtree.getText();
+          instruction = varname + " STRING " + subtree.getText();
         }
         else { // Cas d'un type classe
           //A FAIRE
@@ -238,23 +242,33 @@ public class AsmGenerator {
 
     // Condition d'arrêt de la récursion (feuille)
     if (nboperand == 0) {
-      // Cas d'un int pur
-      try {
-        member1 = Integer.parseInt(treeCalc.getText());
-        memberA = member1.toString();
-        memberA = "LDW R1, #" + memberA;
-        return memberA;
-      }
-      // Cas d'une variable nommée
-      catch (Exception e) {
-        memberA = "LDW R1, #" + treename;
-        return memberA;
-      }
+      return treename;
     }
+
     // Opérations unaires
     else if (nboperand == 1) {
 
+      switch (treename) {
+        case "-":
+          memberA = calculatorInstr(treeCalc.getChild(0));
+          try {
+            Integer.parseInt(memberA);
+            instruction = "LDW R1, #" + memberA;
+          }
+          catch (Exception e) {
+            instruction = "LDW R1, @" + memberA;
+          }
+          instruction = instruction + nline;
+          instruction = instruction + tab + "NEG R1, R1";
+          break;
+        default:
+          System.out.println("Pas de tel opérateur : " + treename);
+          break;
+      }
+
+      return instruction;
     }
+
     // Opérations binaires
     else if (nboperand == 2) {
 
@@ -262,6 +276,20 @@ public class AsmGenerator {
         case "+":
           memberA = calculatorInstr(treeCalc.getChild(0));
           memberB = calculatorInstr(treeCalc.getChild(1));
+
+          // Cas d'un int pur
+          try {
+            member1 = Integer.parseInt(treeCalc.getText());
+            memberA = member1.toString();
+            memberA = "LDW R1, #" + memberA;
+            return memberA;
+          }
+          // Cas d'une variable nommée
+          catch (Exception e) {
+            memberA = "LDW R1, #" + treename;
+            return memberA;
+          }
+
           break;
         case "-":
           break;
