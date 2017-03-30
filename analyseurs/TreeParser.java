@@ -598,51 +598,6 @@ public class TreeParser {
     LinkedList infos = null;
     List<NodeTDS> parents = null;
     NodeTDS parent = null;
-    NodeTDS parentclass = null;
-    int size;
-
-    // Cherche dans la TDS de ce niveau
-    try {
-      infos = node.getTable().get(symbolname);
-      if (infos.isEmpty()) throw new NullPointerException(); // Si la liste est vide c'est qu'on a rien trouvé, on lance une NPE pour le catch d'après
-    }
-    // Si rien trouvé on cherche récursivement dans les parents.
-    catch (NullPointerException e) {
-      try {
-        parents = node.getParent();
-        size = parents.size();
-        parent = parents.get(0);
-        // On sépare le cas d'une liste de parents (forcément 2 => inherit) du cas d'un seul parent.
-        if (size == 1) {
-          return findSymbol(parent, symbolname);
-        }
-        else if (size == 2) {
-          parentclass = parents.get(1);
-          // On cherche d'abord dans le premier parent avant la classe mère (pour prioriser la surcharge)
-          try {
-            parent = findSymbol(parent, symbolname);
-            return parent; // On arrivera au return si le try a fonctionné
-          }
-          catch (NoSuchIdfException no) {
-            return findSymbol(parentclass, symbolname); // Lancera l'exception NoSuchIdfException si rien trouvé non plus.
-          }
-        }
-      }
-      // Si on attrape une NPE c'est qu'on est au root, et si on en arrive là c'est qu'on y a rien trouvé. Donc le symbole n'a pas été défini.
-      catch (NullPointerException exc) {
-        throw new NoSuchIdfException();
-      }
-    }
-
-    // Si tout s'est bien déroulé on retourne le node
-    return node;
-  }
-
-
-  public NodeTDS findSymbole(NodeTDS node, String symbolname) throws NoSuchIdfException {
-    LinkedList infos = null;
-    List<NodeTDS> parents = null;
-    NodeTDS parent = null;
 
     // Cherche dans la TDS de ce niveau
     try {
@@ -652,6 +607,7 @@ public class TreeParser {
     catch (NullPointerException e) {
       try {
         parents = node.getParent();
+        // On test dans chacun des parents : le premier parent ne sera pas la classe mère (c'est mieux, si jamais il y a surcharge ou redéfinition d'un symbole)
         for (NodeTDS n: parents) {
           try {
             parent = findSymbol(n, symbolname);
