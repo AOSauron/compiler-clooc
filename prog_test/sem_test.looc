@@ -1,9 +1,14 @@
 class MyClass = (
-  method myMeth() {
 
+  var test : int;
+
+  method myMeth() {
+    var testnop : int;
+    test := 3;
   }
 
   method myMeth2(a : int) {
+    testnop := 4;
     return();
   }
 
@@ -16,12 +21,21 @@ class MyClass = (
   }*/
 )
 
+class MyClassic inherit MyClass =
+(
+  method myMethHerit() {
+    test := 4;
+    do this.myMeth();
+  }
+)
+
 class MyClass = (
 
 )
 
 var variable : MyClass;
 
+/*
 do variable.myMeth(1);
 do variable.myMeth();
 do variable.myMeth2(1);
@@ -29,4 +43,4 @@ do variable.myMeth2();
 do variable.myMeth3(1);
 do variable.myMeth3();
 do variable.myMeth3(2,1);
-do variable.myMeth3(1,2,3);
+do variable.myMeth3(1,2,3); */

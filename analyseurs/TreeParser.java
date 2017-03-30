@@ -247,22 +247,28 @@ public class TreeParser {
 
       Object value = null;
       LinkedList infos = null;
-      int nbchlidnode = tree.getChild(1).getChildCount();
+      NodeTDS nodeleft = null;
+      NodeTDS noderight = null;
+      CommonTree memberleft = (CommonTree) tree.getChild(0);
+      CommonTree memberright = (CommonTree) tree.getChild(1);
+      String memberleftname = memberleft.getText();
+      int nbchlidnode = memberright.getChildCount();
 
-      // CONTROLE SEMANTIQUE : VERIFIE QU'UN IDF EXISTE BIEN POUR LUI FAIRE UN AFFECT
+      // CONTROLE SEMANTIQUE : VERIFIE QU'UN IDF EXISTE BIEN POUR LUI FAIRE UN AFFECT (GAUCHE)
       try {
-        infos = table.get(tree.getChild(0).getText());
+        nodeleft = findSymbol(node, memberleftname);
       }
-      catch (NullPointerException ne) {
-        System.out.println("ligne "  + tree.getLine() + " : Erreur : référence indéfinie vers la variable " + tree.getChild(0));
+      catch (NoSuchIdfException ne) {
+        System.out.println("ligne "  + tree.getLine() + " : Erreur : référence indéfinie vers la variable " + memberleftname);
         nbError++;
       }
-
+  //System.out.println(" SYMBOLE : " + nodeleft.getId() );
+      /*
       // Cas d'un int, on parse directement en int
       if (infos.getFirst().toString().equals("INT")) {
         // Cas d'une expression arithm/logique
         try {
-          value = (int) calculator((CommonTree) tree.getChild(1), table);
+          value = (int) calculator((CommonTree) memberright, table);
         }
         // CONTROLE SEMANTIQUE : VERIFIE QU'UN IDF EXISTE BIEN DANS LE MEMBRE DE DROITE
         catch (NoSuchIdfException e) {
@@ -271,20 +277,20 @@ public class TreeParser {
         }
         // Cas d'une variable abstraite qui sera définie à l'exécution
         catch (NullPointerException ne) {
-          value = (CommonTree) tree.getChild(1);
+          value = (CommonTree) memberright;
         }
       }
 
       // Les autres cas, on parse en String.
       else if (nbchlidnode > 0) { // Cas d'un New : Crée une TDS pour chaque new ?
-        value = (String) tree.getChild(1).getChild(0).getText();
+        value = (String) memberright.getChild(0).getText();
       }
       else {
-        value = (String) tree.getChild(1).getText();
+        value = (String) memberright.getText();
       }
 
       infos.set(1, value);
-
+*/
       return;
     }
 
@@ -308,6 +314,7 @@ public class TreeParser {
         // On ne parcourt pas la classe si elle est déjà définie
         return;
       } catch (NoSuchIdfException e) {
+        // Rien on continue
       }
 
       // Création d'une sous-TDS (nouvel espace de noms)
@@ -590,17 +597,35 @@ public class TreeParser {
   public NodeTDS findSymbol(NodeTDS node, String symbolname) throws NoSuchIdfException {
     LinkedList infos = null;
     List<NodeTDS> parents = null;
+    NodeTDS parent = null;
+    NodeTDS parentclass = null;
+    int size;
 
     // Cherche dans la TDS de ce niveau
     try {
       infos = node.getTable().get(symbolname);
+      if (infos.isEmpty()) throw new NullPointerException(); // Si la liste est vide c'est qu'on a rien trouvé, on lance une NPE pour le catch d'après
     }
     // Si rien trouvé on cherche récursivement dans les parents.
     catch (NullPointerException e) {
       try {
         parents = node.getParent();
-        for (NodeTDS n: parents) {
-          return findSymbol(n, symbolname);
+        size = parents.size();
+        parent = parents.get(0);
+        // On sépare le cas d'une liste de parents (forcément 2 => inherit) du cas d'un seul parent.
+        if (size == 1) {
+          return findSymbol(parent, symbolname);
+        }
+        else if (size == 2) {
+          parentclass = parents.get(1);
+          // On cherche d'abord dans le premier parent avant la classe mère (pour prioriser la surcharge)
+          try {
+            parent = findSymbol(parent, symbolname);
+            return parent; // On arrivera au return si le try a fonctionné
+          }
+          catch (NoSuchIdfException no) {
+            return findSymbol(parentclass, symbolname); // Lancera l'exception NoSuchIdfException si rien trouvé non plus.
+          }
         }
       }
       // Si on attrape une NPE c'est qu'on est au root, et si on en arrive là c'est qu'on y a rien trouvé. Donc le symbole n'a pas été défini.
@@ -609,7 +634,7 @@ public class TreeParser {
       }
     }
 
-    // Retourne le noeud contenant la méthode
+    // Si tout s'est bien déroulé on retourne le node
     return node;
   }
 
