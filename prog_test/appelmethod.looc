@@ -1,4 +1,8 @@
 class Item = (
+  var current : int;
+  var previous : int;
+  var generation : int;
+
   method init(a : int, b : string )
   {
     current := 1;
@@ -14,11 +18,18 @@ class Item = (
     previous := temp;
     generation := generation + 1;
   }
+
+  method getNb() : int {
+    return (current);
+  }
 )
 
 var item : Item;
+var nb : int;
 item := new Fibonacci;
 
 do item.init(13).nextGen(23,67);
 
 do item.init(15, "initialiser");
+
+nb := item.getNb();

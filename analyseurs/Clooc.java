@@ -63,7 +63,7 @@ public class Clooc {
           System.out.println("        java -jar clooc.jar -a fichier            ->  Effectue seulement les analyses syntaxique et lexicale.");
           System.out.println("        java -jar clooc.jar -T fichier            ->  Effectue analyses syntaxique/lexicale et produit l'AST sous format DOT puis PNG.");
           System.out.println("");
-          System.out.println("Les options -W, -v, -s et -d peuvent être combinées.");
+          System.out.println("Les options -W, -v, -s et -d peuvent être combinées (d toujours à la fin).");
           System.out.println("");
           System.out.println("Auteurs : G.Garcia - G.Zambaux - L.Hinsberger - N.Dubois - @TNCY-2017\n");
           System.exit(1);

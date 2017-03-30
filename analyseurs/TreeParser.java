@@ -470,24 +470,24 @@ public class TreeParser {
      * METHODCALLING
      */
     if (nodename.equals("METHODCALLING")) {
-
+/*
       String methodname = tree.getChild(0).getText();
       int argumentnumber = tree.getChild(1).getChildCount();
-      NodeTDS method = null;
+      NodeTDS methodNode = null;
 
+      // CONTROLE SÉMANTIQUE : VÉRIFIE QU'UNE MÉTHODE EST DÉFINIE DANS LA CLASSE DE L'APPELLANT
       try {
-        method = findMethod(node, methodname);
+        methodNode = findSymbol(node, methodname);
       } catch (NoSuchIdfException e) {
-        // CONTROLE SÉMANTIQUE : VÉRIFIE QU'UNE MÉTHODE EST DÉFINIE
         // TODO: vérifier que la méthode trouvée est bien dans la classe définissant l'objet
         System.out.println("ligne "  + tree.getLine() + " : Erreur : La méthode " + methodname + " n'est pas définie.");
         nbError++;
         return;
       }
 
-      LinkedList arguments = method.getTable().get(methodname);
+      LinkedList arguments = methodNode.getTable().get(methodname);
       // TODO: déterminer le type de l'objet sur lequel on appelle la méthode, rechercher la méthode dans la classe correspondante, comparer les nombres d'arguments
-      System.out.println(arguments);
+      System.out.println("Arguments : " + arguments + " " + methodNode.getId());
       int requiredargnum = ((LinkedList) arguments.get(1)).size();
 
       if (argumentnumber != requiredargnum) {
@@ -495,7 +495,7 @@ public class TreeParser {
         System.out.println("ligne "  + tree.getLine() + " : Erreur : La méthode " + methodname + " prend " + requiredargnum + " (" + argumentnumber + " donné(s)).");
         nbError++;
       }
-
+*/
       return;
 
     }
@@ -584,26 +584,32 @@ public class TreeParser {
 
 
   /*
-   * Cherche la définition d'une méthode ; renvoie null si la méthode n'est pas déclarée
-   *
+   * Cherche la définition d'un symbole (méthode, variable...). Retourne le noeud contenant la définition du symbole.
+   * Lance une exception si aucune définition n'est trouvée.
    */
-  public NodeTDS findMethod(NodeTDS node, String methodname) throws NoSuchIdfException {
+  public NodeTDS findSymbol(NodeTDS node, String symbolname) throws NoSuchIdfException {
     LinkedList infos = null;
     List<NodeTDS> parents = null;
 
+    // Cherche dans la TDS de ce niveau
     try {
-      infos = node.getTable().get(methodname);
-    } catch (NullPointerException e) {
+      infos = node.getTable().get(symbolname);
+    }
+    // Si rien trouvé on cherche récursivement dans les parents.
+    catch (NullPointerException e) {
       try {
         parents = node.getParent();
         for (NodeTDS n: parents) {
-          return findMethod(n, methodname);
+          return findSymbol(n, symbolname);
         }
-      } catch (NullPointerException exc) {
+      }
+      // Si on attrape une NPE c'est qu'on est au root, et si on en arrive là c'est qu'on y a rien trouvé. Donc le symbole n'a pas été défini.
+      catch (NullPointerException exc) {
         throw new NoSuchIdfException();
       }
     }
 
+    // Retourne le noeud contenant la méthode
     return node;
   }
 
