@@ -639,6 +639,41 @@ public class TreeParser {
   }
 
 
+  public NodeTDS findSymbole(NodeTDS node, String symbolname) throws NoSuchIdfException {
+    LinkedList infos = null;
+    List<NodeTDS> parents = null;
+    NodeTDS parent = null;
+
+    // Cherche dans la TDS de ce niveau
+    try {
+      infos = node.getTable().get(symbolname);
+      if (infos.isEmpty()) throw new NullPointerException(); // Si la liste est vide c'est qu'on a rien trouvé, on lance une NPE pour le catch d'après
+    }
+    catch (NullPointerException e) {
+      try {
+        parents = node.getParent();
+        for (NodeTDS n: parents) {
+          try {
+            parent = findSymbol(n, symbolname);
+          }
+          catch (NoSuchIdfException no) {
+            // On laisse finir la boucle for
+          }
+        }
+        // On lance la NSIE si aucun parent n'a été trouvé.
+        if (parent != null) return parent;
+        else throw new NoSuchIdfException();
+      }
+      // On arrive au root sans rien avoir trouvé, on throw une NPE
+      catch (NullPointerException ne) {
+        throw new NoSuchIdfException();
+      }
+    }
+    // Si tout s'est bien passé on retoune le node
+    return node;
+  }
+
+
   /*
    * Calulette récursive du compilateur, résoud les expressions arithmétiques/logiques.
    *
