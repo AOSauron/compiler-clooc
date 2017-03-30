@@ -357,7 +357,7 @@ public class Clooc {
           tds = tablor.getTDS();
           asmgen = new AsmGenerator(tree, tds);
 
-          // Set fu préfixe path
+          // Set du préfixe path
           if (dir) {
             asmgen.setOption(true);
             asmgen.setPath(pathtoasm);
