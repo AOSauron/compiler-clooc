@@ -6,7 +6,7 @@ import java.util.Iterator;
 
 /*
  * Parseur d'AST : le parcours et crée les TDS nécessaires. Les remplit en conséquence.
- * Va générer également du code en assembleur, en faisant appel à un générateur ASM maison.
+ * Effectue les contrôle sémantiques, génère les erreurs et warnings.
  * @author : Guillaume Garcia
  * Pour Clooc - PCL 2017 - TELECOM Nancy
  */
