@@ -90,7 +90,7 @@ print:   'write' expression ';' -> ^(WRITE expression);
 
 read:   'read' IDF ';' -> ^(READ IDF);
 
-returnstate:   'return' '(' expression ')' ';' -> ^(RETURN expression);
+returnstate:   'return' '(' expression? ')' ';' -> ^(RETURN expression?);
 
 expression:   'this' expressionbis -> ^(THIS expressionbis?)
           |   'super' expressionbis -> ^(SUPER expressionbis?)

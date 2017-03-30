@@ -254,7 +254,7 @@ public class TreeParser {
         infos = table.get(tree.getChild(0).getText());
       }
       catch (NullPointerException ne) {
-        System.out.println("ligne"  + tree.getLine() + " : Erreur : référence indéfinie vers la variable " + tree.getChild(0));
+        System.out.println("ligne "  + tree.getLine() + " : Erreur : référence indéfinie vers la variable " + tree.getChild(0));
         nbError++;
       }
 
@@ -266,7 +266,7 @@ public class TreeParser {
         }
         // CONTROLE SEMANTIQUE : VERIFIE QU'UN IDF EXISTE BIEN DANS LE MEMBRE DE DROITE
         catch (NoSuchIdfException e) {
-          System.out.println("ligne"  + tree.getLine() + " : Erreur : référence indéfinie vers la variable " + tree.getChild(0));
+          System.out.println("ligne "  + tree.getLine() + " : Erreur : référence indéfinie vers la variable " + tree.getChild(0));
           nbError++;
         }
         // Cas d'une variable abstraite qui sera définie à l'exécution
@@ -302,12 +302,12 @@ public class TreeParser {
 
       // CONTROLE SEMANTIQUE : VÉRIFIE QUE LA CLASSE CONSIDÉRÉE N'EST PAS DÉJÀ DÉFINIE
       try {
-        node.getChild(classname);
-      } catch (NoSuchIdfException e) {
-        System.out.println("ligne"  + tree.getLine() + " : Erreur : redéfinition de la classe " + classname);
+        root.getChild(classname);
+        System.out.println("ligne "  + tree.getLine() + " : Erreur : redéfinition de la classe " + classname);
         nbError++;
         // On ne parcourt pas la classe si elle est déjà définie
         return;
+      } catch (NoSuchIdfException e) {
       }
 
       // Création d'une sous-TDS (nouvel espace de noms)
@@ -328,7 +328,7 @@ public class TreeParser {
 
         // CONTROLE SEMANTIQUE : UNE CLASSE NE PEUT PAS HERITER D'ELLE-MEME
         if (classinher.equals(classname)) {
-          System.out.println("ligne"  + tree.getLine() + " : Erreur : une classe ne peut pas heriter d'elle-même : " + classname + " inherit " + classname);
+          System.out.println("ligne "  + tree.getLine() + " : Erreur : une classe ne peut pas heriter d'elle-même : " + classname + " inherit " + classname);
           nbError++;
         }
 
@@ -344,7 +344,7 @@ public class TreeParser {
           child.addParent(motherclass);
         }
         catch (NoSuchIdfException e) {
-          System.out.println("ligne"  + tree.getLine() + " : Erreur : référence indéfinie à la classe mère " + classinher + " dans la déclaration de la classe " + classname);
+          System.out.println("ligne "  + tree.getLine() + " : Erreur : référence indéfinie à la classe mère " + classinher + " dans la déclaration de la classe " + classname);
           nbError++;
         }
 
@@ -449,7 +449,7 @@ public class TreeParser {
       if (!(type.equals("void"))) {
         // CONTROLE SÉMANTIQUE : PLACEMENT DU RETURN DANS UNE METHODE TYPÉE
         if (!(find(block, "RETURN", 0))) {
-          System.out.println("ligne"  + tree.getLine() + " : Erreur : il est possible que la méthode " + methodname + " ne retourne rien.");
+          System.out.println("ligne "  + tree.getLine() + " : Erreur : il est possible que la méthode " + methodname + " ne retourne rien.");
           nbError++;
         }
 
@@ -458,12 +458,46 @@ public class TreeParser {
       } else {
         // CONTROLE SÉMANTIQUE : ABSENCE DE VALEUR RENVOYÉE POUR UNE MÉTHODE DE TYPE VOID
         if (!(find(block, "RETURN", 1))) {
-          System.out.println("ligne"  + tree.getLine() + " : Erreur : La méthode " + methodname + " est de type void, elle n'est pas censée retourner quoique ce soit.");
+          System.out.println("ligne "  + tree.getLine() + " : Erreur : La méthode " + methodname + " est de type void, elle n'est pas censée retourner quoique ce soit.");
           nbError++;
         }
       }
 
       return;
+    }
+
+    /*
+     * METHODCALLING
+     */
+    if (nodename.equals("METHODCALLING")) {
+
+      String methodname = tree.getChild(0).getText();
+      int argumentnumber = tree.getChild(1).getChildCount();
+      NodeTDS method = null;
+
+      try {
+        method = findMethod(node, methodname);
+      } catch (NoSuchIdfException e) {
+        // CONTROLE SÉMANTIQUE : VÉRIFIE QU'UNE MÉTHODE EST DÉFINIE
+        // TODO: vérifier que la méthode trouvée est bien dans la classe définissant l'objet
+        System.out.println("ligne "  + tree.getLine() + " : Erreur : La méthode " + methodname + " n'est pas définie.");
+        nbError++;
+        return;
+      }
+
+      LinkedList arguments = method.getTable().get(methodname);
+      // TODO: déterminer le type de l'objet sur lequel on appelle la méthode, rechercher la méthode dans la classe correspondante, comparer les nombres d'arguments
+      System.out.println(arguments);
+      int requiredargnum = ((LinkedList) arguments.get(1)).size();
+
+      if (argumentnumber != requiredargnum) {
+        // CONTROLE SÉMANTIQUE : VÉRIFIE LE NOMBRE D'ARGUMENTS D'UNE MÉTHODE
+        System.out.println("ligne "  + tree.getLine() + " : Erreur : La méthode " + methodname + " prend " + requiredargnum + " (" + argumentnumber + " donné(s)).");
+        nbError++;
+      }
+
+      return;
+
     }
 
     /*
@@ -526,7 +560,7 @@ public class TreeParser {
           case 0:
             return true;
           case 1:
-            if (((CommonTree) block.getChild(1)).getChildCount() > 0) {
+            if (((CommonTree) block.getChild(0)).getChildCount() > 0) {
               return false;
             }
             break;
@@ -535,7 +569,7 @@ public class TreeParser {
     }
 
     if (mode == 1) {
-      return false;
+      return true;
     }
 
     // Parcours de ses fils
@@ -546,6 +580,31 @@ public class TreeParser {
       }
     }
     return false;
+  }
+
+
+  /*
+   * Cherche la définition d'une méthode ; renvoie null si la méthode n'est pas déclarée
+   *
+   */
+  public NodeTDS findMethod(NodeTDS node, String methodname) throws NoSuchIdfException {
+    LinkedList infos = null;
+    List<NodeTDS> parents = null;
+
+    try {
+      infos = node.getTable().get(methodname);
+    } catch (NullPointerException e) {
+      try {
+        parents = node.getParent();
+        for (NodeTDS n: parents) {
+          return findMethod(n, methodname);
+        }
+      } catch (NullPointerException exc) {
+        throw new NoSuchIdfException();
+      }
+    }
+
+    return node;
   }
 
 
@@ -570,7 +629,7 @@ public class TreeParser {
         }
         // CONTROLE SEMANTIQUE : VERIFIER QU'UN IDF EXISTE DANS UN EXPRESSION CALCULATOIRE
         catch (NullPointerException ne) {
-          System.out.println("ligne"  + expr.getLine() + " : Erreur : référence indéfinie vers la variable : " + expr.getText());
+          System.out.println("ligne "  + expr.getLine() + " : Erreur : référence indéfinie vers la variable : " + expr.getText());
           throw new NoSuchIdfException("Cet IDF n'existe pas.");
         }
         // Récupère le contenu de la variable,

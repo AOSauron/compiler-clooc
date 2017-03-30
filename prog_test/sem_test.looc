@@ -2,8 +2,31 @@ class MyClass = (
   method myMeth() {
 
   }
+
+  method myMeth2(a : int) {
+    return();
+  }
+
+  method myMeth3(a : int, b:int) {
+    return();
+  }
+
+  /*method myMeth() {
+    return(5);
+  }*/
 )
 
 class MyClass = (
 
 )
+
+var variable : MyClass;
+
+do variable.myMeth(1);
+do variable.myMeth();
+do variable.myMeth2(1);
+do variable.myMeth2();
+do variable.myMeth3(1);
+do variable.myMeth3();
+do variable.myMeth3(2,1);
+do variable.myMeth3(1,2,3);

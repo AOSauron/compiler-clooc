@@ -13,6 +13,7 @@ Guillaume :
 Gauthier :
 1 - (Erreur) Vérifie qu'il existe au moins 1 return dans une méthode typée, et/ou qu'il est toujours possible de return dans une methode (reach end non-void function without returning)
 2 - (Erreur) Vérifie que s'il existe un ou plusieurs return dans une fonction non-typée, ceux ci ne possède pas de membre de droite (pas de valeur retournée)
+3 - (Erreur) Pas de redéclaration d'une classe.
 
 Laure :
 
@@ -30,7 +31,8 @@ A FAIRE :
 - (Erreur) Vérifie le type des arguments passés à une méthode.
 - (Erreur) Pas de redéclaration d'une methode dans le même contexte (meme TDS).
 - (Erreur) Pas de redéclaration d'une variable globale ou locale.
-- (Erreur) Pas de redéclaration d'une classe.
+- (Erreur) Vérifier le type des arguments de write
+- (Erreur) Vérifier le type des arguments de read
 - (Warning) Lance un warning si une variable/methode redéfinit un symbole dans un contexte plus profond.
 - (Erreur) Seuls les INT sont autorisés dans les opérations arithmétiques.
 - (Erreur) Contrôle de type sur l'incrément, et les bornes d'une boucle for (il faut : INT)
