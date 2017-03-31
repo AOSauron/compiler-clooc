@@ -43,6 +43,8 @@ Maj : 09/03/17   14:55
    BLOCK;
    DO;
    ELSE;
+   CALC;
+   STRING_AFF;
 }
 
 
@@ -94,9 +96,9 @@ returnstate:   'return' '(' expression? ')' ';' -> ^(RETURN expression?);
 
 expression:   'this' expressionbis -> ^(THIS expressionbis?)
           |   'super' expressionbis -> ^(SUPER expressionbis?)
-          |   STRING_CST expressionbis -> ^(STRING_CST expressionbis?)
+          |   STRING_CST expressionbis -> ^(STRING_AFF STRING_CST expressionbis?)
           |   'new' IDFC expressionbis -> ^(NEW IDFC expressionbis?)
-          |   exprio1 expressionbis ->  exprio1 expressionbis?
+          |   exprio1
           ;
 
 exprio1 : exprio2 ( '+'^ exprio2 | '-'^ exprio2)* ;
@@ -108,7 +110,7 @@ exprio4 : exprio7 ( '=='^ exprio7 | '!='^ exprio7 | '<'^ exprio7 | '<='^ exprio7
 exprio7 : ('-'^)? exprio8 ;
 
 exprio8 : INT_CST -> ^(INT_CST)
-        | IDF -> IDF
+        | IDF
         | '(' expression ')' -> expression
         ;
 

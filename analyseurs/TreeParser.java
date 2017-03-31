@@ -262,7 +262,9 @@ public class TreeParser {
         System.out.println("ligne "  + tree.getLine() + " : Erreur : référence indéfinie vers la variable " + memberleftname);
         nbError++;
       }
-  //System.out.println(" SYMBOLE : " + nodeleft.getId() );
+
+      // CONTROLE SEMTANTIQUE : PARSE L'EXPRESSION DE DROITE, VERIFIE SI LES SYMBOLE UTILISES SONT DECLARES (DROITE)
+
       /*
       // Cas d'un int, on parse directement en int
       if (infos.getFirst().toString().equals("INT")) {
@@ -631,7 +633,7 @@ public class TreeParser {
 
 
   /*
-   * Calulette récursive du compilateur, résoud les expressions arithmétiques/logiques.
+   * Parse les expressions arithmétiques et logiques, effectue les contrôles sémantiques sur les idf si présents.
    *
    */
   public int calculator(CommonTree expr, HashMap<String,LinkedList> table) throws NoSuchIdfException {
@@ -663,47 +665,6 @@ public class TreeParser {
           if (warn) System.out.println("ligne " + expr.getLine() + " : Warning : la variable " + expr.getText() + " peut ne pas avoir été initialisée.");
         }
       }
-    }
-
-    //Cas de l'opérateur unaire -
-    if (expr.getText().equals("-") && expr.getChildCount() == 1) {
-      res = - calculator((CommonTree) expr.getChild(0), table);
-    }
-    // Logique ==     :   1 = true; 0 = false
-    if (expr.getText().equals("==")) {
-      res =  (calculator((CommonTree) expr.getChild(0), table) == calculator((CommonTree) expr.getChild(1), table)) ? 1 : 0 ;
-    }
-    // Logique >=     :   1 = true; 0 = false
-    if (expr.getText().equals(">=")) {
-      res =  (calculator((CommonTree) expr.getChild(0), table) >= calculator((CommonTree) expr.getChild(1), table)) ? 1 : 0 ;
-    }
-    // Logique <=     :   1 = true; 0 = false
-    if (expr.getText().equals("<=")) {
-      res =  (calculator((CommonTree) expr.getChild(0), table) <= calculator((CommonTree) expr.getChild(1), table)) ? 1 : 0 ;
-    }
-    // Logique >     :   1 = true; 0 = false
-    if (expr.getText().equals(">")) {
-      res =  (calculator((CommonTree) expr.getChild(0), table) > calculator((CommonTree) expr.getChild(1), table)) ? 1 : 0 ;
-    }
-    // Logique <     :   1 = true; 0 = false
-    if (expr.getText().equals("<")) {
-      res =  (calculator((CommonTree) expr.getChild(0), table) < calculator((CommonTree) expr.getChild(1), table)) ? 1 : 0 ;
-    }
-    // Logique !=     :   1 = true; 0 = false
-    if (expr.getText().equals("!=")) {
-      res =  (calculator((CommonTree) expr.getChild(0), table) != calculator((CommonTree) expr.getChild(1), table)) ? 1 : 0 ;
-    }
-    //Arithmétique +
-    if (expr.getText().equals("+")) {
-      res =  (calculator((CommonTree) expr.getChild(0), table) + calculator((CommonTree) expr.getChild(1), table));
-    }
-    //Arithmétique - (différencié de l'opérateur unaire - en comptant les fils)
-    if (expr.getText().equals("-") && expr.getChildCount() > 1) {
-      res =  (calculator((CommonTree) expr.getChild(0), table) - calculator((CommonTree) expr.getChild(1), table));
-    }
-    //Arithmétique *
-    if (expr.getText().equals("*")) {
-      res =  (calculator((CommonTree) expr.getChild(0), table) * calculator((CommonTree) expr.getChild(1), table));
     }
 
     return res;
