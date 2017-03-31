@@ -36,7 +36,7 @@ class MyClass = (
 var variable : MyClass;
 
 variable := "gdfgdf";
-variable := (32+1)*4;
+variable := (32+1)*variable;
 variable := 6+9*(this.getNb());
 
 /*

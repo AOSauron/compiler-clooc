@@ -45,6 +45,8 @@ Maj : 09/03/17   14:55
    ELSE;
    CALC;
    STRING_AFF;
+   VAR;
+   CSTE_INT;
 }
 
 
@@ -109,8 +111,8 @@ exprio4 : exprio7 ( '=='^ exprio7 | '!='^ exprio7 | '<'^ exprio7 | '<='^ exprio7
 
 exprio7 : ('-'^)? exprio8 ;
 
-exprio8 : INT_CST -> ^(INT_CST)
-        | IDF
+exprio8 : INT_CST -> ^(CSTE_INT INT_CST)
+        | IDF -> ^(VAR IDF)
         | '(' expression ')' -> expression
         ;
 
