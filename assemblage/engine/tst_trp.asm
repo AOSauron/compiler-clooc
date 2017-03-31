@@ -2,54 +2,49 @@
 // EXEMPLES D'UTILISATION DES TRAPPES LOGICIELLES EN LANGAGE D'ASSEMBLAGE microPIUP
 // auteur: Alexandre Parodi - Avril 2013
 
-EXIT_EXC   equ   64             // n° d'exception de EXIT           (testé sur microPIUPK.jar)
-READ_EXC   equ   65             // n° d'exception de READ (1 ligne) (testé sur microPIUPK.jar)
-WRITE_EXC  equ   66             // n° d'exception de WRITE (1 ligne)(testé sur microPIUPK.jar)
+EXIT_EXC   equ   64             // nï¿½ d'exception de EXIT           (testï¿½ sur microPIUPK.jar)
+READ_EXC   equ   65             // nï¿½ d'exception de READ (1 ligne) (testï¿½ sur microPIUPK.jar)
+WRITE_EXC  equ   66             // nï¿½ d'exception de WRITE (1 ligne)(testï¿½ sur microPIUPK.jar)
 STACK_ADRS equ   0x1000         // base de pile en 1000h            (par exemple)
            org   0xF000         // adresse de chargement
-           start DEBUT          // adresse de démarrage 
+           start DEBUT          // adresse de dï¿½marrage
 
-KB_BUF     rsb 80               // tampon mémoire de 80 Bytes pour entrer des caractères depuis le clavier
-MSG_ADRS   string "you have typed: " // chaîne de caractères constante
+KB_BUF     rsb 80               // tampon mï¿½moire de 80 Bytes pour entrer des caractï¿½res depuis le clavier
+MSG_ADRS   string "you have typed: " // chaï¿½ne de caractï¿½res constante
 
-// ces alias permettront de changer les réels registres utilisés 
+// ces alias permettront de changer les rï¿½els registres utilisï¿½s
 WR         equ   R14            // Work Register
 
 // PROGRAMME PRINCIPAL
-// dans ce programme, seul le mode registre est utilisé pour l'instruction TRP
-// et seul le mode indirect (dit aussi "basé") est utilisé pour l'instruction JEA.
+// dans ce programme, seul le mode registre est utilisï¿½ pour l'instruction TRP
+// et seul le mode indirect (dit aussi "basï¿½") est utilisï¿½ pour l'instruction JEA.
 
 // lit texte au clavier :
 DEBUT      LDW R0, #KB_BUF
      // TRP #READ_EXC
-           LDW WR, #READ_EXC // WR = READ_EXC = n° exception de READ (lit une ligne depuis le clavier)
-           TRP WR            // enregistre texte entré au clavier à partir de l'adresse contenue dans R0
+           LDW WR, #READ_EXC // WR = READ_EXC = nï¿½ exception de READ (lit une ligne depuis le clavier)
+           TRP WR            // enregistre texte entrï¿½ au clavier ï¿½ partir de l'adresse contenue dans R0
 
 // affiche texte du message "you have typed: "
-           LDW R0, #MSG_ADRS  // charge R0 avec adresse du texte à afficher
+           LDW R0, #MSG_ADRS  // charge R0 avec adresse du texte ï¿½ afficher
 
      // TRP #WRITE_EXC
-           LDW WR, #WRITE_EXC // WR = WRITE_EXC = n° exception de WRITE
-           TRP WR             // affiche le texte commençant à l'adresse contenue dans R0
+           LDW WR, #WRITE_EXC // WR = WRITE_EXC = nï¿½ exception de WRITE
+           TRP WR             // affiche le texte commenï¿½ant ï¿½ l'adresse contenue dans R0
 
 // affiche texte lu:
-           LDW R0, #KB_BUF    // charge R0 avec adresse du texte à afficher
+           LDW R0, #KB_BUF    // charge R0 avec adresse du texte ï¿½ afficher
      // TRP #WRITE_EXC
-           LDW WR, #WRITE_EXC // WR = WRITE_EXC = n° exception de WRITE
-           TRP WR             // affiche le texte commençant à l'adresse contenue dans R0
+           LDW WR, #WRITE_EXC // WR = WRITE_EXC = nï¿½ exception de WRITE
+           TRP WR             // affiche le texte commenï¿½ant ï¿½ l'adresse contenue dans R0
 
-// arrête le programme
-     // TRP #EXIT_EXC         // 
-           LDW WR, #EXIT_EXC  // WR = EXIT_EXC = n° exception de EXIT 
-           TRP WR             // arrête le programme (et retournerait au "système opérateur" s'il y en avait un)
+// arrï¿½te le programme
+     // TRP #EXIT_EXC         //
+           LDW WR, #EXIT_EXC  // WR = EXIT_EXC = nï¿½ exception de EXIT
+           TRP WR             // arrï¿½te le programme (et retournerait au "systï¿½me opï¿½rateur" s'il y en avait un)
 
 
-// revient au début
+// revient au dï¿½but
      // jea @DEBUT
            LDW WR, #DEBUT
            JEA (WR)
-
-
-
-
-
