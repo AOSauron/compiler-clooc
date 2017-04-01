@@ -20,7 +20,7 @@ public class TreeParser {
   private CommonTree ast;
   private HashMap<String,LinkedList> tableroot;
   private NodeTDS root;
-  private int nbError;
+  private static int nbError;
 
 
   public TreeParser(CommonTree ast) {
@@ -245,14 +245,10 @@ public class TreeParser {
      */
     if (nodename.equals("AFFECT")) {
 
-      Object value = null;
-      LinkedList infos = null;
       NodeTDS nodeleft = null;
-      NodeTDS noderight = null;
       CommonTree memberleft = (CommonTree) tree.getChild(0);
       CommonTree memberright = (CommonTree) tree.getChild(1);
       String memberleftname = memberleft.getText();
-      int nbchlidnode = memberright.getChildCount();
 
       // CONTROLE SEMANTIQUE : VERIFIE QU'UN IDF EXISTE BIEN POUR LUI FAIRE UN AFFECT (GAUCHE)
       try {
@@ -264,7 +260,12 @@ public class TreeParser {
       }
 
       // CONTROLE SEMTANTIQUE : PARSE L'EXPRESSION DE DROITE, VERIFIE SI LES SYMBOLE UTILISES SONT DECLARES (DROITE)
+      try {
+        calculator(memberright, node); // calculator effectue les controles sémantiques
+      }
+      catch (NoSuchIdfException ne) {
 
+      }
       /*
       // Cas d'un int, on parse directement en int
       if (infos.getFirst().toString().equals("INT")) {
@@ -634,40 +635,68 @@ public class TreeParser {
 
   /*
    * Parse les expressions arithmétiques et logiques, effectue les contrôles sémantiques sur les idf si présents.
-   *
+   * Renvoie le type dynamique de l'expression (STRING, INT, OBJ), permettant le controle de type dans explorer()->AFFECT
    */
-  public int calculator(CommonTree expr, HashMap<String,LinkedList> table) throws NoSuchIdfException {
-    int res;
-    LinkedList infos;
-    res = 0; // A virer plus tard !
+  public String calculator(CommonTree expr, NodeTDS node) throws NoSuchIdfException {
 
-    // Arrêt de la récursion : test d'abord si c'est un entier, ensuite s'il s'agit d'une variable de la TDS
-    if (expr.getChildCount()==0) {
-      try {
-        res = Integer.parseInt(expr.getText());
-        return res;
-      }
-      catch (Exception e) {
-        try {
-          infos = table.get(expr.getText());
-        }
-        // CONTROLE SEMANTIQUE : VERIFIER QU'UN IDF EXISTE DANS UN EXPRESSION CALCULATOIRE
-        catch (NullPointerException ne) {
-          System.out.println("ligne "  + expr.getLine() + " : Erreur : référence indéfinie vers la variable : " + expr.getText());
-          throw new NoSuchIdfException("Cet IDF n'existe pas.");
-        }
-        // Récupère le contenu de la variable,
-        try {
-          res = (int) infos.get(1);
-        }
-        // CONTROLE SEMANTIQUE : Lance un Warning si le contenu de la variable est null.
-        catch (NullPointerException nea) {
-          if (warn) System.out.println("ligne " + expr.getLine() + " : Warning : la variable " + expr.getText() + " peut ne pas avoir été initialisée.");
-        }
-      }
+    LinkedList infos;
+    String nodename = expr.getText();
+    String varname;
+    String type;
+    NodeTDS temp;
+    HashMap<String,LinkedList> temptable;
+    LinkedList tempinfo;
+
+    /*
+     * STRING_AFF
+     */
+    if (nodename.equals("STRING_AFF")) {
+      type = "STRING"
+      return type;
     }
 
-    return res;
+    /*
+     * NEW
+     */
+    if (nodename.equals("NEW")) {
+
+    }
+
+    /*
+     * THIS
+     */
+    if (nodename.equals("THIS")) {
+
+    }
+
+    /*
+     * SUPER
+     */
+    if (nodename.equals("SUPER")) {
+
+    }
+
+    /*
+     * VAR
+     */
+    if (nodename.equals("VAR")) {
+      // CONTROLE SEMANTIQUE : Vérifier que la variable a été déclarée.
+      try {
+        temp = findSymbol(node, varname);
+      }
+      catch (NoSuchIdfException e) {
+        System.out.println("ligne "  + expr.getLine() + " : Erreur : référence indéfinie vers la variable " + varname);
+        nbError++;
+      }
+
+      // Récupère les infos pour récupérer le type
+      temptable = temp.getTable();
+      tempinfo = temptable.get(varname);
+      type = "";
+
+    }
+
+    return type;
   }
 
 
