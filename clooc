@@ -119,9 +119,10 @@ then
             continue;;
       esac
   done
+  #-encoding ISO-8859-1
   echo "[CLOOC] Vérification du programme $filelooc  ..."
   rm -f .result &> /dev/null
-  java Clooc $fullpath &> .result
+  java Clooc $fullpath #&> .result
   ERROR=$(<.result)
   if [[ -z $ERROR ]]; then
     echo "[CLOOC] - OK - Le programme $filelooc valide la grammaire Looc.g"

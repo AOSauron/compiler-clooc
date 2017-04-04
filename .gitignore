@@ -1,5 +1,6 @@
 analyseurs/*.class*
-analyseurs/*r.java*
+analyseurs/LoocParser*
+analyseurs/LoocLexer*
 analyseurs/*.tokens*
 ANTLR/*
 *~
