@@ -98,9 +98,9 @@ returnstate:   'return' '(' expression? ')' ';' -> ^(RETURN expression?);
 
 expression:   'this' expressionbis -> ^(THIS expressionbis?)
           |   'super' expressionbis -> ^(SUPER expressionbis?)
-          |   STRING_CST expressionbis -> ^(STRING_AFF STRING_CST expressionbis?)
-          |   'new' IDFC expressionbis -> ^(NEW IDFC expressionbis?)
-          |   exprio1
+          |   STRING_CST expressionbis -> ^(STRING_AFF STRING_CST)
+          |   'new' IDFC expressionbis -> ^(NEW IDFC)
+          |   exprio1 expressionbis -> ^(exprio1 expressionbis?)
           ;
 
 exprio1 : exprio2 ( '+'^ exprio2 | '-'^ exprio2)* ;
