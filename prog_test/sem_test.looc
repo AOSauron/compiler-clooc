@@ -1,0 +1,50 @@
+class MyClass = (
+
+  var test : int;
+
+  method myMeth() {
+    var testnop : int;
+    test := 3;
+  }
+
+  method myMeth2(a : int) {
+    testnop := 4;
+    return();
+  }
+
+  method myMeth3(a : int, b:int) {
+    return();
+  }
+
+  /*method myMeth() {
+    return(5);
+  }*/
+)
+
+class MyClassic inherit MyClass =
+(
+  method myMethHerit() {
+    test := 4;
+    do this.myMeth();
+  }
+)
+
+class MyClass = (
+
+)
+
+var variable : MyClass;
+
+variable := "gdfgdf";
+variable := (32+1)*variable;
+variable := 6+9*(this.getNb());
+
+/*
+do variable.myMeth(1);
+do variable.myMeth();
+do variable.myMeth2(1);
+do variable.myMeth2();
+do variable.myMeth3(1);
+do variable.myMeth3();
+do variable.myMeth3(2,1);
+do variable.myMeth3(1,2,3); */

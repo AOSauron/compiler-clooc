@@ -1,12 +1,13 @@
 import org.antlr.runtime.tree.*;
 import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.HashMap;
 import java.util.Iterator;
 
 /*
  * Parseur d'AST : le parcours et crée les TDS nécessaires. Les remplit en conséquence.
- * Va générer également du code en assembleur, en faisant appel à un générateur ASM maison.
+ * Effectue les contrôle sémantiques, génère les erreurs et warnings.
  * @author : Guillaume Garcia
  * Pour Clooc - PCL 2017 - TELECOM Nancy
  */
@@ -16,13 +17,17 @@ public class TreeParser {
   private int countanoblock;
   private int countfor;
   private int countif;
+  private boolean warn;
   private CommonTree ast;
   private HashMap<String,LinkedList> tableroot;
   private NodeTDS root;
-  //private AsmGenerator asmgen;
+  private static int nbError;
+
 
   public TreeParser(CommonTree ast) {
     this.ast=ast;
+    warn = false;
+    nbError = 0;
   }
 
 
@@ -30,9 +35,9 @@ public class TreeParser {
    * Print la table du noeud passé en paramètre ainsi que celle des ses fils.
    *
    */
-  public void init() {
+  public void init(boolean warnings) {
 
-    //asmgen = new AsmGenerator();
+    warn = warnings;
     tableroot = new HashMap<String,LinkedList>();
     root = new NodeTDS(null);
 
@@ -41,6 +46,7 @@ public class TreeParser {
     countanoblock = 0;
 
     explorer(ast, root);
+
   }
 
 
@@ -94,19 +100,26 @@ public class TreeParser {
      return tableroot;
    }
 
+  /*
+   * Retourne le nombre d'erreurs sémantiques détectées
+   *
+   */
+  public int getNbError() {
+    return nbError;
+  }
+
 
   /*
-   * Retourne l'AsmGenerator du TreeParser.
+   * Retourne la TDS (à appeller après avoir effectuer un init())
    *
-   */ /*
-  public AsmGenerator getAsmGen() {
-    return asmgen;
-  }*/
-
+   */
+  public NodeTDS getTDS() {
+    return root;
+  }
 
   /*
    * Explorateur récursif de sous-arbre. Effectue des contrôles sémantiques !
-   *
+   * Range les données dans la TDS du node passé en paramètre.
    */
   public void explorer(CommonTree tree, NodeTDS node) {
 
@@ -148,17 +161,17 @@ public class TreeParser {
       max = (CommonTree) tree.getChild(2);
 
       // CONTROLE SEMTANTIQUE : La borne sup ne peut pas être inférieure (stricte) à la borne inf
-      try {
+    /*  try {
         int mini = calculator((CommonTree) min, table);
         int maxi = calculator((CommonTree) max, table);
         if (maxi < mini) {
-          System.out.println("Erreur : - Boucle For - Les bornes de l'indice " + index + " ne sont pas correctes" );
-          System.exit(1);
+          nbError++;
+          System.out.println("ligne " + tree.getLine() + " : Erreur : Les bornes de l'indice " + index + " de la boucle for ne sont pas correctes" );
         }
       }
       catch (NoSuchIdfException e) {
         // ALLER CHERCHER L'IDF DANS LES TDS PARENTES.
-      }
+      }*/
 
       // Création d'une sous-TDS (nouvel espace de noms)
       LinkedList infos = new LinkedList();
@@ -217,7 +230,7 @@ public class TreeParser {
 
       //On explore le block ELSE si il existe
       if (nbchlidnode == 3) {
-        explorer((CommonTree) tree.getChild(3), childelse);
+        explorer((CommonTree) tree.getChild(2), childelse);
       }
 
       infos.add("IF"); // Type d'entrée
@@ -233,45 +246,55 @@ public class TreeParser {
      */
     if (nodename.equals("AFFECT")) {
 
-      Object value = null;
-      LinkedList infos = null;
-      int nbchlidnode = tree.getChild(1).getChildCount();
+      NodeTDS nodeleft = null;
+      CommonTree memberleft = (CommonTree) tree.getChild(0);
+      CommonTree memberright = (CommonTree) tree.getChild(1);
+      String memberleftname = memberleft.getText();
 
-      // CONTROLE SEMANTIQUE : VERIFIE QU'UN IDF EXISTE BIEN POUR LUI FAIRE UN AFFECT
+      // CONTROLE SÉMANTIQUE : VERIFIE QU'UN IDF EXISTE BIEN POUR LUI FAIRE UN AFFECT (GAUCHE)
       try {
-        infos = table.get(tree.getChild(0).getText());
+        nodeleft = findSymbol(node, memberleftname);
       }
-      catch (NullPointerException ne) {
-        System.out.println("Erreur : référence indéfinie vers la variable " + tree.getChild(0));
-        System.exit(1);
+      catch (NoSuchIdfException ne) {
+        System.out.println("ligne "  + tree.getLine() + " : Erreur : référence indéfinie vers la variable " + memberleftname);
+        nbError++;
       }
 
+      // CONTROLE SEMTANTIQUE : PARSE L'EXPRESSION DE DROITE, VERIFIE SI LES SYMBOLE UTILISES SONT DECLARES (DROITE)
+      try {
+        calculator(memberright, node); // calculator effectue les controles sémantiques
+      }
+      catch (NoSuchIdfException ne) {
+
+      }
+      /*
       // Cas d'un int, on parse directement en int
       if (infos.getFirst().toString().equals("INT")) {
         // Cas d'une expression arithm/logique
         try {
-          value = (int) calculator((CommonTree) tree.getChild(1), table);
+          value = (int) calculator((CommonTree) memberright, table);
         }
-        // CONTROLE SEMANTIQUE : VERIFIE QU'UN IDF EXISTE BIEN DANS LE MEMBRE DE DROITE
+        // CONTROLE SÉMANTIQUE : VERIFIE QU'UN IDF EXISTE BIEN DANS LE MEMBRE DE DROITE
         catch (NoSuchIdfException e) {
-          System.out.println("Erreur : référence indéfinie vers la variable " + tree.getChild(0));
+          System.out.println("ligne "  + tree.getLine() + " : Erreur : référence indéfinie vers la variable " + tree.getChild(0));
+          nbError++;
         }
         // Cas d'une variable abstraite qui sera définie à l'exécution
         catch (NullPointerException ne) {
-          value = (CommonTree) tree.getChild(1);
+          value = (CommonTree) memberright;
         }
       }
 
       // Les autres cas, on parse en String.
       else if (nbchlidnode > 0) { // Cas d'un New : Crée une TDS pour chaque new ?
-        value = (String) tree.getChild(1).getChild(0).getText();
+        value = (String) memberright.getChild(0).getText();
       }
       else {
-        value = (String) tree.getChild(1).getText();
+        value = (String) memberright.getText();
       }
 
       infos.set(1, value);
-
+*/
       return;
     }
 
@@ -286,6 +309,17 @@ public class TreeParser {
       String classinher = "";
       CommonTree block;
       int nbchlidofblock;
+
+      // CONTROLE SÉMANTIQUE : VÉRIFIE QUE LA CLASSE CONSIDÉRÉE N'EST PAS DÉJÀ DÉFINIE
+      try {
+        root.getChild(classname);
+        System.out.println("ligne "  + tree.getLine() + " : Erreur : redéfinition de la classe " + classname);
+        nbError++;
+        // On ne parcourt pas la classe si elle est déjà définie
+        return;
+      } catch (NoSuchIdfException e) {
+        // Rien on continue
+      }
 
       // Création d'une sous-TDS (nouvel espace de noms)
       LinkedList infos = new LinkedList();
@@ -303,10 +337,10 @@ public class TreeParser {
         // Récupère le nom de la classe mère, servira pour retrouver sa TDS via cet id plus bas
         classinher = tree.getChild(1).getText();  // Ceci est un IDENTIFICATEUR !
 
-        // CONTROLE SEMANTIQUE : UNE CLASSE NE PEUT PAS HERITER D'ELLE-MEME
+        // CONTROLE SÉMANTIQUE : UNE CLASSE NE PEUT PAS HERITER D'ELLE-MEME
         if (classinher.equals(classname)) {
-          System.out.println("Erreur : une classe ne peut pas heriter d'elle-même : " + classname + " inherit " + classname);
-          System.exit(1);
+          System.out.println("ligne "  + tree.getLine() + " : Erreur : une classe ne peut pas heriter d'elle-même : " + classname + " inherit " + classname);
+          nbError++;
         }
 
         // Récupérer la TDS de la classe mère (forcément dans les child de root, vu la grammaire, donc frère ce ce noeud, donc ici node=root)
@@ -321,8 +355,8 @@ public class TreeParser {
           child.addParent(motherclass);
         }
         catch (NoSuchIdfException e) {
-          System.out.println("Erreur : référence indéfinie à la classe mère " + classinher + " dans la déclaration de la classe " + classname);
-          System.exit(1);
+          System.out.println("ligne "  + tree.getLine() + " : Erreur : référence indéfinie à la classe mère " + classinher + " dans la déclaration de la classe " + classname);
+          nbError++;
         }
 
         // Récupère le bloc à traiter plus bas
@@ -346,9 +380,9 @@ public class TreeParser {
         explorer((CommonTree) block, child);
       }
 
-      // CONTROLE SEMANTIQUE : On déclenche un warning si une classe vide est déclarée.
+      // CONTROLE SÉMANTIQUE : On déclenche un warning si une classe vide est déclarée.
       else {
-        System.out.println("Warning : la classe " + classname + " est vide.");
+        if (warn) System.out.println("ligne " + tree.getLine() + " : Warning : la classe " + classname + " est vide.");
       }
 
       infos.add("CLASS"); // Type d'entrée
@@ -423,7 +457,58 @@ public class TreeParser {
 
       table.put(methodname,infos);
 
+      if (!(type.equals("void"))) {
+        // CONTROLE SÉMANTIQUE : PLACEMENT DU RETURN DANS UNE METHODE TYPÉE
+        if (!(find(block, "RETURN", 0))) {
+          System.out.println("ligne "  + tree.getLine() + " : Erreur : il est possible que la méthode " + methodname + " ne retourne rien.");
+          nbError++;
+        }
+
+        // CONTROLE SÉMANTIQUE : COHÉRENCE DES TYPES POUR UNE MÉTHODE
+
+      } else {
+        // CONTROLE SÉMANTIQUE : ABSENCE DE VALEUR RENVOYÉE POUR UNE MÉTHODE DE TYPE VOID
+        if (!(find(block, "RETURN", 1))) {
+          System.out.println("ligne "  + tree.getLine() + " : Erreur : La méthode " + methodname + " est de type void, elle n'est pas censée retourner quoique ce soit.");
+          nbError++;
+        }
+      }
+
       return;
+    }
+
+    /*
+     * METHODCALLING
+     */
+    if (nodename.equals("METHODCALLING")) {
+      String methodname = tree.getChild(0).getText();
+      int argumentnumber = tree.getChild(1).getChildCount();
+      NodeTDS methodNode = null;
+
+      // CONTROLE SÉMANTIQUE : VÉRIFIE QU'UNE MÉTHODE EST DÉFINIE DANS LA CLASSE DE L'APPELLANT
+      try {
+        //methodNode = findSymbol(node, methodname);
+        String methodClass = findType(node);
+        // TODO: vérifier que la méthode trouvée est bien dans la classe définissant l'objet
+      } catch (NoSuchIdfException e) {
+        System.out.println("ligne "  + tree.getLine() + " : Erreur : La méthode " + methodname + " n'est pas définie.");
+        nbError++;
+        return;
+      }
+
+      LinkedList arguments = methodNode.getTable().get(methodname);
+      // TODO: déterminer le type de l'objet sur lequel on appelle la méthode, rechercher la méthode dans la classe correspondante, comparer les nombres d'arguments
+      System.out.println("Arguments : " + arguments + " " + methodNode.getId());
+      int requiredargnum = ((LinkedList) arguments.get(1)).size();
+
+      if (argumentnumber != requiredargnum) {
+        // CONTROLE SÉMANTIQUE : VÉRIFIE LE NOMBRE D'ARGUMENTS D'UNE MÉTHODE
+        System.out.println("ligne "  + tree.getLine() + " : Erreur : La méthode " + methodname + " prend " + requiredargnum + " (" + argumentnumber + " donné(s)).");
+        nbError++;
+      }
+
+      return;
+
     }
 
     /*
@@ -472,82 +557,197 @@ public class TreeParser {
 
 
   /*
-   * Calulette récursive du compilateur, résoud les expressions arithmétiques/logiques.
+   * Recherche un token dans un arbre et ses branches, selon divers modes.
    *
    */
-  public int calculator(CommonTree expr, HashMap<String,LinkedList> table) throws NoSuchIdfException {
-    int res;
-    LinkedList infos;
-    res = 0; // A virer plus tard !
+  public boolean find(CommonTree block, String token, int mode) {
 
-    // Arrêt de la récursion : test d'abord si c'est un entier, ensuite s'il s'agit d'une variable de la TDS
-    if (expr.getChildCount()==0) {
+    int nbChildren = block.getChildCount();
+
+    // Récupère les fils du noeud (arbre) courant
+    for (int i=0; i<nbChildren;i++) {
+      if (((CommonTree)block.getChild(i)).toString().equals(token)) {
+        switch (mode) {
+          case 0:
+            return true;
+          case 1:
+            if (((CommonTree) block.getChild(0)).getChildCount() > 0) {
+              return false;
+            }
+            break;
+        }
+      }
+    }
+
+    if (mode == 1) {
+      return true;
+    }
+
+    // Parcours de ses fils
+    for (int i=0; i<nbChildren;i++) {
+      CommonTree child = (CommonTree) block.getChild(i);
+      if ((token.equals("RETURN") && !(child.getText().equals("IF"))) || !(token.equals("RETURN"))) {
+        return find((CommonTree) child, token, 1);
+      }
+    }
+    return false;
+  }
+
+
+  /*
+   * Retourne le type/la classe à laquelle appartient une méthode donnée par le noeud (qui correspond à METHODCALLING)
+   */
+  public String findType(NodeTDS node) throws NoSuchIdfException {
+    String className = "";
+    NodeTDS currentParent = node.getParent().get(0);  // Un seul parent dans ce cas
+    List<NodeTDS> parents = new ArrayList<NodeTDS>();  // Liste des appels méthodes remontés
+
+    // On remonte les appels méthodes jusqu'à tomber sur le premier appelant
+    while (currentParent.getId().equals("METHODCALLING")) {
+      parents.add(currentParent);
+      currentParent = currentParent.getParent().get(0);
+    }
+
+    // On redescent les appels méthodes en détermiant le type de l'objet obtenu à chaque fois
+    className = (String) currentParent.getTable().get(currentParent.getChildren().get(0).getId()).get(2);
+    for (int i=0; i<parents.size(); i++) {
       try {
-        res = Integer.parseInt(expr.getText());
-        return res;
+        className = findReturnType(className, parents.get(i).getChildren().get(0).getId());
+      } catch (NoSuchIdfException e) {
+        throw e;
       }
-      catch (Exception e) {
-        try {
-          infos = table.get(expr.getText());
-        }
-        // CONTROLE SEMANTIQUE : VERIFIER QU'UN IDF EXISTE DANS UN EXPRESSION CALCULATOIRE
-        catch (NullPointerException ne) {
-          System.out.println("Erreur : référence indéfinie vers la variable : " + expr.getText());
-          throw new NoSuchIdfException("Cet IDF n'existe pas.");
-        }
-        // Récupère le contenu de la variable,
-        try {
-          res = (int) infos.get(1);
-        }
-        // CONTROLE SEMANTIQUE : Lance un Warning si le contenu de la variable est null.
-        catch (NullPointerException nea) {
-          System.out.println("Warning : la variable " + expr.getText() + " peut ne pas avoir été initialisée.");
+    }
+
+    return className;
+  }
+
+
+  /*
+   * Cherche une méthode dans une classe et renvoie son type de retour
+   */
+  public String findReturnType(String className, String methodName) throws NoSuchIdfException {
+    List<NodeTDS> rootChildren = root.getChildren();   // Liste des enfants de root
+    //List<NodeTDS> classChildren;
+
+    for (NodeTDS currentNode: rootChildren) {
+      // On regarde si le noeud est le parent d'une classe
+      if (currentNode.getId().equals("CLASS")) {
+        // On regarde si la classe trouvée est celle qu'on cherchait
+        if (currentNode.getChildren().get(0).getId().equals(className)) {
+          return currentNode.getTable().get(methodName).get(2).toString();
         }
       }
     }
 
-    //Cas de l'opérateur unaire -
-    if (expr.getText().equals("-") && expr.getChildCount() == 1) {
-      res = - calculator((CommonTree) expr.getChild(0), table);
+    throw new NoSuchIdfException(); // Cas où la méthode n'existe pas dans la classe demandée
+  }
+
+
+  /*
+   * Cherche la définition d'un symbole (méthode, variable...). Retourne le noeud contenant la définition du symbole.
+   * Lance une exception si aucune définition n'est trouvée.
+   */
+  public NodeTDS findSymbol(NodeTDS node, String symbolname) throws NoSuchIdfException {
+    LinkedList infos = null;
+    List<NodeTDS> parents = null;
+    NodeTDS parent = null;
+
+    // Cherche dans la TDS de ce niveau
+    try {
+      infos = node.getTable().get(symbolname);
+      if (infos.isEmpty()) throw new NullPointerException(); // Si la liste est vide c'est qu'on a rien trouvé, on lance une NPE pour le catch d'après
     }
-    // Logique ==     :   1 = true; 0 = false
-    if (expr.getText().equals("==")) {
-      res =  (calculator((CommonTree) expr.getChild(0), table) == calculator((CommonTree) expr.getChild(1), table)) ? 1 : 0 ;
+    catch (NullPointerException e) {
+      try {
+        parents = node.getParent();
+        // On test dans chacun des parents : le premier parent ne sera pas la classe mère (c'est mieux, si jamais il y a surcharge ou redéfinition d'un symbole)
+        for (NodeTDS n: parents) {
+          try {
+            parent = findSymbol(n, symbolname);
+          }
+          catch (NoSuchIdfException no) {
+            // On laisse finir la boucle for
+          }
+        }
+        // On lance la NSIE si aucun parent n'a été trouvé.
+        if (parent != null) return parent;
+        else throw new NoSuchIdfException();
+      }
+      // On arrive au root sans rien avoir trouvé, on throw une NPE
+      catch (NullPointerException ne) {
+        throw new NoSuchIdfException();
+      }
     }
-    // Logique >=     :   1 = true; 0 = false
-    if (expr.getText().equals(">=")) {
-      res =  (calculator((CommonTree) expr.getChild(0), table) >= calculator((CommonTree) expr.getChild(1), table)) ? 1 : 0 ;
-    }
-    // Logique <=     :   1 = true; 0 = false
-    if (expr.getText().equals("<=")) {
-      res =  (calculator((CommonTree) expr.getChild(0), table) <= calculator((CommonTree) expr.getChild(1), table)) ? 1 : 0 ;
-    }
-    // Logique >     :   1 = true; 0 = false
-    if (expr.getText().equals(">")) {
-      res =  (calculator((CommonTree) expr.getChild(0), table) > calculator((CommonTree) expr.getChild(1), table)) ? 1 : 0 ;
-    }
-    // Logique <     :   1 = true; 0 = false
-    if (expr.getText().equals("<")) {
-      res =  (calculator((CommonTree) expr.getChild(0), table) < calculator((CommonTree) expr.getChild(1), table)) ? 1 : 0 ;
-    }
-    // Logique !=     :   1 = true; 0 = false
-    if (expr.getText().equals("!=")) {
-      res =  (calculator((CommonTree) expr.getChild(0), table) != calculator((CommonTree) expr.getChild(1), table)) ? 1 : 0 ;
-    }
-    //Arithmétique +
-    if (expr.getText().equals("+")) {
-      res =  (calculator((CommonTree) expr.getChild(0), table) + calculator((CommonTree) expr.getChild(1), table));
-    }
-    //Arithmétique - (différencié de l'opérateur unaire - en comptant les fils)
-    if (expr.getText().equals("-") && expr.getChildCount() > 1) {
-      res =  (calculator((CommonTree) expr.getChild(0), table) - calculator((CommonTree) expr.getChild(1), table));
-    }
-    //Arithmétique *
-    if (expr.getText().equals("*")) {
-      res =  (calculator((CommonTree) expr.getChild(0), table) * calculator((CommonTree) expr.getChild(1), table));
+    // Si tout s'est bien passé on retoune le node
+    return node;
+  }
+
+
+  /*
+   * Parse les expressions arithmétiques et logiques, effectue les contrôles sémantiques sur les idf si présents.
+   * Renvoie le type dynamique de l'expression (STRING, INT, OBJ), permettant le controle de type dans explorer()->AFFECT
+   */
+  public String calculator(CommonTree expr, NodeTDS node) throws NoSuchIdfException {
+
+    LinkedList infos;
+    String nodename = expr.getText();
+    String varname;
+    String type;
+    NodeTDS temp;
+    HashMap<String,LinkedList> temptable;
+    LinkedList tempinfo;
+
+    /*
+     * STRING_AFF
+     */
+    if (nodename.equals("STRING_AFF")) {
+      type = "STRING";
+      return type;
     }
 
-    return res;
+    /*
+     * NEW
+     */
+    if (nodename.equals("NEW")) {
+
+    }
+
+    /*
+     * THIS
+     */
+    if (nodename.equals("THIS")) {
+
+    }
+
+    /*
+     * SUPER
+     */
+    if (nodename.equals("SUPER")) {
+
+    }
+
+    /*
+     * VAR
+     */
+     type = "";
+  /*  if (nodename.equals("VAR")) {
+      // CONTROLE SÉMANTIQUE : Vérifier que la variable a été déclarée.
+      try {
+        temp = findSymbol(node, varname);
+      }
+      catch (NoSuchIdfException e) {
+        System.out.println("ligne "  + expr.getLine() + " : Erreur : référence indéfinie vers la variable " + varname);
+        nbError++;
+      }
+
+      // Récupère les infos pour récupérer le type
+      temptable = temp.getTable();
+      tempinfo = temptable.get(varname);
+      type = "";
+
+    }*/
+
+    return type;
   }
 
 
@@ -598,13 +798,14 @@ public class TreeParser {
        }
      }
      else {
-       try {
-         res = calculator((CommonTree) tocalc, table);
+      /* try {
+         //res = calculator((CommonTree) tocalc, table);
          return true;
        }
        catch (NoSuchIdfException nidf) {
          return false;
-       }
+       }*/
+       return true;
      }
    }
 }
