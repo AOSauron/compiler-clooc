@@ -22,13 +22,19 @@ class Item = (
   method getNb() : int {
     return (current);
   }
+
+  method dosomething(x : int) : Item {
+    var i : Item;
+    i := new Item;
+    return (i);
+  }
 )
 
 var item : Item;
 var nb : int;
 item := new Fibonacci;
 
-do item.init(13).nextGen(23,67);
+do item.dosomething(13).nextGen(23,67);
 
 do item.init(15, "initialiser");
 

@@ -14,6 +14,7 @@ Gauthier :
 1 - (Erreur) Vérifie qu'il existe au moins 1 return dans une méthode typée, et/ou qu'il est toujours possible de return dans une methode (reach end non-void function without returning)
 2 - (Erreur) Vérifie que s'il existe un ou plusieurs return dans une fonction non-typée, ceux ci ne possède pas de membre de droite (pas de valeur retournée)
 3 - (Erreur) Pas de redéclaration d'une classe.
+4 - (Erreur) Vérifie qu'une méthode appellée existe dans l'arborescence des TDS parentes. (implicit declaration of function)
 
 Laure :
 
@@ -26,7 +27,6 @@ Nicolas :
 A FAIRE :
 
 - (Erreur) Vérifie la cohérence des types sur un return.
-- (Erreur) Vérifie qu'une méthode appellée existe dans l'arborescence des TDS parentes. (implicit declaration of function)
 - (Erreur) Vérifie le nombre d'arguments passés à une méthode.
 - (Erreur) Vérifie le type des arguments passés à une méthode.
 - (Erreur) Pas de redéclaration d'une methode dans le même contexte (meme TDS).

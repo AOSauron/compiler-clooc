@@ -299,19 +299,17 @@ public class TreeParser {
 
       // On regarde s'il y a des appels de méthodes dans l'affectation, et si oui, on explore
       for (int i=0; i<tree.getChildCount(); i++) {
-        if (tree.getChild(i).getChildCount() > 0) {
-          if (tree.getChild(i).getChild(0).getText().equals("METHODCALLING")) {
-            NodeTDS childmethcall = new NodeTDS(node);
-            HashMap<String,LinkedList> soustablemethcall = new HashMap<String,LinkedList>();
+        if (tree.getChild(i).getText().equals("METHODCALLING")) {
+          NodeTDS childmethcall = new NodeTDS(node);
+          HashMap<String,LinkedList> soustablemethcall = new HashMap<String,LinkedList>();
 
-            // Ajouter la sous-TDS à la TDS parente
-            childmethcall.setId(memberright.getChild(0).getText());
-            childmethcall.setTable(soustablemethcall);
-            node.addChild(childmethcall);
+          // Ajouter la sous-TDS à la TDS parente
+          childmethcall.setId(tree.getChild(i).getChild(0).getText());
+          childmethcall.setTable(soustablemethcall);
+          node.addChild(childmethcall);
 
-            //Explore le block THEN
-            explorer((CommonTree) tree.getChild(i), childmethcall);
-          }
+          //Explore le block THEN
+          explorer((CommonTree) tree.getChild(i), childmethcall);
         }
       }
       return;
@@ -510,17 +508,13 @@ public class TreeParser {
       NodeTDS methodNode = null;
 
       // CONTROLE SÉMANTIQUE : VÉRIFIE QU'UNE MÉTHODE EST DÉFINIE DANS LA CLASSE DE L'APPELLANT
-      //if (!node.getId().equals("root")) {
-        try {
-          //methodNode = findSymbol(node, methodname);
-          String methodClass = findType((CommonTree) tree.getChild(0), node);
-          // TODO: vérifier que la méthode trouvée est bien dans la classe définissant l'objet
-        } catch (NoSuchIdfException e) {
-          System.out.println("ligne "  + tree.getLine() + " : Erreur : La méthode " + methodname + " n'est pas définie.");
-          nbError++;
-          return;
-        }
-      //}
+      try {
+        String methodClass = findType((CommonTree) tree.getChild(0), node);
+      } catch (NoSuchIdfException e) {
+        System.out.println("ligne "  + tree.getLine() + " : Erreur : La méthode " + methodname + " n'est pas définie.");
+        nbError++;
+        return;
+      }
 
       /*LinkedList arguments = methodNode.getTable().get(methodname);
       // TODO: déterminer le type de l'objet sur lequel on appelle la méthode, rechercher la méthode dans la classe correspondante, comparer les nombres d'arguments
@@ -648,19 +642,26 @@ public class TreeParser {
       parents.add(currentParent);
       currentParent = (CommonTree) currentParent.getParent();
     }
-    System.out.println(currentParent.getText());
 
-    /*tableroot.get();
+    String varName = "";
+    if (currentParent.getText().equals("DO")) {
+      varName = currentParent.getChild(0).getText();
+    } else if (currentParent.getText().equals("AFFECT")) {
+      varName = currentParent.getChild(1).getText();
+    }
+
+    LinkedList infos = tableroot.get(varName);
+    className = infos.get(0).toString();
 
     // On redescent les appels méthodes en détermiant le type de l'objet obtenu à chaque fois
-    className = (String) currentParent.getTable().get(currentParent.getChildren().get(0).getId()).get(2);
-    for (int i=0; i<parents.size(); i++) {
-      try {
-        className = findReturnType(className, parents.get(i).getChildren().get(0).getId());
-      } catch (NoSuchIdfException e) {
-        throw e;
+
+    try {
+      for (int i=parents.size()-1; i>=0; i--) {
+        className = findReturnType(className, parents.get(i).getChild(0).getText());
       }
-    }*/
+    } catch (NoSuchIdfException e) {
+      throw e;
+    }
 
     return className;
   }
@@ -671,14 +672,14 @@ public class TreeParser {
    */
   public String findReturnType(String className, String methodName) throws NoSuchIdfException {
     List<NodeTDS> rootChildren = root.getChildren();   // Liste des enfants de root
-    //List<NodeTDS> classChildren;
 
     for (NodeTDS currentNode: rootChildren) {
       // On regarde si le noeud est le parent d'une classe
-      if (currentNode.getId().equals("CLASS")) {
-        // On regarde si la classe trouvée est celle qu'on cherchait
-        if (currentNode.getChildren().get(0).getId().equals(className)) {
-          return currentNode.getTable().get(methodName).get(2).toString();
+      if (currentNode.getId().equals(className)) {
+        HashMap<String,LinkedList> classTable = currentNode.getTable();
+        LinkedList method = classTable.get(methodName);
+        if (method != null) {
+          return method.get(2).toString();
         }
       }
     }
