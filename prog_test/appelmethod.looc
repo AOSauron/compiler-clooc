@@ -32,6 +32,6 @@ do item.init(13).nextGen(23,67);
 
 do item.init(15, "initialiser");
 
-go item.get();
+do item.get();
 
 nb := item.getNb();
