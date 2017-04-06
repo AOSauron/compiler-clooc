@@ -22,7 +22,8 @@ Gauthier :
 Laure :
 
 Nicolas :
-
+1 - (Erreur) Vérifier le type des arguments de write
+2 - (Erreur) Vérifier le type des arguments de read
 
 
 
