@@ -290,7 +290,22 @@ public class Clooc {
         else {
           // Sinon récupération de l'arbre brut + analyse lexicale et syntaxique
           if (verbose) System.out.println(" Etape 1 - Analyse lexicale et syntaxique. Génération de l'AST.");
+
+          // Récupération de la sortie de l'analyse syntaxique/lexicale
+          ByteArrayOutputStream baos = new ByteArrayOutputStream();
+          PrintStream ps = new PrintStream(baos);
+          PrintStream old =System.err;
+          System.setErr(ps);
           tree = (CommonTree) parser.program().getTree();
+          System.err.flush();
+          System.setErr(old);
+          String synlexerrors = baos.toString();
+
+          // On print les erreurs récupérées si il y en a et on arrete le compilateur pour empecher la construction de l'AST/analyse semantique.
+          if (synlexerrors.length() != 0) {
+            System.err.println(synlexerrors);
+            System.exit(1);
+          }
         }
 
         // Cette partie concerne donc tout sauf l'option -a
@@ -326,7 +341,7 @@ public class Clooc {
             runtime.exec(new String[] {"dot", "-Tpng", purename, "-o", purenamepng, "&>", "/dev/null"});
           }
           catch (IOException e) {
-            System.out.println("Le programme dot (graphviz) ne semble pas être installé. Lancez `sudo apt-get install graphviz` .");
+            System.err.println("Le programme dot (graphviz) ne semble pas être installé. Lancez `sudo apt-get install graphviz` .");
             System.exit(1);
           }
           System.out.println("Affichage de l'arbre.");
@@ -334,7 +349,7 @@ public class Clooc {
             runtime.exec(new String[] {"eog", purenamepng, "&>", "/dev/null", "&"});
           }
           catch (IOException e) {
-            System.out.println("Le programme eog (ImageViewer for Gnome) ne semble pas être installé. Lancez `sudo apt-get install eog` .");
+            System.err.println("Le programme eog (ImageViewer for Gnome) ne semble pas être installé. Lancez `sudo apt-get install eog` .");
             System.exit(1);
           }
           return;
@@ -352,8 +367,8 @@ public class Clooc {
 
         if (verbose) System.out.println(" Etape 3 - Génération de code source ASM/microPIUP");
 
-        // Génération de code en Assembleur microPIUP si aucune erreur sémantique n'est détectée
-        /*if (tablor.getNbError() == 0) {
+        // Génération r de code en Assembleur microPIUP si aucune erreur sémantique n'est détectée
+        if (tablor.getNbError() == 0) { /*
           tds = tablor.getTDS();
           asmgen = new AsmGenerator(tree, tds);
 
@@ -370,12 +385,12 @@ public class Clooc {
           asmgen.initGen();
 
           // Fermeture du fichier
-          asmgen.closeFile();
+          asmgen.closeFile(); */
         }
         else if (tablor.getNbError() > 0) {
-          System.out.println(tablor.getNbError() + " erreurs dans le fichier " + filename + ".");
+          System.err.println(tablor.getNbError() + " erreur(s) dans le fichier " + filename + ".");
           System.exit(1);
-        }*/
+        }
 
         //Compilation du fichier source :
         if (!src) {

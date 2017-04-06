@@ -155,23 +155,69 @@ public class TreeParser {
       CommonTree min;
       CommonTree max;
       String index;
+      String type;
+      NodeTDS nodeindex;
 
-      index = tree.getChild(0).toString();
+      // BORNE INF
       min = (CommonTree) tree.getChild(1);
-      max = (CommonTree) tree.getChild(2);
-
-      // CONTROLE SEMTANTIQUE : La borne sup ne peut pas être inférieure (stricte) à la borne inf
-    /*  try {
-        int mini = calculator((CommonTree) min, table);
-        int maxi = calculator((CommonTree) max, table);
-        if (maxi < mini) {
+      try {
+        type = calculator((CommonTree) min, node);
+        // CONTROLE SEMANTIQUE : vérifier que le type de l'expression inf est bien un INT
+        if (!type.equals("INT")) {
+          System.err.println("ligne "  + tree.getLine() + " : Erreur : La borne inférieure de la boucle for n'est pas un entier. ");
           nbError++;
-          System.out.println("ligne " + tree.getLine() + " : Erreur : Les bornes de l'indice " + index + " de la boucle for ne sont pas correctes" );
         }
       }
+      // CONTROLE SEMANTIQUE : Idf non déclaré utilisé dans l'expression de la borne inf.
       catch (NoSuchIdfException e) {
-        // ALLER CHERCHER L'IDF DANS LES TDS PARENTES.
-      }*/
+        System.err.println("ligne "  + tree.getLine() + " : Erreur : La borne inférieure de la boucle for n'est pas déclarée. ");
+        nbError++;
+      }
+      // CONTROLE SEMANTIQUE : Problème de concordance de type dans les expressions de la borne inf.
+      catch (MismatchTypeException ex) {
+        System.err.println("ligne "  + tree.getLine() + " : Erreur : Problème de concordance de type dans l'expression de la borne inférieure de la boucle for. ");
+        nbError++;
+      }
+
+      // BORNE SUP
+      max = (CommonTree) tree.getChild(2);
+      try {
+        type = calculator((CommonTree) max, node);
+        // CONTROLE SEMANTIQUE : vérifier que le type de l'expression inf est bien un INT
+        if (!type.equals("INT")) {
+          System.err.println("ligne "  + tree.getLine() + " : Erreur : La borne supérieure de la boucle for n'est pas un entier. ");
+          nbError++;
+        }
+      }
+      // CONTROLE SEMANTIQUE : Idf non déclaré utilisé dans l'expression de la borne sup.
+      catch (NoSuchIdfException e) {
+        System.err.println("ligne "  + tree.getLine() + " : Erreur : La borne supérieure de la boucle for n'est pas déclarée. ");
+        nbError++;
+      }
+      // CONTROLE SEMANTIQUE : Problème de concordance de type dans les expressions de la borne sup.
+      catch (MismatchTypeException ex) {
+        System.err.println("ligne "  + tree.getLine() + " : Erreur : Problème de concordance de type dans l'expression de la borne supérieure de la boucle for. ");
+        nbError++;
+      }
+
+      // INDEX
+      index = tree.getChild(0).toString();
+      try {
+        nodeindex = findSymbol(node, index);
+      }
+      // CONTROLE SEMANTIQUE : Vérifie que l'indice a été déclaré au préalable
+      catch (NoSuchIdfException e) {
+        System.err.println("ligne "  + tree.getLine() + " : Erreur : Référence indéfinie vers la variable " + index + " (indice de la boucle for).");
+        nbError++;
+      }
+      // CONTROLE SEMANTIQUE : Vérifie que l'index est un INT
+      try {
+        checkType(nodeindex, index, "INT");
+      }
+      catch (MismatchTypeException ex) {
+        System.err.println("ligne "  + tree.getLine() + " : Erreur : L'indice " + index + " de la boucle for n'est pas un entier.");
+        nbError++;
+      }
 
       // Création d'une sous-TDS (nouvel espace de noms)
       LinkedList infos = new LinkedList();
@@ -256,7 +302,7 @@ public class TreeParser {
         nodeleft = findSymbol(node, memberleftname);
       }
       catch (NoSuchIdfException ne) {
-        System.out.println("ligne "  + tree.getLine() + " : Erreur : référence indéfinie vers la variable " + memberleftname);
+        System.err.println("ligne "  + tree.getLine() + " : Erreur : référence indéfinie vers la variable " + memberleftname);
         nbError++;
       }
 
@@ -276,7 +322,7 @@ public class TreeParser {
         }
         // CONTROLE SÉMANTIQUE : VERIFIE QU'UN IDF EXISTE BIEN DANS LE MEMBRE DE DROITE
         catch (NoSuchIdfException e) {
-          System.out.println("ligne "  + tree.getLine() + " : Erreur : référence indéfinie vers la variable " + tree.getChild(0));
+          System.err.println("ligne "  + tree.getLine() + " : Erreur : référence indéfinie vers la variable " + tree.getChild(0));
           nbError++;
         }
         // Cas d'une variable abstraite qui sera définie à l'exécution
@@ -313,7 +359,7 @@ public class TreeParser {
       // CONTROLE SÉMANTIQUE : VÉRIFIE QUE LA CLASSE CONSIDÉRÉE N'EST PAS DÉJÀ DÉFINIE
       try {
         root.getChild(classname);
-        System.out.println("ligne "  + tree.getLine() + " : Erreur : redéfinition de la classe " + classname);
+        System.err.println("ligne "  + tree.getLine() + " : Erreur : redéfinition de la classe " + classname);
         nbError++;
         // On ne parcourt pas la classe si elle est déjà définie
         return;
@@ -339,7 +385,7 @@ public class TreeParser {
 
         // CONTROLE SÉMANTIQUE : UNE CLASSE NE PEUT PAS HERITER D'ELLE-MEME
         if (classinher.equals(classname)) {
-          System.out.println("ligne "  + tree.getLine() + " : Erreur : une classe ne peut pas heriter d'elle-même : " + classname + " inherit " + classname);
+          System.err.println("ligne "  + tree.getLine() + " : Erreur : une classe ne peut pas heriter d'elle-même : " + classname + " inherit " + classname);
           nbError++;
         }
 
@@ -355,7 +401,7 @@ public class TreeParser {
           child.addParent(motherclass);
         }
         catch (NoSuchIdfException e) {
-          System.out.println("ligne "  + tree.getLine() + " : Erreur : référence indéfinie à la classe mère " + classinher + " dans la déclaration de la classe " + classname);
+          System.err.println("ligne "  + tree.getLine() + " : Erreur : référence indéfinie à la classe mère " + classinher + " dans la déclaration de la classe " + classname);
           nbError++;
         }
 
@@ -363,7 +409,7 @@ public class TreeParser {
         block = (CommonTree) tree.getChild(2);
       }
       else {
-        System.out.println("Erreur dans l'AST ... class_decl : " + classname);
+        System.err.println("Erreur dans l'AST ... class_decl : " + classname);
         block = null;
         System.exit(1);
       }
@@ -460,7 +506,7 @@ public class TreeParser {
       if (!(type.equals("void"))) {
         // CONTROLE SÉMANTIQUE : PLACEMENT DU RETURN DANS UNE METHODE TYPÉE
         if (!(find(block, "RETURN", 0))) {
-          System.out.println("ligne "  + tree.getLine() + " : Erreur : il est possible que la méthode " + methodname + " ne retourne rien.");
+          System.err.println("ligne "  + tree.getLine() + " : Erreur : il est possible que la méthode " + methodname + " ne retourne rien.");
           nbError++;
         }
 
@@ -469,7 +515,7 @@ public class TreeParser {
       } else {
         // CONTROLE SÉMANTIQUE : ABSENCE DE VALEUR RENVOYÉE POUR UNE MÉTHODE DE TYPE VOID
         if (!(find(block, "RETURN", 1))) {
-          System.out.println("ligne "  + tree.getLine() + " : Erreur : La méthode " + methodname + " est de type void, elle n'est pas censée retourner quoique ce soit.");
+          System.err.println("ligne "  + tree.getLine() + " : Erreur : La méthode " + methodname + " est de type void, elle n'est pas censée retourner quoique ce soit.");
           nbError++;
         }
       }
@@ -491,7 +537,7 @@ public class TreeParser {
         String methodClass = findType(node);
         // TODO: vérifier que la méthode trouvée est bien dans la classe définissant l'objet
       } catch (NoSuchIdfException e) {
-        System.out.println("ligne "  + tree.getLine() + " : Erreur : La méthode " + methodname + " n'est pas définie.");
+        System.err.println("ligne "  + tree.getLine() + " : Erreur : La méthode " + methodname + " n'est pas définie.");
         nbError++;
         return;
       }
@@ -503,7 +549,7 @@ public class TreeParser {
 
       if (argumentnumber != requiredargnum) {
         // CONTROLE SÉMANTIQUE : VÉRIFIE LE NOMBRE D'ARGUMENTS D'UNE MÉTHODE
-        System.out.println("ligne "  + tree.getLine() + " : Erreur : La méthode " + methodname + " prend " + requiredargnum + " (" + argumentnumber + " donné(s)).");
+        System.err.println("ligne "  + tree.getLine() + " : Erreur : La méthode " + methodname + " prend " + requiredargnum + " (" + argumentnumber + " donné(s)).");
         nbError++;
       }
 
@@ -536,6 +582,10 @@ public class TreeParser {
           explorer((CommonTree) tree.getChild(k), child);
         }
       }
+      // CONTROLE SÉMANTIQUE : On déclenche un warning si une classe vide est déclarée.
+      else {
+        if (warn) System.out.println("ligne " + tree.getLine() + " : Warning : Le bloc anonyme " + classname + " est vide.");
+      }
 
       infos.add("ANOBLOCK"); // Type d'entrée
 
@@ -560,7 +610,7 @@ public class TreeParser {
    * Recherche un token dans un arbre et ses branches, selon divers modes.
    *
    */
-  public boolean find(CommonTree block, String token, int mode) {
+  public boolean find(  CommonTree block, String token, int mode) {
 
     int nbChildren = block.getChildCount();
 
@@ -596,6 +646,7 @@ public class TreeParser {
 
   /*
    * Retourne le type/la classe à laquelle appartient une méthode donnée par le noeud (qui correspond à METHODCALLING)
+   *
    */
   public String findType(NodeTDS node) throws NoSuchIdfException {
     String className = "";
@@ -624,6 +675,7 @@ public class TreeParser {
 
   /*
    * Cherche une méthode dans une classe et renvoie son type de retour
+   *
    */
   public String findReturnType(String className, String methodName) throws NoSuchIdfException {
     List<NodeTDS> rootChildren = root.getChildren();   // Liste des enfants de root
@@ -642,6 +694,10 @@ public class TreeParser {
     throw new NoSuchIdfException(); // Cas où la méthode n'existe pas dans la classe demandée
   }
 
+
+  public void checkType(NodeTDS node, String symbol, String typetocheck) throws MismatchTypeException {
+
+  }
 
   /*
    * Cherche la définition d'un symbole (méthode, variable...). Retourne le noeud contenant la définition du symbole.
@@ -685,9 +741,9 @@ public class TreeParser {
 
   /*
    * Parse les expressions arithmétiques et logiques, effectue les contrôles sémantiques sur les idf si présents.
-   * Renvoie le type dynamique de l'expression (STRING, INT, OBJ), permettant le controle de type dans explorer()->AFFECT
+   * Renvoie le type de l'expression (STRING, INT, OBJ), permettant le controle de type dans explorer()->AFFECT
    */
-  public String calculator(CommonTree expr, NodeTDS node) throws NoSuchIdfException {
+  public String calculator(CommonTree expr, NodeTDS node) throws Exception {
 
     LinkedList infos;
     String nodename = expr.getText();
@@ -736,7 +792,7 @@ public class TreeParser {
         temp = findSymbol(node, varname);
       }
       catch (NoSuchIdfException e) {
-        System.out.println("ligne "  + expr.getLine() + " : Erreur : référence indéfinie vers la variable " + varname);
+        System.err.println("ligne "  + expr.getLine() + " : Erreur : référence indéfinie vers la variable " + varname);
         nbError++;
       }
 

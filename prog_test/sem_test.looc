@@ -25,7 +25,7 @@ class MyClassic inherit MyClass =
 (
   method myMethHerit() {
     test := 4;
-    do this.myMeth();
+    /*do this.myMeth();*/
   }
 )
 
@@ -37,7 +37,17 @@ var variable : MyClass;
 
 variable := "gdfgdf";
 variable := (32+1)*variable;
-variable := 6+9*(this.getNb());
+/*variable := 6+9*(this.getNb());*/
+
+var ent : int;
+ent := 4;
+var entier : int;
+entier := 1;
+var ind : int;
+
+for ind in ent...entier do
+  variable := new MyClass;
+end
 
 /*
 do variable.myMeth(1);
