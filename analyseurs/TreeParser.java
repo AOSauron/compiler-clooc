@@ -205,6 +205,10 @@ public class TreeParser {
       try {
         nodeindex = findSymbol(node, index);
       }
+
+      // CONTROLE SEMANTIQUE : (Erreur) Vérifier le type des arguments de write
+
+
       // CONTROLE SEMANTIQUE : Vérifie que l'indice a été déclaré au préalable
       catch (NoSuchIdfException e) {
         System.err.println("ligne "  + tree.getLine() + " : Erreur : Référence indéfinie vers la variable " + index + " (indice de la boucle for).");
