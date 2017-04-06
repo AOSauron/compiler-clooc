@@ -207,6 +207,7 @@ public class TreeParser {
       }
 
       // CONTROLE SEMANTIQUE : (Erreur) Vérifier le type des arguments de write
+      
 
 
       // CONTROLE SEMANTIQUE : Vérifie que l'indice a été déclaré au préalable
