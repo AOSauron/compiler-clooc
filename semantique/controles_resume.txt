@@ -8,7 +8,10 @@ Guillaume :
 4 - (Erreur) Vérifie que la classe n'hérite pas d'elle-même.
 5 - (Erreur) Vérifie que la classe parente existe lors d'un inherit.
 6 - (Warning) Lance un warning si une classe vide est déclarée.
-7 - (Erreur) On suppose que dans les boucles for les bornes sont forcéments ordonnées (from < to)
+7 - (Erreur) Vérifie que les bornes ET l'indice d'une boucle For sont bien des entiers.
+8 - (Erreur) Erreur de concordance des types dans une expression arithmétiques (MismatchTypeException)
+9 - (Erreur) Vérifie la déclaration préalable de l'indice d'une boucle for, et des éventuelles variables utilisées dans les expression des bornes
+10 - (Warning) Lance un warning si un bloc anonyme vide est déclaré.
 
 Gauthier :
 1 - (Erreur) Vérifie qu'il existe au moins 1 return dans une méthode typée, et/ou qu'il est toujours possible de return dans une methode (reach end non-void function without returning)
@@ -27,6 +30,7 @@ Nicolas :
 A FAIRE :
 
 - (Erreur) Vérifie la cohérence des types sur un return.
+- (Erreur) Vérifie qu'une méthode appellée existe dans l'arborescence des TDS parentes. (implicit declaration of function)
 - (Erreur) Vérifie le nombre d'arguments passés à une méthode.
 - (Erreur) Vérifie le type des arguments passés à une méthode.
 - (Erreur) Pas de redéclaration d'une methode dans le même contexte (meme TDS).
@@ -42,7 +46,6 @@ A FAIRE :
 - (Warning) Lance un warning si une méthode est déclarée à la fois dans une classe et en dehors. (pas si mm méthode dans 2 classes.)
 - (Warning) Lance un warning si une classe fille surcharge/redéfini un symbole (methode, attributs) de la classe mère dans le cas d'un inherit. Surcharge autorisée.
 - (Warning) Lance un warning si une méthode vide est déclarée.
-- (Warning) Lance un warning si un bloc anonyme vide est déclaré.
 - (Erreur) Vérifier qu'un appel à une méthode sans type de retour se fait par le mot-clé "do" : do n.foo();
 - (Erreur) Cohérence des types sur des affectations.
 - (Erreur) Contrôle de type dans les conditions (entier ou nil)

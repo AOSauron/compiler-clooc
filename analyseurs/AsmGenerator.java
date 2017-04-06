@@ -214,6 +214,10 @@ public class AsmGenerator {
       case "READ":
         break;
 
+      case "FOR":
+        // METTRE UNE CONDITION SUR LES BORNES, SI BORNE INF > BORNE SUP ON JUMP DIRECTEMENT A LA SUITE SANS RENTRER DASN LA BOUCLE
+        break;
+
       default:
         if (nbchlid==0) break; // Condition d'arrêt de la récursion
         // Exploration plus profonde
