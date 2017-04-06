@@ -1,13 +1,14 @@
 class MyClass = (
 
   var test : int;
+  var myMeth3 : int;
 
   method myMeth() {
     var testnop : int;
     test := 3;
   }
 
-  method myMeth2(a : int) {
+  method myMeth2(a : int, a : int) {
     testnop := 4;
     return();
   }
@@ -15,6 +16,10 @@ class MyClass = (
   method myMeth3(a : int, b:int) {
     test := super.getNb();
     return();
+  }
+
+  method myMeth4 (a : int){
+  
   }
 
   /*method myMeth() {
@@ -44,6 +49,7 @@ variable := "gdfgdf";
 variable := (32+1)*variable;
 /*variable := 6+9*(this.getNb());*/
 
+var variable : int;
 var ent : int;
 ent := 4;
 var entier : int;
