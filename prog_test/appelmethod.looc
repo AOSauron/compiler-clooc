@@ -8,6 +8,7 @@ class Item = (
     current := 1;
     previous := 0;
     generation := 1;
+    do this.nextGen(0,0);
   }
 
   method nextGen(x : int, y : int)

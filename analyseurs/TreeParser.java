@@ -793,9 +793,12 @@ public String findType(CommonTree tree, NodeTDS node) throws NoSuchIdfException 
     varName = currentParent.getChild(0).getText();
   } else if (currentParent.getText().equals("AFFECT")) {
     varName = currentParent.getChild(1).getText();
+  } else if (currentParent.getText().equals("THIS")) {
+
   }
 
   LinkedList infos = tableroot.get(varName);
+  System.out.println(varName);
   className = infos.get(0).toString();
 
   // On redescent les appels méthodes en détermiant le type de l'objet obtenu à chaque fois
