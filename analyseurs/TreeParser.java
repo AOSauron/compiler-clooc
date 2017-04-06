@@ -611,7 +611,6 @@ public class TreeParser {
       } else {
         argumentnumber = 0;
       }
-      NodeTDS methodNode = null;
 
       // CONTROLE SÉMANTIQUE : VÉRIFIE QU'UNE MÉTHODE EST DÉFINIE DANS LA CLASSE DE L'APPELLANT
       try {
@@ -621,16 +620,54 @@ public class TreeParser {
         nbError++;
         return;
       }
-      /*LinkedList arguments = methodNode.getTable().get(methodname);
-      // TODO: déterminer le type de l'objet sur lequel on appelle la méthode, rechercher la méthode dans la classe correspondante, comparer les nombres d'arguments
-      System.out.println("Arguments : " + arguments + " " + methodNode.getId());
-      int requiredargnum = ((LinkedList) arguments.get(1)).size();
 
-      if (argumentnumber != requiredargnum) {
+      LinkedList<CommonTree> givenArguments = new LinkedList<CommonTree>(); //methodNode.getTable().get(methodname);
+
+      for (int i=0; i<tree.getChildCount(); i++) {
+        if (tree.getChild(i).getText().equals("METHODARGS")) {
+          for (int j=0; j<tree.getChild(i).getChildCount(); j++) {
+            givenArguments.add((CommonTree) tree.getChild(i).getChild(j));
+          }
+          break;
+        }
+      }
+/*
+      System.out.println("Arguments: " + tree.getChild(0).getText() + " nb: " + givenArguments.size());
+      for (CommonTree t: givenArguments) {
+        System.out.println(t.getText());
+      }
+      System.out.println("");*/
+
+      CommonTree parent = (CommonTree) tree.getParent();
+      String type = "";
+      if (parent.getText().equals("METHODCALLING")) {
+        try {
+          type = findType((CommonTree) parent.getChild(0), node);
+        } catch (NoSuchIdfException e) {
+        }
+      } else if (parent.getText().equals("DO")) {
+        LinkedList infos = tableroot.get(parent.getChild(0).getText());
+        type = infos.get(0).toString();
+      } else if (parent.getText().equals("AFFECT")) {
+        LinkedList infos = tableroot.get(parent.getChild(1).getText());
+        type = infos.get(0).toString();
+      }
+
+      HashMap<String,LinkedList> classTable = null;
+      LinkedList requiredargs = null;
+      int requiredargnum = 0;
+      try {
+        classTable = root.getChild(type).getTable();
+        requiredargs = (LinkedList) classTable.get(tree.getChild(0).getText()).get(1);
+        requiredargnum = requiredargs.size();
+      } catch (NoSuchIdfException e) {
+      }
+
+      if (givenArguments.size() != requiredargnum) {
         // CONTROLE SÉMANTIQUE : VÉRIFIE LE NOMBRE D'ARGUMENTS D'UNE MÉTHODE
-        System.out.println("ligne "  + tree.getLine() + " : Erreur : La méthode " + methodname + " prend " + requiredargnum + " (" + argumentnumber + " donné(s)).");
+        System.out.println("ligne "  + tree.getLine() + " : Erreur : La méthode " + methodname + " prend " + requiredargnum + " (" + givenArguments.size() + " donné(s)).");
         nbError++;
-      }*/
+      }
 
       for (int i=0; i<tree.getChildCount(); i++) {
         if (tree.getChild(i).getText().equals("METHODCALLING")) {
@@ -769,7 +806,6 @@ public String findType(CommonTree tree, NodeTDS node) throws NoSuchIdfException 
   } catch (NoSuchIdfException e) {
     throw e;
   }
-
   return className;
 }
 
