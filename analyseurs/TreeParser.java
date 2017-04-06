@@ -631,12 +631,6 @@ public class TreeParser {
           break;
         }
       }
-/*
-      System.out.println("Arguments: " + tree.getChild(0).getText() + " nb: " + givenArguments.size());
-      for (CommonTree t: givenArguments) {
-        System.out.println(t.getText());
-      }
-      System.out.println("");*/
 
       CommonTree parent = (CommonTree) tree.getParent();
       String type = "";
@@ -651,8 +645,14 @@ public class TreeParser {
       } else if (parent.getText().equals("AFFECT")) {
         LinkedList infos = tableroot.get(parent.getChild(1).getText());
         type = infos.get(0).toString();
+      } else if (parent.getText().equals("THIS")) {
+        try {
+          CommonTree classTree = searchParent(tree, "CLASS");
+          type = classTree.getChild(0).getText();
+        } catch (NoSuchNodeException e) {
+          // Normalement, on a déjà vérifié que le this était bien dans une classe
+        }
       }
-
       HashMap<String,LinkedList> classTable = null;
       LinkedList requiredargs = null;
       int requiredargnum = 0;
@@ -791,16 +791,20 @@ public String findType(CommonTree tree, NodeTDS node) throws NoSuchIdfException 
   String varName = "";
   if (currentParent.getText().equals("DO")) {
     varName = currentParent.getChild(0).getText();
+    LinkedList infos = tableroot.get(varName);
+    className = infos.get(0).toString();
   } else if (currentParent.getText().equals("AFFECT")) {
     varName = currentParent.getChild(1).getText();
+    LinkedList infos = tableroot.get(varName);
+    className = infos.get(0).toString();
   } else if (currentParent.getText().equals("THIS")) {
-
+    try {
+      CommonTree classTree = searchParent(tree, "CLASS");
+      className = classTree.getChild(0).getText();
+    } catch (NoSuchNodeException e) {
+      // Normalement, on a déjà vérifié que le this était bien dans une classe
+    }
   }
-
-  LinkedList infos = tableroot.get(varName);
-  System.out.println(varName);
-  className = infos.get(0).toString();
-
   // On redescent les appels méthodes en détermiant le type de l'objet obtenu à chaque fois
   try {
     for (int i=parents.size()-1; i>=0; i--) {
