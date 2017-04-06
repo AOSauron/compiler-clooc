@@ -45,6 +45,7 @@ public class TreeParser {
     root.setTable(tableroot);
     countanoblock = 0;
 
+    explorerspec(ast);
     explorer(ast, root);
 
   }
@@ -117,6 +118,62 @@ public class TreeParser {
     return root;
   }
 
+
+  /*
+   * Explore l'arbre sur chaque noeud et effectue quelques contrôles sémantiques.
+   *
+   */
+  public void explorerspec(CommonTree tree) {
+
+    int nbchlid = tree.getChildCount();
+    String nodename = tree.getText();
+
+    /*
+     * THIS
+     */
+    if (nodename.equals("THIS")) {
+
+      try {
+        searchParent((CommonTree) tree, "CLASS");
+      } catch(NoSuchNodeException e) {
+        System.err.println("ligne "  + tree.getLine() + " : Erreur : this n'est pas utilisé dans une classe. ");
+        nbError++;
+      }
+
+      //return;
+    }
+
+    /*
+     * SUPER
+     */
+     if (nodename.equals("SUPER")) {
+
+       CommonTree parent;
+
+       try{
+         parent = (CommonTree) searchParent((CommonTree) tree, "CLASS");
+         if (parent.getChildCount() == 2) {
+           System.err.println("ligne "  + tree.getLine() + " : Erreur : super n'est pas appelé dans une classe fille. ");
+           nbError++;
+         }
+       } catch(NoSuchNodeException e) {
+         System.err.println("ligne "  + tree.getLine() + " : Erreur : super n'est pas utilisé dans une classe. ");
+         nbError++;
+       }
+     }
+
+    //Condition d'arrêt de la récursion + Parcours des autres noeuds
+    if (nbchlid==0) {
+      return;
+    }
+    else {
+      for (int k=0; k<=nbchlid-1; k++) {
+        explorerspec((CommonTree) tree.getChild(k));
+      }
+    }
+
+  }
+
   /*
    * Explorateur récursif de sous-arbre. Effectue des contrôles sémantiques !
    * Range les données dans la TDS du node passé en paramètre.
@@ -144,10 +201,10 @@ public class TreeParser {
 
     }
 
+
     /*
      * FOR
      */
-
     if (nodename.equals("FOR")) {
 
       countfor++;
@@ -156,7 +213,7 @@ public class TreeParser {
       CommonTree max;
       String index;
       String type;
-      NodeTDS nodeindex;
+      NodeTDS nodeindex = null;
 
       // BORNE INF
       min = (CommonTree) tree.getChild(1);
@@ -309,14 +366,14 @@ public class TreeParser {
         System.err.println("ligne "  + tree.getLine() + " : Erreur : référence indéfinie vers la variable " + memberleftname);
         nbError++;
       }
-
+/*
       // CONTROLE SEMTANTIQUE : PARSE L'EXPRESSION DE DROITE, VERIFIE SI LES SYMBOLE UTILISES SONT DECLARES (DROITE)
       try {
         calculator(memberright, node); // calculator effectue les controles sémantiques
       }
       catch (NoSuchIdfException ne) {
 
-      }
+      }*/
       /*
       // Cas d'un int, on parse directement en int
       if (infos.getFirst().toString().equals("INT")) {
@@ -588,7 +645,7 @@ public class TreeParser {
       }
       // CONTROLE SÉMANTIQUE : On déclenche un warning si une classe vide est déclarée.
       else {
-        if (warn) System.out.println("ligne " + tree.getLine() + " : Warning : Le bloc anonyme " + classname + " est vide.");
+        if (warn) System.out.println("ligne " + tree.getLine() + " : Warning : Le bloc anonyme " + anoname + " est vide.");
       }
 
       infos.add("ANOBLOCK"); // Type d'entrée
@@ -614,7 +671,7 @@ public class TreeParser {
    * Recherche un token dans un arbre et ses branches, selon divers modes.
    *
    */
-  public boolean find(  CommonTree block, String token, int mode) {
+  public boolean find(CommonTree block, String token, int mode) {
 
     int nbChildren = block.getChildCount();
 
@@ -747,7 +804,7 @@ public class TreeParser {
    * Parse les expressions arithmétiques et logiques, effectue les contrôles sémantiques sur les idf si présents.
    * Renvoie le type de l'expression (STRING, INT, OBJ), permettant le controle de type dans explorer()->AFFECT
    */
-  public String calculator(CommonTree expr, NodeTDS node) throws Exception {
+  public String calculator(CommonTree expr, NodeTDS node) throws MismatchTypeException, NoSuchIdfException {
 
     LinkedList infos;
     String nodename = expr.getText();
@@ -808,6 +865,24 @@ public class TreeParser {
     }*/
 
     return type;
+  }
+
+
+  /*
+   * Cherche un noeud dans les parents d'un arbre (AST)
+   * Retourne le premier sous arbre dont le root est ce noeud
+   */
+  public CommonTree searchParent(CommonTree tree, String target) throws NoSuchNodeException {
+
+    while (!tree.getParent().getText().equals(target)) {
+      if (tree.getParent().getText().equals("PROGRAM")){
+        throw new NoSuchNodeException();
+      } else {
+        tree = (CommonTree) tree.getParent();
+      }
+    }
+    return (CommonTree) tree.getParent();
+
   }
 
 

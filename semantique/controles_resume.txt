@@ -20,6 +20,7 @@ Gauthier :
 4 - (Erreur) Vérifie qu'une méthode appellée existe dans l'arborescence des TDS parentes. (implicit declaration of function)
 
 Laure :
+1 - (Erreur) 'this' et 'super' doivent être appelés dans des classes et pas ailleurs, et super doit etre appelée dnas une classe fille.
 
 Nicolas :
 
@@ -53,7 +54,7 @@ A FAIRE :
 - (Erreur) Dans une classe, un symbole ne peut désigner à la fois un argument ou un attribut, et une methode.
 - (Warning) Variable set but not used
 - (Warning) Instruction inatteignable (après un return) (may never be reached)
-- (Erreur) 'this' et 'super' doivent être appelés dans des classes et pas ailleurs, et super doit etre appelée dnas une classe fille.
+
 
 - (Prendre en compte) Un objet peut être initialisé à nil (<=> null), celà revient à mettre null en java, mais ne déclenche pas le Warning 1-Guillaume
 - (Prendre en compte) Dans les contrôles de typage, considérer la notion de sous-types !
