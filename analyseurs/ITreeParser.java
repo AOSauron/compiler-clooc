@@ -1,4 +1,9 @@
-
+import org.antlr.runtime.tree.*;
+import java.util.LinkedList;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.HashMap;
+import java.util.Iterator;
 
 /*
  * Interface du parseur d'AST. Regroupe les principales méthodes et leur description
@@ -96,7 +101,7 @@
    /*
     * Test si l'arbre exploré peut être parsé en int immédiatement.
     */
-  public Boolean isCalulableInt(CommonTree tocalc, HashMap<String,LinkedList> table);
+   public Boolean isCalulableInt(CommonTree tocalc, HashMap<String,LinkedList> table);
 
 
  }

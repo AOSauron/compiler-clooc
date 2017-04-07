@@ -977,9 +977,25 @@ public String findType(CommonTree tree, NodeTDS node) throws NoSuchIdfException 
     throw new NoSuchIdfException(); // Cas où la méthode n'existe pas dans la classe demandée
   }
 
-
+  /*
+   * Check si le type du symbole passé en paramètre correspond au type voulu (typetocheck)
+   *
+   */
   public void checkType(NodeTDS node, String symbol, String typetocheck) throws MismatchTypeException {
 
+    HashMap<String,LinkedList> table = node.getTable();
+    LinkedList<LinkedList> infos = null;
+    String type = null;
+
+    // Récup les infos
+    infos = table.get(symbol);
+    type = infos.get(0); // Le type est toujours à cet emplacement normalement.
+
+    // Verification :
+    if (!type.equals(typetocheck)) {
+      throw new MismatchTypeException();
+    }
+    else return;
   }
 
   /*
