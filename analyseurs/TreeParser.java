@@ -522,6 +522,11 @@ public class TreeParser implements ITreeParser {
       child.setTable(soustable);
       node.addChild(child);
 
+      // AJOUT PREALABLE POUR LES NEW CLASS INTERNES
+      infos.add("CLASS"); // Type d'entrée
+      infos.add(classinher); // Vide si pas d'inherit
+      table.put(classname,infos);
+
       // Remplie la sous-TDS en explorant le corps de la classe s'il est non vide
       if (nbchlidofblock > 0) {
         explorer((CommonTree) block, child);
@@ -531,11 +536,6 @@ public class TreeParser implements ITreeParser {
       else {
         if (warn) System.out.println("ligne " + tree.getLine() + " : Warning : la classe " + classname + " est vide.");
       }
-
-      infos.add("CLASS"); // Type d'entrée
-      infos.add(classinher); // Vide si pas d'inherit
-
-      table.put(classname,infos);
 
       return;
     }
@@ -865,20 +865,24 @@ public class TreeParser implements ITreeParser {
     }*/
 
     //retour do
-    
-    /*if (nodename.equals("METHODCALLING")) {
+
+    if (nodename.equals("METHODCALLING")) {
       CommonTree metName;
       metName = (CommonTree) tree.getChild(0);
-      metNameStr = metName.getText();
-      NodeTDS methodNode = findSymbol(node,metNameStr);
-      methodNode = (NodeTDS) methodNode.getParent();
-      if(!methodNode.getChild(1).getText().equals("INT") && !methodNode.getChild(1).getText().equals("STRING") && !methodNode.getChild(2).getText().equals("INT") && !methodNode.getChild(2).getText().equals("STRING")) {
+      String metNameStr = metName.getText();
+      String className = findType(metName, node);
+      NodeTDS classNode = root.getChild(className).getTable();
+      NodeTDS methodNode = classNode.get(metNameStr);
+      String returnType = methodNode.get(2);
+      if(!returnType.equals("void"))) {
         if(!metName.getParent().getParent().getText().equals("DO")) {
           nbError++;
           System.err.println("methode sans type de retour pas appelée avec DO");
         }
       }
-      */
+    }
+
+
 
     /*
      * ANONYMOUSBLOCK
@@ -1136,14 +1140,14 @@ public String findType(CommonTree tree, NodeTDS node) throws NoSuchIdfException 
      * THIS
      */
     if (nodename.equals("THIS")) {
-
+      return "CLASS";
     }
 
     /*
      * SUPER
      */
     if (nodename.equals("SUPER")) {
-
+      return "CLASS";
     }
 
     /*
