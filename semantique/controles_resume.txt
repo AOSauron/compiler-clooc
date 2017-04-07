@@ -42,8 +42,6 @@ A FAIRE :
 
 - (Erreur) Vérifie qu'une méthode appellée existe dans l'arborescence des TDS parentes. (implicit declaration of function)
 - (Erreur) Vérifie le type des arguments passés à une méthode.
-- (Erreur) Vérifier le type des arguments de write
-- (Erreur) Vérifier le type des arguments de read
 - (Warning) Lance un warning si une variable/methode redéfinit un symbole dans un contexte plus profond.
 - (Erreur) Seuls les INT sont autorisés dans les opérations arithmétiques.
 - (Erreur) Contrôle de type sur l'incrément, et les bornes d'une boucle for (il faut : INT)
