@@ -91,6 +91,11 @@ var ind : string;
 
 for ind in ent..entier do
   variable := new MyClass;
+  {
+    var mytest : int;
+    mytest := 4;
+    write mytest;
+  }
 end
 
 for i in ent..entier do

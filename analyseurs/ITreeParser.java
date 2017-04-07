@@ -45,12 +45,12 @@ import java.util.Iterator;
    public NodeTDS getTDS();
 
    /*
-    * Explore l'arbre sur chaque noeud et effectue quelques contrôles sémantiques.
+    * Explore l'arbre sur chaque noeud et effectue quelques contrôles sémantiques. Explorateur léger
     */
    public void explorerspec(CommonTree tree);
 
    /*
-    * Explorateur récursif de sous-arbre. Effectue des contrôles sémantiques !
+    * Explorateur récursif de sous-arbre. Effectue des contrôles sémantiques ! Explorateur lourd
     * Range les données dans la TDS du node passé en paramètre.
     */
    public void explorer(CommonTree tree, NodeTDS node);

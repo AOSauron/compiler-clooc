@@ -195,7 +195,6 @@ public class TreeParser implements ITreeParser {
     if (nodename.equals("VARDEC")) {
 
       LinkedList infos = new LinkedList();
-      //NodeTDS nodefound = null;
       String type = null;
 
       // CONTROLE SEMANTIQUE : Vérifie qu'une variable ne redéfinit pas un argument , une méthode ou une autre variable
@@ -208,11 +207,12 @@ public class TreeParser implements ITreeParser {
           nbError++;
         }
       } catch(NoSuchIdfException e) {
-
+        // On continue, c'est ce que l'on veut.
       }
 
-      infos.add(tree.getChild(1));
-      infos.add(null);
+      infos.add("VAR");             // Type d'entité
+      infos.add(tree.getChild(1));  // Type statique de l'objet
+      infos.add(null);              // Valeur
 
       table.put(tree.getChild(0).getText(),infos);
 
@@ -445,7 +445,6 @@ public class TreeParser implements ITreeParser {
       return;
     }
 
-
     /*
      * CLASS
      */
@@ -638,6 +637,22 @@ public class TreeParser implements ITreeParser {
       LinkedList infos = new LinkedList();
       HashMap<String,LinkedList> soustable = new HashMap<String,LinkedList>();
       NodeTDS child = new NodeTDS(node);
+      LinkedList argtypes = new LinkedList();
+      int size = args.size();
+
+      // Création du tableau de types des args pour la TDS mère.
+      for (int i = 0; i < size; i++) {
+        argtypes.add(((LinkedList)args.get(i)).get(1));
+      }
+
+      // Ajout de chaque arguement au début de la TDS fille (méthode)
+      for (int i = 0; i < size; i++) {
+        LinkedList infoargs = new LinkedList();
+        String argname = (String)((LinkedList)args.get(i)).get(0);
+        infoargs.add("ARG");
+        infoargs.add(argtypes.get(i));
+        soustable.put(argname,infos);
+      }
 
       // Ajouter la sous-TDS à la TDS parente
       child.setId(methodname);
@@ -654,7 +669,7 @@ public class TreeParser implements ITreeParser {
       }
 
       infos.add("METHOD"); // Type d'objet
-      infos.add(args); // Arguements éventuels
+      infos.add(argtypes); // Arguments éventuels (seulement les types)
       infos.add(type); // Type de retour éventuel (void si vide)
 
       table.put(methodname,infos);
@@ -753,6 +768,7 @@ public class TreeParser implements ITreeParser {
         requiredargs = (LinkedList) classTable.get(tree.getChild(0).getText()).get(1);
         requiredargnum = requiredargs.size();
       } catch (NoSuchIdfException e) {
+        // Normalement on arrive jamais là
       }
 
       if (givenArguments.size() != requiredargnum) {
@@ -780,57 +796,57 @@ public class TreeParser implements ITreeParser {
 
     }
 
-  /*
-   * READ
-   */
-   // CONTROLE SEMANTIQUE : Vérifier le type des arguments de read
-   if (nodename.equals("READ")) {
-     String type = null;
-     CommonTree readNb;
-     readNb = (CommonTree) tree.getChild(0);
-     try {
-       type = calculator((CommonTree) readNb, node);
-       if (!type.equals("INT")) {
-         nbError++;
-         System.err.println("ligne" + tree.getLine() + " : Erreur : L'argument de read n'est pas un entier.");
+    /*
+     * READ
+     */
+     if (nodename.equals("READ")) {
+       // CONTROLE SEMANTIQUE : Vérifier le type des arguments de read
+       String type = null;
+       CommonTree readNb;
+       readNb = (CommonTree) tree.getChild(0);
+       try {
+         type = calculator((CommonTree) readNb, node);
+         if (!type.equals("INT")) {
+           nbError++;
+           System.err.println("ligne" + tree.getLine() + " : Erreur : L'argument de read n'est pas un entier.");
+         }
        }
-     }
-     catch(MismatchTypeException e) {
-        System.err.println("ligne" + tree.getLine() + " : Erreur : Problème de concordance de type dans l'argument de read.");
-        nbError++;
-     }
-     catch(NoSuchIdfException ne) {
-       System.err.println("ligne" + tree.getLine() + " : Erreur : Une variable dans l'argument de read n'a pas été déclarée.");
-       nbError++;
-     }
-     return;
-   }
-
-   /*
-    * WRITE
-    */
-   // CONTROLE SEMANTIQUE : Vérifier le type des arguments de write
-   if (nodename.equals("WRITE")) {
-     String type = null;
-      CommonTree writeValue;
-      writeValue = (CommonTree) tree.getChild(0);
-      try {
-        type = calculator((CommonTree) writeValue, node);
-        if (!type.equals("STRING") && !type.equals("INT")) {
+       catch(MismatchTypeException e) {
+          System.err.println("ligne" + tree.getLine() + " : Erreur : Problème de concordance de type dans l'argument de read.");
           nbError++;
-          System.err.println("ligne" + tree.getLine() + " : Erreur : L'argument de write n'est pas un entier ou une chaîne de caractères ");
+       }
+       catch(NoSuchIdfException ne) {
+         System.err.println("ligne" + tree.getLine() + " : Erreur : Une variable dans l'argument de read n'a pas été déclarée.");
+         nbError++;
+       }
+       return;
+     }
+
+     /*
+      * WRITE
+      */
+     if (nodename.equals("WRITE")) {
+        // CONTROLE SEMANTIQUE : Vérifier le type des arguments de write
+        String type = null;
+        CommonTree writeValue;
+        writeValue = (CommonTree) tree.getChild(0);
+        try {
+          type = calculator((CommonTree) writeValue, node);
+          if (!type.equals("STRING") && !type.equals("INT")) {
+            nbError++;
+            System.err.println("ligne" + tree.getLine() + " : Erreur : L'argument de write n'est pas un entier ou une chaîne de caractères ");
+          }
         }
-      }
-      catch(MismatchTypeException e) {
-        nbError++;
-        System.err.println("ligne" + tree.getLine() + " : Erreur : Problème de concordance de type dans l'argument de write.");
-      }
-      catch(NoSuchIdfException ne) {
-        nbError++;
-        System.err.println("ligne" + tree.getLine() + " : Erreur : Une variable dans l'argument de write n'a pas été déclarée.");
-      }
-      return;
-   }
+        catch(MismatchTypeException e) {
+          nbError++;
+          System.err.println("ligne" + tree.getLine() + " : Erreur : Problème de concordance de type dans l'argument de write.");
+        }
+        catch(NoSuchIdfException ne) {
+          nbError++;
+          System.err.println("ligne" + tree.getLine() + " : Erreur : Une variable dans l'argument de write n'a pas été déclarée.");
+        }
+        return;
+     }
 
    /*
     * RETURN
@@ -1140,8 +1156,7 @@ public String findType(CommonTree tree, NodeTDS node) throws NoSuchIdfException 
      * THIS
      */
     if (nodename.equals("THIS")) {
-
-      varname = expr.getChild(0).getChild(0);
+      varname = expr.getChild(0).getChild(0).getText();
 
       try {
         temp = findSymbol(node, varname);
@@ -1158,7 +1173,7 @@ public String findType(CommonTree tree, NodeTDS node) throws NoSuchIdfException 
      * SUPER
      */
     if (nodename.equals("SUPER")) {
-      varname = expr.getChild(0).getChild(0);
+      varname = expr.getChild(0).getChild(0).getText();
 
       try {
         temp = findSymbol(node, varname);
