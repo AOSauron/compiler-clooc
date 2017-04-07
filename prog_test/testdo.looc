@@ -1,0 +1,112 @@
+class Animal = (
+
+	var regne : string;
+	var embranchement : string;
+	var classe : string;
+	var ordre : string;
+	var famille : string;
+	var genre : string;
+	var espece : string;
+	var population : int;
+
+	method getRegne() : string
+	{
+		return(this.regne());
+	}
+
+	method getEmbranchement() : string
+	{
+		return(this.embranchement());
+	}
+
+	method getClasse() : string
+	{
+		return(this.classe());
+	}
+
+	method getOrdre() : string
+	{
+		return(this.ordre());
+	}
+
+	method getFamille() : string
+	{
+		return(this.famille());
+	}
+
+	method getGenre() : string
+	{
+		return(this.genre());
+	}
+
+	method getEspece() : string
+	{
+		return(this.espece());
+	}
+
+	method getPopulation() : int
+	{
+		return(this.population());
+	}
+
+	method setRegne(reg : string)
+	{
+		regne := reg;
+	}
+
+	method setEmbranchement(emb : string)
+	{
+		embranchement := emb;
+	}
+
+	method setClasse(clas : string)
+	{
+		classe := clas;
+	}
+
+	method setOrdre(ord : string)
+	{
+		ordre := ord;
+	}
+
+	method setFamille(fam : string)
+	{
+		famille := fam;
+	}
+
+	method setGenre(gen : string)
+	{
+		genre := gen;
+	}
+
+	method setEspece(esp : string)
+	{
+		espcece := esp;
+	}
+
+	method setPopulation(pop : int)
+	{
+		population := pop;
+	}
+
+)
+
+var chien : Animal;
+
+do chien.setPopulation(525000000);
+chien.setRegne("Animalia");
+do chien.setEmbranchement("Chordata");
+chien.setClasse("Mammalia");
+do chien.setOrdre("Carnivora");
+chien.setFamille("Canidae");
+do chien.setGenre("Canis");
+chien.setEspece("Canis lupus");
+
+do chien.getPopulation();
+do chien.getRegne();
+do chien.getEmbranchement();
+do chien.getClasse();
+do chien.getOrdre();
+do chien.getFamille();
+do chien.getGenre();
+do chien.getEspece();

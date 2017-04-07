@@ -865,19 +865,24 @@ public class TreeParser implements ITreeParser {
     }*/
 
     //retour do
+
     /*if (nodename.equals("METHODCALLING")) {
       CommonTree metName;
       metName = (CommonTree) tree.getChild(0);
-      metNameStr = metName.getText();
-      NodeTDS methodNode = findSymbol(node,metNameStr);
-      methodNode = (NodeTDS) methodNode.getParent();
-      if(!methodNode.getChild(1).getText().equals("INT") && !methodNode.getChild(1).getText().equals("STRING") && !methodNode.getChild(2).getText().equals("INT") && !methodNode.getChild(2).getText().equals("STRING")) {
+      String metNameStr = metName.getText();
+      String className = findType(metName, node);
+      NodeTDS classNode = root.getChild(className).getTable();
+      NodeTDS methodNode = classNode.get(metNameStr);
+      String returnType = methodNode.get(2);
+      if(!returnType.equals("void"))) {
         if(!metName.getParent().getParent().getText().equals("DO")) {
           nbError++;
           System.err.println("methode sans type de retour pas appelée avec DO");
         }
       }
-      */
+    }
+
+
 
     /*
      * ANONYMOUSBLOCK
@@ -1135,6 +1140,7 @@ public String findType(CommonTree tree, NodeTDS node) throws NoSuchIdfException 
      * THIS
      */
     if (nodename.equals("THIS")) {
+
       varname = expr.getChild(0).getChild(0);
 
       try {
@@ -1151,7 +1157,7 @@ public String findType(CommonTree tree, NodeTDS node) throws NoSuchIdfException 
     /*
      * SUPER
      */
-    if (nodename.equals("SUPER"))
+    if (nodename.equals("SUPER")) {
       varname = expr.getChild(0).getChild(0);
 
       try {
