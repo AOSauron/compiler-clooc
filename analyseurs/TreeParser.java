@@ -206,7 +206,6 @@ public class TreeParser implements ITreeParser {
         if (!type.equals("CLASS")) {
           System.err.println("ligne "  + tree.getLine() + " : Erreur : Le nom de " + tree.getChild(0) + " redéfinit une méthode ou une variable. ");
           nbError++;
-          return;
         }
       } catch(NoSuchIdfException e) {
 
@@ -908,7 +907,7 @@ public class TreeParser implements ITreeParser {
       }
       // CONTROLE SÉMANTIQUE : On déclenche un warning si une classe vide est déclarée.
       else {
-        if (warn) System.out.println("ligne " + tree.getLine() + " : Warning : Le bloc anonyme est vide.");
+        if (warn) System.out.println("ligne " + tree.getLine() + " : Warning : Le bloc anonyme " + anoname + " est vide.");
       }
 
       infos.add("ANOBLOCK"); // Type d'entrée
@@ -1174,14 +1173,9 @@ public String findType(CommonTree tree, NodeTDS node) throws NoSuchIdfException 
       return "INT";
     } catch (Exception e) {
       /*
-       * VAR
+       * INT_VAR
        */
-      try  {
-        temp = findSymbol(node, nodename);
-      }
-      catch (NoSuchIdfException e) {
-        throw new NoSuchIdfException();
-      }
+      temp = findSymbol(node, nodename);
       temptable = temp.getTable();
       try {
         type = ((CommonTree)((LinkedList)temptable.get(nodename)).get(0)).getText();
