@@ -418,13 +418,13 @@ public class TreeParser {
         System.err.println("ligne "  + tree.getLine() + " : Erreur : Une variable dans l'expression du membre droit de l'affectation n'est pas déclarée.");
         nbError++;
       }
-      if (isDeclared) {
+      /*if (isDeclared) {
         // CONTROLE SEMANTIQUE : VERIFIE LA COHÉRENCE DES TYPES DANS L'AFFECTATION
         if (!typeleft.equals(typeright)) {
           System.err.println("ligne "  + tree.getLine() + " : Erreur : les types des membres de l'affectation sont incohérents.");
           nbError++;
         }
-      }
+      }*/
 
       // On regarde s'il y a des appels de méthodes dans l'affectation, et si oui, on explore
       for (int i=0; i<tree.getChildCount(); i++) {
@@ -670,9 +670,7 @@ public class TreeParser {
       } else {
         // CONTROLE SÉMANTIQUE : ABSENCE DE VALEUR RENVOYÉE POUR UNE MÉTHODE DE TYPE VOID
         try {
-          System.out.println("pppppppppppppppppppp");
           CommonTree returnTree = searchChild(block, "RETURN");
-          System.out.println("aaaaaaaaaaa: " +returnTree.getText());
           if (returnTree.getChildCount() > 0) {
             System.err.println("ligne "  + tree.getLine() + " : Erreur : La méthode " + methodname + " est de type void, elle n'est pas censée retourner quoique ce soit.");
             nbError++;
@@ -837,7 +835,7 @@ public class TreeParser {
     * RETURN
     */
    // CONTROLE SEMANTIQUE : Vérifie la cohérence des types sur un return
-   if (nodename.equals("RETURN")) {
+   /*if (nodename.equals("RETURN")) {
      String type;
       CommonTree returnExp;
       returnExp = (CommonTree) tree.getChild(0);
@@ -863,7 +861,7 @@ public class TreeParser {
         System.err.println("ligne" + tree.getLine() + " : Erreur : Une variable de l'expression de return n'a pas été déclarée.");
       }
       return;
-    }
+    }*/
 
 
     /*
@@ -1029,7 +1027,7 @@ public String findType(CommonTree tree, NodeTDS node) throws NoSuchIdfException 
 
     // Récup les infos
     infos = table.get(symbol);
-    type = (String) infos.get(0); // Le type est toujours à cet emplacement normalement.
+    type = ((CommonTree)infos.get(0)).getText(); // Le type est toujours à cet emplacement normalement.
 
     // Verification :
     if (!type.equals(typetocheck)) {
@@ -1170,15 +1168,12 @@ public String findType(CommonTree tree, NodeTDS node) throws NoSuchIdfException 
     CommonTree currentTree = tree;
     for (int i=0; i<tree.getChildCount(); i++) {
 
-      System.out.println("NODE: "+ currentTree.getText());
       for (int k=0; k<currentTree.getChildCount(); k++) {
         if (currentTree.getChild(k).getText().equals(target)) {
-          System.out.println("RETURN");
           return (CommonTree)currentTree.getChild(k);
         }
         for (int j=0; j<currentTree.getChild(k).getChildCount(); j++) {
           if (currentTree.getChild(k).getChild(j).getText().equals(target)) {
-            System.out.println("RETURN");
             return (CommonTree)currentTree.getChild(k).getChild(j);
           }
         }

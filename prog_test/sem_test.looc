@@ -49,7 +49,7 @@ class MyClassic inherit MyClass =
   }
 
   method myMethHerit() {
-  
+
   }
 )
 
@@ -59,8 +59,12 @@ class MyClass = (
 
 var variable : MyClass;
 
+variable := new Classe;
+
 variable := this.getNb();
 variable := super.getNb();
+
+do variable.getNb();
 
 variable := "gdfgdf";
 variable := (32+1)*variable;
@@ -71,11 +75,17 @@ var ent : int;
 ent := 4;
 var entier : int;
 entier := 1;
-var ind : int;
+var ind : string;
 
 for ind in ent..entier do
   variable := new MyClass;
 end
+
+write "Salut";
+write variable;
+
+read variable;
+
 
 /*
 do variable.myMeth(1);
