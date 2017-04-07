@@ -21,6 +21,7 @@ class Item = (
 
   method getNb() : int {
     return (current);
+    do this.nextGen(0,0);
   }
 
   method dosomething(x : int) : Item {
@@ -34,9 +35,9 @@ var item : Item;
 var nb : int;
 item := new Fibonacci;
 
-do item.dosomething(13).nextGen(23,67);
+do item.dosomething(13).nextGen(23);
 
-do item.init(15, "initialiser");
+do item.init(15, "initialiser","po");
 
 do item.get();
 

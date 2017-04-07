@@ -1,19 +1,25 @@
 class MyClass = (
 
   var test : int;
+  var myMeth3 : int;
 
   method myMeth() {
     var testnop : int;
     test := 3;
   }
 
-  method myMeth2(a : int) {
+  method myMeth2(a : int, a : int) {
     testnop := 4;
     return();
   }
 
   method myMeth3(a : int, b:int) {
+    test := super.getNb();
     return();
+  }
+
+  method myMeth4 (a : int){
+  
   }
 
   /*method myMeth() {
@@ -25,6 +31,7 @@ class MyClassic inherit MyClass =
 (
   method myMethHerit() {
     test := 4;
+    test := super.getNb();
     /*do this.myMeth();*/
   }
 )
@@ -35,17 +42,21 @@ class MyClass = (
 
 var variable : MyClass;
 
+variable := this.getNb();
+variable := super.getNb();
+
 variable := "gdfgdf";
 variable := (32+1)*variable;
 /*variable := 6+9*(this.getNb());*/
 
+var variable : int;
 var ent : int;
 ent := 4;
 var entier : int;
 entier := 1;
 var ind : int;
 
-for ind in ent...entier do
+for ind in ent..entier do
   variable := new MyClass;
 end
 
