@@ -286,6 +286,7 @@ public class TreeParser {
       catch (NoSuchIdfException e) {
         System.err.println("ligne "  + tree.getLine() + " : Erreur : Référence indéfinie vers la variable " + index + " (indice de la boucle for).");
         nbError++;
+        return; // On returne pour éviter les vérif ultérieures que demande le type de l'index
       }
       // CONTROLE SEMANTIQUE : Vérifie que l'index est un INT
       try {
@@ -1102,6 +1103,16 @@ public String findType(CommonTree tree, NodeTDS node) throws NoSuchIdfException 
      * NEW
      */
     if (nodename.equals("NEW")) {
+      varname = expr.getChild(0).getText();
+
+      // CONTROLE SEMANTIQUE : Verifie que la classe a été définie auparavant
+      temptable = root.getTable();
+      try {
+        type = (String)((LinkedList)temptable.get(varname)).get(0);
+      }
+      catch (NullPointerException ne) {
+        throw new NoSuchIdfException();
+      }
 
     }
 
