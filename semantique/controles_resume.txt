@@ -32,13 +32,14 @@ Laure :
 Nicolas :
 1 - (Erreur) Vérifier le type des arguments de write
 2 - (Erreur) Vérifier le type des arguments de read
+3 - (Erreur) Vérifie la cohérence des types sur un return
 
 
 
 
 A FAIRE :
 
-- (Erreur) Vérifie la cohérence des types sur un return.
+
 - (Erreur) Vérifie qu'une méthode appellée existe dans l'arborescence des TDS parentes. (implicit declaration of function)
 - (Erreur) Vérifie le type des arguments passés à une méthode.
 - (Erreur) Vérifier le type des arguments de write

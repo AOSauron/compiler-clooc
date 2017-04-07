@@ -40,6 +40,11 @@
    public NodeTDS getTDS();
 
    /*
+    * Explore l'arbre sur chaque noeud et effectue quelques contrôles sémantiques.
+    */
+   public void explorerspec();
+
+   /*
     * Explorateur récursif de sous-arbre. Effectue des contrôles sémantiques !
     * Range les données dans la TDS du node passé en paramètre.
     */
@@ -76,6 +81,12 @@
     * Renvoie le type de l'expression (STRING, INT, OBJ), permettant le controle de type dans explorer()->AFFECT
     */
    public String calculator(CommonTree expr, NodeTDS node) throws NoSuchIdfException, MismatchTypeException;
+
+   /*
+    * Cherche un noeud dans les parents d'un arbre (AST)
+    * Retourne le premier sous arbre dont le root est ce noeud
+    */
+   public CommonTree searchParent(CommonTree tree, String target) throws NoSuchNodeException;
 
    /*
     * Parse les sous-arbres METHODARGS et retourne une LinkedList d'arguements.
