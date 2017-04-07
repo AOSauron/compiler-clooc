@@ -611,7 +611,7 @@ public class TreeParser {
     // CONTROLE SEMANTIQUE : Vérifier le type des arguments de read
      if (nodename.equals("READ")) {
        CommonTree readNb;
-       readNb = (CommonTree) tree.getChild(1);
+       readNb = (CommonTree) tree.getChild(0);
        type = calculator((CommonTree) readNb, node);
        try {
          if (!type.equals("INT")) {
@@ -623,7 +623,7 @@ public class TreeParser {
      // CONTROLE SEMANTIQUE : Vérifier le type des arguments de write
      if (nodename.equals("WRITE")) {
         CommonTree writeValue;
-        writeValue = (CommonTree) tree.getChild(1);
+        writeValue = (CommonTree) tree.getChild(0);
         type = calculator((CommonTree) writeValue, node);
         try {
           if (!type.equals("STRING") && !type.equals("INT")) {
