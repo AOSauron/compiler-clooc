@@ -6,11 +6,12 @@ class MyClass = (
   method myMeth() {
     var testnop : int;
     test := 3;
+    return();
   }
 
   method myMeth2(a : int, a : int) {
     testnop := 4;
-    return();
+    return(9);
   }
 
   method myMeth3(a : int, b:int) {
@@ -18,13 +19,21 @@ class MyClass = (
     return();
   }
 
+  method myMeth6() : MyClass {
+    var a : MyClass;
+    a := new MyClass;
+    return(a);
+  }
+
   method myMeth4 (a : int){
-  
+    do this.myMeth6().myMeth3(a,b);
+    do this.myMeth6(8).myMeth3(a,9);
   }
 
   /*method myMeth() {
     return(5);
   }*/
+
 )
 
 class MyClassic inherit MyClass =

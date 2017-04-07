@@ -281,6 +281,7 @@ public class TreeParser {
       try {
         nodeindex = findSymbol(node, index);
       }
+      
       // CONTROLE SEMANTIQUE : Vérifie que l'indice a été déclaré au préalable
       catch (NoSuchIdfException e) {
         System.err.println("ligne "  + tree.getLine() + " : Erreur : Référence indéfinie vers la variable " + index + " (indice de la boucle for).");
@@ -668,9 +669,16 @@ public class TreeParser {
 
       } else {
         // CONTROLE SÉMANTIQUE : ABSENCE DE VALEUR RENVOYÉE POUR UNE MÉTHODE DE TYPE VOID
-        if (!(find(block, "RETURN", 1))) {
-          System.err.println("ligne "  + tree.getLine() + " : Erreur : La méthode " + methodname + " est de type void, elle n'est pas censée retourner quoique ce soit.");
-          nbError++;
+        try {
+          System.out.println("pppppppppppppppppppp");
+          CommonTree returnTree = searchChild(block, "RETURN");
+          System.out.println("aaaaaaaaaaa: " +returnTree.getText());
+          if (returnTree.getChildCount() > 0) {
+            System.err.println("ligne "  + tree.getLine() + " : Erreur : La méthode " + methodname + " est de type void, elle n'est pas censée retourner quoique ce soit.");
+            nbError++;
+          }
+        } catch (NoSuchNodeException e) {
+          // Cas où la méthode de tupe void ne retourne rien
         }
       }
 
@@ -780,11 +788,15 @@ public class TreeParser {
    if (nodename.equals("READ")) {
      CommonTree readNb;
      readNb = (CommonTree) tree.getChild(0);
-     type = calculator((CommonTree) readNb, node);
      try {
+       type = calculator((CommonTree) readNb, node);
        if (!type.equals("INT")) {
-         System.err.println("ligne "  + tree.getLine() + " : Erreur : L'argument de read n'est pas un entier ");
          nbError++;
+         System.err.println("ligne" + tree.getLine() + " : Erreur : L'argument de read n'est pas un entier ou une chaîne de caractères ");
+       }
+     }
+     catch(MismatchTypeException e) {
+        System.err.println("ligne" + tree.getLine() + " : Erreur : L'argument de read n'est pas un entier ou une chaîne de caractères ");
      }
    }
 
@@ -795,12 +807,15 @@ public class TreeParser {
    if (nodename.equals("WRITE")) {
       CommonTree writeValue;
       writeValue = (CommonTree) tree.getChild(0);
-      type = calculator((CommonTree) writeValue, node);
       try {
+        type = calculator((CommonTree) writeValue, node);
         if (!type.equals("STRING") && !type.equals("INT")) {
-          System.err.println("ligne" + tree.getLine() + " : Erreur : L'argument de read n'est pas un entier ou une chaîne de caractères ");
           nbError++;
+          System.err.println("ligne" + tree.getLine() + " : Erreur : L'argument de read n'est pas un entier ou une chaîne de caractères ");
         }
+      }
+      catch(MismatchTypeException e) {
+        System.err.println("ligne" + tree.getLine() + " : Erreur : L'argument de read n'est pas un entier ou une chaîne de caractères ");
       }
    }
 
@@ -811,7 +826,6 @@ public class TreeParser {
    if (nodename.equals("RETURN")) {
       CommonTree returnExp;
       returnExp = (CommonTree) tree.getChild(0);
-      type = calculator((CommonTree) returnExp, node);
       CommonTree returnType;
       returnType = tree.getParent();
       while (!returnType.getText().equals("METHODDEC")) {
@@ -819,9 +833,14 @@ public class TreeParser {
       }
       returnType = returnType.getChild(1);
       try {
+        type = calculator((CommonTree) returnExp, node);
         if(!type.equals(returnType.getText())) {
+          nbError++;
           System.err.println("ligne" + tree.getLine() + " : Erreur : Le type de retour n'est pas celui de la méthode ");
         }
+      }
+      catch(MismatchTypeException e) {
+        System.err.println("ligne" + tree.getLine() + " : Erreur : Le type de retour n'est pas celui de la méthode ");
       }
     }
 
@@ -1117,6 +1136,34 @@ public String findType(CommonTree tree, NodeTDS node) throws NoSuchIdfException 
       }
     }
     return (CommonTree) tree.getParent();
+
+  }
+
+
+  /*
+   * Cherche un noeud dans les enfants d'un arbre (AST)
+   * Retourne le premier sous arbre dont le root est ce noeud
+   */
+  public CommonTree searchChild(CommonTree tree, String target) throws NoSuchNodeException {
+
+    CommonTree currentTree = tree;
+    for (int i=0; i<tree.getChildCount(); i++) {
+
+      System.out.println("NODE: "+ currentTree.getText());
+      for (int k=0; k<currentTree.getChildCount(); k++) {
+        if (currentTree.getChild(k).getText().equals(target)) {
+          System.out.println("RETURN");
+          return (CommonTree)currentTree.getChild(k);
+        }
+        for (int j=0; j<currentTree.getChild(k).getChildCount(); j++) {
+          if (currentTree.getChild(k).getChild(j).getText().equals(target)) {
+            System.out.println("RETURN");
+            return (CommonTree)currentTree.getChild(k).getChild(j);
+          }
+        }
+      }
+    }
+    throw new NoSuchNodeException();
 
   }
 
