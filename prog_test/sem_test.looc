@@ -34,6 +34,10 @@ class MyClass = (
     return(5);
   }*/
 
+  method retourneRien() : int {
+    var a : int;
+  }
+
 )
 
 class MyClassic inherit MyClass =
@@ -42,6 +46,10 @@ class MyClassic inherit MyClass =
     test := 4;
     test := super.getNb();
     /*do this.myMeth();*/
+  }
+
+  method myMethHerit() {
+  
   }
 )
 
