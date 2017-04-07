@@ -891,25 +891,8 @@ public class TreeParser implements ITreeParser {
       return;
     }*/
 
-    //retour do
 
-    /*if (nodename.equals("METHODCALLING")) {
-      CommonTree metName;
-      metName = (CommonTree) tree.getChild(0);
-      String metNameStr = metName.getText();
-      String className = findType(metName, node);
-      NodeTDS classNode = root.getChild(className).getTable();
-      NodeTDS methodNode = classNode.get(metNameStr);
-      String returnType = methodNode.get(2);
-      if(!returnType.equals("void"))) {
-        if(!metName.getParent().getParent().getText().equals("DO")) {
-          nbError++;
-          System.err.println("methode sans type de retour pas appelée avec DO");
-        }
-      }
-    }
-
-
+    // CONTROLE SEMANTIQUE : (Warning) Variable set but not used
 
     /*
      * ANONYMOUSBLOCK
