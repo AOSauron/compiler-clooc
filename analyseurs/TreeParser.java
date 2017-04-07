@@ -281,7 +281,7 @@ public class TreeParser {
       try {
         nodeindex = findSymbol(node, index);
       }
-      
+
       // CONTROLE SEMANTIQUE : Vérifie que l'indice a été déclaré au préalable
       catch (NoSuchIdfException e) {
         System.err.println("ligne "  + tree.getLine() + " : Erreur : Référence indéfinie vers la variable " + index + " (indice de la boucle for).");
@@ -786,18 +786,25 @@ public class TreeParser {
    */
    // CONTROLE SEMANTIQUE : Vérifier le type des arguments de read
    if (nodename.equals("READ")) {
+     String type = null;
      CommonTree readNb;
      readNb = (CommonTree) tree.getChild(0);
      try {
        type = calculator((CommonTree) readNb, node);
        if (!type.equals("INT")) {
          nbError++;
-         System.err.println("ligne" + tree.getLine() + " : Erreur : L'argument de read n'est pas un entier ou une chaîne de caractères ");
+         System.err.println("ligne" + tree.getLine() + " : Erreur : L'argument de read n'est pas un entier.");
        }
      }
      catch(MismatchTypeException e) {
-        System.err.println("ligne" + tree.getLine() + " : Erreur : L'argument de read n'est pas un entier ou une chaîne de caractères ");
+        System.err.println("ligne" + tree.getLine() + " : Erreur : Problème de concordance de type dans l'argument de read.");
+        nbError++;
      }
+     catch(NoSuchIdfException ne) {
+       System.err.println("ligne" + tree.getLine() + " : Erreur : Une variable dans l'argument de read n'a pas été déclarée.");
+       nbError++;
+     }
+     return;
    }
 
    /*
@@ -805,18 +812,25 @@ public class TreeParser {
     */
    // CONTROLE SEMANTIQUE : Vérifier le type des arguments de write
    if (nodename.equals("WRITE")) {
+     String type = null;
       CommonTree writeValue;
       writeValue = (CommonTree) tree.getChild(0);
       try {
         type = calculator((CommonTree) writeValue, node);
         if (!type.equals("STRING") && !type.equals("INT")) {
           nbError++;
-          System.err.println("ligne" + tree.getLine() + " : Erreur : L'argument de read n'est pas un entier ou une chaîne de caractères ");
+          System.err.println("ligne" + tree.getLine() + " : Erreur : L'argument de write n'est pas un entier ou une chaîne de caractères ");
         }
       }
       catch(MismatchTypeException e) {
-        System.err.println("ligne" + tree.getLine() + " : Erreur : L'argument de read n'est pas un entier ou une chaîne de caractères ");
+        nbError++;
+        System.err.println("ligne" + tree.getLine() + " : Erreur : Problème de concordance de type dans l'argument de write.");
       }
+      catch(NoSuchIdfException ne) {
+        nbError++;
+        System.err.println("ligne" + tree.getLine() + " : Erreur : Une variable dans l'argument de write n'a pas été déclarée.");
+      }
+      return;
    }
 
    /*
@@ -824,24 +838,31 @@ public class TreeParser {
     */
    // CONTROLE SEMANTIQUE : Vérifie la cohérence des types sur un return
    if (nodename.equals("RETURN")) {
+     String type;
       CommonTree returnExp;
       returnExp = (CommonTree) tree.getChild(0);
       CommonTree returnType;
-      returnType = tree.getParent();
+      returnType = (CommonTree) tree.getParent();
       while (!returnType.getText().equals("METHODDEC")) {
-        returnType = returnType.getParent();
+        returnType = (CommonTree) returnType.getParent();
       }
-      returnType = returnType.getChild(1);
+      returnType = (CommonTree) returnType.getChild(1);
       try {
         type = calculator((CommonTree) returnExp, node);
         if(!type.equals(returnType.getText())) {
           nbError++;
-          System.err.println("ligne" + tree.getLine() + " : Erreur : Le type de retour n'est pas celui de la méthode ");
+          System.err.println("ligne" + tree.getLine() + " : Erreur : Le type de retour n'est pas celui de la méthode. ");
         }
       }
       catch(MismatchTypeException e) {
-        System.err.println("ligne" + tree.getLine() + " : Erreur : Le type de retour n'est pas celui de la méthode ");
+        nbError++;
+        System.err.println("ligne" + tree.getLine() + " : Erreur : Problème de concordance de type dans l'expression du return. ");
       }
+      catch(NoSuchIdfException ne) {
+        nbError++;
+        System.err.println("ligne" + tree.getLine() + " : Erreur : Une variable de l'expression de return n'a pas été déclarée.");
+      }
+      return;
     }
 
 
@@ -1003,12 +1024,12 @@ public String findType(CommonTree tree, NodeTDS node) throws NoSuchIdfException 
   public void checkType(NodeTDS node, String symbol, String typetocheck) throws MismatchTypeException {
 
     HashMap<String,LinkedList> table = node.getTable();
-    LinkedList<LinkedList> infos = null;
+    LinkedList infos = null;
     String type = null;
 
     // Récup les infos
     infos = table.get(symbol);
-    type = infos.get(0); // Le type est toujours à cet emplacement normalement.
+    type = (String) infos.get(0); // Le type est toujours à cet emplacement normalement.
 
     // Verification :
     if (!type.equals(typetocheck)) {
