@@ -864,6 +864,21 @@ public class TreeParser {
       return;
     }*/
 
+    //retour do
+    
+    /*if (nodename.equals("METHODCALLING")) {
+      CommonTree metName;
+      metName = (CommonTree) tree.getChild(0);
+      metNameStr = metName.getText();
+      NodeTDS methodNode = findSymbol(node,metNameStr);
+      methodNode = (NodeTDS) methodNode.getParent();
+      if(!methodNode.getChild(1).getText().equals("INT") && !methodNode.getChild(1).getText().equals("STRING") && !methodNode.getChild(2).getText().equals("INT") && !methodNode.getChild(2).getText().equals("STRING")) {
+        if(!metName.getParent().getParent().getText().equals("DO")) {
+          nbError++;
+          System.err.println("methode sans type de retour pas appelée avec DO");
+        }
+      }
+      */
 
     /*
      * ANONYMOUSBLOCK
