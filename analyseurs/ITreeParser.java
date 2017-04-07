@@ -83,6 +83,12 @@
    public String calculator(CommonTree expr, NodeTDS node) throws NoSuchIdfException, MismatchTypeException;
 
    /*
+    * Cherche un noeud dans les parents d'un arbre (AST)
+    * Retourne le premier sous arbre dont le root est ce noeud
+    */
+   public CommonTree searchParent(CommonTree tree, String target) throws NoSuchNodeException;
+
+   /*
     * Parse les sous-arbres METHODARGS et retourne une LinkedList d'arguements.
     */
    public LinkedList parsemethodargs(CommonTree args);

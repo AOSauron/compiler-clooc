@@ -45,8 +45,8 @@ public class TreeParser {
     root.setTable(tableroot);
     countanoblock = 0;
 
-    explorerspec(ast);
-    explorer(ast, root);
+    explorerspec(ast); // Parcours rapide pour quelques contrôles sémantiques
+    explorer(ast, root); // Parcours lourd, construit TDS
 
   }
 
@@ -141,8 +141,6 @@ public class TreeParser {
         System.err.println("ligne "  + tree.getLine() + " : Erreur : this n'est pas utilisé dans une classe. ");
         nbError++;
       }
-
-      //return;
     }
 
     /*
@@ -176,7 +174,6 @@ public class TreeParser {
         explorerspec((CommonTree) tree.getChild(k));
       }
     }
-
   }
 
   /*
@@ -284,11 +281,6 @@ public class TreeParser {
       try {
         nodeindex = findSymbol(node, index);
       }
-
-      // CONTROLE SEMANTIQUE : (Erreur) Vérifier le type des arguments de write
-
-
-
       // CONTROLE SEMANTIQUE : Vérifie que l'indice a été déclaré au préalable
       catch (NoSuchIdfException e) {
         System.err.println("ligne "  + tree.getLine() + " : Erreur : Référence indéfinie vers la variable " + index + " (indice de la boucle for).");
@@ -1056,9 +1048,6 @@ public String findType(CommonTree tree, NodeTDS node) throws NoSuchIdfException 
 
     }
 
-    /*
-     * VAR
-     */
      type = "INT";
   /*  if (nodename.equals("VAR")) {
       // CONTROLE SÉMANTIQUE : Vérifier que la variable a été déclarée.
