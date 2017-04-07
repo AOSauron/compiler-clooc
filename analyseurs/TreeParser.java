@@ -773,6 +773,59 @@ public class TreeParser {
 
     }
 
+  /*
+   * READ
+   */
+   // CONTROLE SEMANTIQUE : Vérifier le type des arguments de read
+   if (nodename.equals("READ")) {
+     CommonTree readNb;
+     readNb = (CommonTree) tree.getChild(0);
+     type = calculator((CommonTree) readNb, node);
+     try {
+       if (!type.equals("INT")) {
+         System.err.println("ligne "  + tree.getLine() + " : Erreur : L'argument de read n'est pas un entier ");
+         nbError++;
+     }
+   }
+
+   /*
+    * WRITE
+    */
+   // CONTROLE SEMANTIQUE : Vérifier le type des arguments de write
+   if (nodename.equals("WRITE")) {
+      CommonTree writeValue;
+      writeValue = (CommonTree) tree.getChild(0);
+      type = calculator((CommonTree) writeValue, node);
+      try {
+        if (!type.equals("STRING") && !type.equals("INT")) {
+          System.err.println("ligne" + tree.getLine() + " : Erreur : L'argument de read n'est pas un entier ou une chaîne de caractères ");
+          nbError++;
+        }
+      }
+   }
+
+   /*
+    * RETURN
+    */
+   // CONTROLE SEMANTIQUE : Vérifie la cohérence des types sur un return
+   if (nodename.equals("RETURN")) {
+      CommonTree returnExp;
+      returnExp = (CommonTree) tree.getChild(0);
+      type = calculator((CommonTree) returnExp, node);
+      CommonTree returnType;
+      returnType = tree.getParent();
+      while (!returnType.getText().equals("METHODDEC")) {
+        returnType = returnType.getParent();
+      }
+      returnType = returnType.getChild(1);
+      try {
+        if(!type.equals(returnType.getText())) {
+          System.err.println("ligne" + tree.getLine() + " : Erreur : Le type de retour n'est pas celui de la méthode ");
+        }
+      }
+    }
+
+
     /*
      * ANONYMOUSBLOCK
      */
@@ -810,63 +863,16 @@ public class TreeParser {
       return;
     }
 
-    //Condition d'arrêt de la récursion + Parcours des autres noeuds
-    if (nbchlid==0) {
-      return;
-    }
-    else {
-      for (int k=0; k<=nbchlid-1; k++) {
-        explorer((CommonTree) tree.getChild(k), node);
-      }
-    }
-
-    // CONTROLE SEMANTIQUE : Vérifier le type des arguments de read
-     if (nodename.equals("READ")) {
-       CommonTree readNb;
-       readNb = (CommonTree) tree.getChild(0);
-       type = calculator((CommonTree) readNb, node);
-       try {
-         if (!type.equals("INT")) {
-           System.err.println("ligne "  + tree.getLine() + " : Erreur : L'argument de read n'est pas un entier ");
-           nbError++;
-       }
-     }
-
-     // CONTROLE SEMANTIQUE : Vérifier le type des arguments de write
-     if (nodename.equals("WRITE")) {
-        CommonTree writeValue;
-        writeValue = (CommonTree) tree.getChild(0);
-        type = calculator((CommonTree) writeValue, node);
-        try {
-          if (!type.equals("STRING") && !type.equals("INT")) {
-            System.err.println("ligne" + tree.getLine() + " : Erreur : L'argument de read n'est pas un entier ou une chaîne de caractères ");
-            nbError++;
-          }
-        }
-     }
-
-
-     // CONTROLE SEMANTIQUE : Vérifie la cohérence des types sur un return
-     if (nodename.equals("RETURN")) {
-        CommonTree returnExp;
-        returnExp = (CommonTree) tree.getChild(0);
-        type = calculator((CommonTree) returnExp, node);
-        CommonTree returnType;
-        returnType = tree.getParent();
-        while (!returnType.getText().equals("METHODDEC")) {
-          returnType = returnType.getParent();
-        }
-        returnType = returnType.getChild(1);
-        try {
-          if(!type.equals(returnType.getText())) {
-            System.err.println("ligne" + tree.getLine() + " : Erreur : Le type de retour n'est pas celui de la méthode ");
-          }
-        }
-
-     }
-
-
+  //Condition d'arrêt de la récursion + Parcours des autres noeuds
+  if (nbchlid==0) {
+    return;
   }
+  else {
+    for (int k=0; k<=nbchlid-1; k++) {
+      explorer((CommonTree) tree.getChild(k), node);
+    }
+  }
+}
 
 
   /*
