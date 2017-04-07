@@ -45,7 +45,6 @@ public class TreeParser implements ITreeParser {
     root.setTable(tableroot);
     countanoblock = 0;
 
-    explorerspec(ast); // Parcours rapide pour quelques contrôles sémantiques
     explorer(ast, root); // Parcours lourd, construit TDS
 
   }
@@ -120,63 +119,6 @@ public class TreeParser implements ITreeParser {
 
 
   /*
-   * Explore l'arbre sur chaque noeud et effectue quelques contrôles sémantiques.
-   *
-   */
-  public void explorerspec(CommonTree tree) {
-
-    int nbchlid = tree.getChildCount();
-    String nodename = tree.getText();
-
-    /*
-     * THIS
-     */
-    if (nodename.equals("THIS")) {
-
-      try {
-        searchParent((CommonTree) tree, "CLASS");
-      }
-      // CONTROLE SEMANTIQUE : Vérifie qu'un this n'est pas appelé en dehors d'une classe
-      catch(NoSuchNodeException e) {
-        System.err.println("ligne "  + tree.getLine() + " : Erreur : this n'est pas utilisé dans une classe. ");
-        nbError++;
-      }
-    }
-
-    /*
-     * SUPER
-     */
-     if (nodename.equals("SUPER")) {
-
-       CommonTree parent;
-
-       try{
-         parent = (CommonTree) searchParent((CommonTree) tree, "CLASS");
-         // CONTROLE SEMANTIQUE : Vérifie qu'un super est appelé seulement dans des classes héritières.
-         if (parent.getChildCount() == 2) {
-           System.err.println("ligne "  + tree.getLine() + " : Erreur : super n'est pas appelé dans une classe fille. ");
-           nbError++;
-         }
-       }
-       // CONTROLE SEMANTIQUE : Vérifie qu'un super n'est pas appelé en dehors d'une classe
-       catch(NoSuchNodeException e) {
-         System.err.println("ligne "  + tree.getLine() + " : Erreur : super n'est pas utilisé dans une classe. ");
-         nbError++;
-       }
-     }
-
-    //Condition d'arrêt de la récursion + Parcours des autres noeuds
-    if (nbchlid==0) {
-      return;
-    }
-    else {
-      for (int k=0; k<=nbchlid-1; k++) {
-        explorerspec((CommonTree) tree.getChild(k));
-      }
-    }
-  }
-
-  /*
    * Explorateur récursif de sous-arbre. Effectue des contrôles sémantiques !
    * Range les données dans la TDS du node passé en paramètre.
    */
@@ -219,7 +161,6 @@ public class TreeParser implements ITreeParser {
       return;
 
     }
-
 
     /*
      * FOR
@@ -931,17 +872,61 @@ public class TreeParser implements ITreeParser {
       return;
     }
 
-  //Condition d'arrêt de la récursion + Parcours des autres noeuds
-  if (nbchlid==0) {
-    return;
-  }
-  else {
-    for (int k=0; k<=nbchlid-1; k++) {
-      explorer((CommonTree) tree.getChild(k), node);
+    //Condition d'arrêt de la récursion + Parcours des autres noeuds
+    if (nbchlid==0) {
+      return;
+    }
+    else {
+      for (int k=0; k<=nbchlid-1; k++) {
+        explorer((CommonTree) tree.getChild(k), node);
+      }
     }
   }
-}
 
+  /*
+   * Gère les contrôles sémantiques sur les mots clés THIS et SUPER : s'ils sont bien dans une classe
+   * et si super est appelée dans une classe fille.
+   */
+  public void controleThisSuper(CommonTree tree) {
+
+    String nodename = tree.getText();
+
+    /*
+     * THIS
+     */
+    if (nodename.equals("THIS")) {
+
+      try {
+        searchParent((CommonTree) tree, "CLASS");
+      }
+      // CONTROLE SEMANTIQUE : Vérifie qu'un this n'est pas appelé en dehors d'une classe
+      catch(NoSuchNodeException e) {
+        System.err.println("ligne "  + tree.getLine() + " : Erreur : this n'est pas utilisé dans une classe. ");
+        nbError++;
+      }
+    }
+
+    /*
+     * SUPER
+     */
+     if (nodename.equals("SUPER")) {
+
+       CommonTree parent;
+       try{
+         parent = (CommonTree) searchParent((CommonTree) tree, "CLASS");
+         // CONTROLE SEMANTIQUE : Vérifie qu'un super est appelé seulement dans des classes héritières.
+         if (parent.getChildCount() == 2) {
+           System.err.println("ligne "  + tree.getLine() + " : Erreur : super n'est pas appelé dans une classe fille. ");
+           nbError++;
+         }
+       }
+       // CONTROLE SEMANTIQUE : Vérifie qu'un super n'est pas appelé en dehors d'une classe
+       catch(NoSuchNodeException e) {
+         System.err.println("ligne "  + tree.getLine() + " : Erreur : super n'est pas utilisé dans une classe. ");
+         nbError++;
+       }
+     }
+  }
 
   /*
    * Recherche un token dans un arbre et ses branches, selon divers modes.
@@ -981,9 +966,9 @@ public class TreeParser implements ITreeParser {
 
 
   /*
- * Retourne le type/la classe à laquelle appartient une méthode donnée par le noeud (qui correspond à METHODCALLING)
- */
-public String findType(CommonTree tree, NodeTDS node) throws NoSuchIdfException {
+   * Retourne le type/la classe à laquelle appartient une méthode donnée par le noeud (qui correspond à METHODCALLING)
+   */
+  public String findType(CommonTree tree, NodeTDS node) throws NoSuchIdfException {
   String className = "";
   CommonTree currentParent = (CommonTree) tree.getParent();
   List<CommonTree> parents = new ArrayList<CommonTree>();  // Liste des appels méthodes remontés
@@ -1150,8 +1135,8 @@ public String findType(CommonTree tree, NodeTDS node) throws NoSuchIdfException 
      * THIS
      */
     if (nodename.equals("THIS")) {
+      controleThisSuper(expr);// Vérifie qu'on est bien dans une classe.
       varname = expr.getChild(0).getChild(0).getText();
-
       try {
         temp = findSymbol(node, varname);
         temptable = temp.getTable();
@@ -1167,8 +1152,8 @@ public String findType(CommonTree tree, NodeTDS node) throws NoSuchIdfException 
      * SUPER
      */
     if (nodename.equals("SUPER")) {
+      controleThisSuper(expr);// Vérifie qu'on est bien dans une classe + classe fille
       varname = expr.getChild(0).getChild(0).getText();
-
       try {
         temp = findSymbol(node, varname);
         temptable = temp.getTable();
@@ -1183,12 +1168,13 @@ public String findType(CommonTree tree, NodeTDS node) throws NoSuchIdfException 
      * INT_CSTE
      */
     try {
-      Integer.parseInt(nodename);
-      return "INT";
-    } catch (Exception e) {
-      /*
-       * INT_VAR
-       */
+      type = isIntOrString(expr);
+      return type; // Ici c'est forcément un CSTE_INT car CSTE_STRING a été testé plus tôt
+    }
+    /*
+     * VAR
+     */
+    catch (NotPureStatementException e) {
       temp = findSymbol(node, nodename);
       temptable = temp.getTable();
       try {
@@ -1200,26 +1186,6 @@ public String findType(CommonTree tree, NodeTDS node) throws NoSuchIdfException 
       }
 
     }
-
-     //type = "INT";
-  /*  if (nodename.equals("VAR")) {
-      // CONTROLE SÉMANTIQUE : Vérifier que la variable a été déclarée.
-      try {
-        temp = findSymbol(node, varname);
-      }
-      catch (NoSuchIdfException e) {
-        System.err.println("ligne "  + expr.getLine() + " : Erreur : référence indéfinie vers la variable " + varname);
-        nbError++;
-      }
-
-      // Récupère les infos pour récupérer le type
-      temptable = temp.getTable();
-      tempinfo = temptable.get(varname);
-      type = "";
-
-    }*/
-
-    //return type;
   }
 
 
@@ -1270,7 +1236,7 @@ public String findType(CommonTree tree, NodeTDS node) throws NoSuchIdfException 
    * Parse les sous-arbres METHODARGS et retourne une LinkedList d'arguements.
    *
    */
-   public LinkedList parsemethodargs(CommonTree args) {
+  public LinkedList parsemethodargs(CommonTree args) {
      LinkedList arglist = new LinkedList();
      int nbarg = args.getChildCount();
      String type;
@@ -1288,39 +1254,48 @@ public String findType(CommonTree tree, NodeTDS node) throws NoSuchIdfException 
      return arglist;
    }
 
-
   /*
-   * Test si l'arbre exploré peut être parsé en int immédiatement.
+   * Vérifie si le tree passé en paramètre est une variable.
    *
    */
-   public Boolean isCalulableInt(CommonTree tocalc, HashMap<String,LinkedList> table) {
-     int res = 0;
+  public Boolean isVariable(CommonTree variable) {
+    try {
+      isIntOrString(variable);
+      return false; // C'est donc une constant : un entier ou une chaine de caractère.
+    }
+    catch (NotPureStatementException e) {
+      // Traitement ultérieur. Vérfier qu'il n'y a pas de ( ) dans le case d'une methode.
+    }
+    return false;
+  }
 
-     if (tocalc.getChildCount()==0) {
-       try {
-         res = Integer.parseInt(tocalc.getText());
-         return true;
-       }
-       catch (Exception e) {
-         try {
-           LinkedList infos = table.get(tocalc.getText());
-           res = (int) infos.get(1);
-           return true;
-         }
-         catch (NullPointerException ne) {
-           return false;
-         }
-       }
-     }
-     else {
-      /* try {
-         //res = calculator((CommonTree) tocalc, table);
-         return true;
-       }
-       catch (NoSuchIdfException nidf) {
-         return false;
-       }*/
-       return true;
-     }
-   }
+  /*
+   * Vérifie si la variable passée en paramètre est déjà définie dans la TDS (en tenant compte de sa portée)
+   * Retourne sa valeur si c'est le cas (Sous la forme d'une string, à formater).
+   */
+  public String isInitialized(String variable, NodeTDS node) throws NotInitializedVariableException {
+    return "";
+  }
+
+  /*
+   * Vérifie si l'argument passé est un int pur, une chaine de caractère pure, ou autre chose.
+   * Retourne le type du statement (INT ou STRING)
+   */
+  public String isIntOrString(CommonTree tocheck) throws NotPureStatementException {
+
+    try {
+      Integer.parseInt(tocheck.getText());
+      return "CSTE_INT";
+    }
+    catch (Exception e) {
+      if (tocheck.getText().charAt(0) == '\"') {
+        return "CSTE_STRING";
+      }
+      else {
+        throw new NotPureStatementException();
+      }
+    }
+
+  }
+
 }

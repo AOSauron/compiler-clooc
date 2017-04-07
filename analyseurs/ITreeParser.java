@@ -45,15 +45,15 @@ import java.util.Iterator;
    public NodeTDS getTDS();
 
    /*
-    * Explore l'arbre sur chaque noeud et effectue quelques contrôles sémantiques. Explorateur léger
-    */
-   public void explorerspec(CommonTree tree);
-
-   /*
     * Explorateur récursif de sous-arbre. Effectue des contrôles sémantiques ! Explorateur lourd
     * Range les données dans la TDS du node passé en paramètre.
     */
    public void explorer(CommonTree tree, NodeTDS node);
+
+   /*
+    * Explore l'arbre sur chaque noeud et effectue quelques contrôles sémantiques. Explorateur léger
+    */
+   public void controleThisSuper(CommonTree tree);
 
    /*
     * Recherche un token dans un arbre et ses branches, selon divers modes.
@@ -99,9 +99,20 @@ import java.util.Iterator;
    public LinkedList parsemethodargs(CommonTree args);
 
    /*
-    * Test si l'arbre exploré peut être parsé en int immédiatement.
+    * Vérifie si le tree passé en paramètre est une variable.
     */
-   public Boolean isCalulableInt(CommonTree tocalc, HashMap<String,LinkedList> table);
+   public Boolean isVariable(CommonTree variable);
 
+   /*
+    * Vérifie si la variable passée en paramètre est déjà initialisée dans la TDS (en tenant compte de sa portée)
+    * Retourne sa valeur si c'est le cas (Sous la forme d'une string, à formater).
+    */
+   public String isInitialized(String variable, NodeTDS node) throws NotInitializedVariableException;
+
+   /*
+    * Vérifie si l'argument passé est un int pur, une chaine de caractère pure, ou autre chose.
+    * Retourne le type du statement (INT ou STRING)
+    */
+   public String isIntOrString(CommonTree tocheck) throws NotPureStatementException;
 
  }
