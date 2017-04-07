@@ -47,7 +47,7 @@ import java.util.Iterator;
    /*
     * Explore l'arbre sur chaque noeud et effectue quelques contrôles sémantiques.
     */
-   public void explorerspec();
+   public void explorerspec(CommonTree tree);
 
    /*
     * Explorateur récursif de sous-arbre. Effectue des contrôles sémantiques !
@@ -63,7 +63,7 @@ import java.util.Iterator;
    /*
     * Retourne le type/la classe à laquelle appartient une méthode donnée par le noeud (qui correspond à METHODCALLING)
     */
-   public String findType(NodeTDS node) throws NoSuchIdfException;
+   public String findType(CommonTree tree, NodeTDS node) throws NoSuchIdfException;
 
    /*
     * Cherche une méthode dans une classe et renvoie son type de retour

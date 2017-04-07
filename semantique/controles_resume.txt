@@ -12,6 +12,7 @@ Guillaume :
 8 - (Erreur) Erreur de concordance des types dans une expression arithmétiques (MismatchTypeException)
 9 - (Erreur) Vérifie la déclaration préalable de l'indice d'une boucle for, et des éventuelles variables utilisées dans les expression des bornes
 10 - (Warning) Lance un warning si un bloc anonyme vide est déclaré.
+11 - (Erreur) (Dans calculator) vérifie la définition d'une classe avant son instanciation.
 
 Gauthier :
 1 - (Erreur) Vérifie qu'il existe au moins 1 return dans une méthode typée, et/ou qu'il est toujours possible de return dans une methode (reach end non-void function without returning)

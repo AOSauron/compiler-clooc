@@ -12,7 +12,7 @@ import java.util.Iterator;
  * Pour Clooc - PCL 2017 - TELECOM Nancy
  */
 
-public class TreeParser {
+public class TreeParser implements ITreeParser {
 
   private int countanoblock;
   private int countfor;
@@ -757,7 +757,7 @@ public class TreeParser {
 
       if (givenArguments.size() != requiredargnum) {
         // CONTROLE SÉMANTIQUE : VÉRIFIE LE NOMBRE D'ARGUMENTS D'UNE MÉTHODE
-        System.err.println("ligne "  + tree.getLine() + " : Erreur : La méthode " + methodname + " prend " + requiredargnum + " (" + givenArguments.size() + " donné(s)).");
+        System.err.println("ligne "  + tree.getLine() + " : Erreur : La méthode " + methodname + " prend " + requiredargnum + " arguments (" + givenArguments.size() + " donné(s)).");
         nbError++;
       }
 
@@ -1086,7 +1086,7 @@ public String findType(CommonTree tree, NodeTDS node) throws NoSuchIdfException 
     LinkedList infos;
     String nodename = expr.getText();
     String varname;
-    String type;
+    String type = null;
     NodeTDS temp;
     HashMap<String,LinkedList> temptable;
     LinkedList tempinfo;
@@ -1109,6 +1109,7 @@ public String findType(CommonTree tree, NodeTDS node) throws NoSuchIdfException 
       temptable = root.getTable();
       try {
         type = (String)((LinkedList)temptable.get(varname)).get(0);
+        return type;
       }
       catch (NullPointerException ne) {
         throw new NoSuchIdfException();
@@ -1130,7 +1131,29 @@ public String findType(CommonTree tree, NodeTDS node) throws NoSuchIdfException 
 
     }
 
-     type = "INT";
+    /*
+     * INT_CSTE
+     */
+    try {
+      Integer.parseInt(nodename);
+      return "INT";
+    } catch (Exception e) {
+      /*
+       * INT_VAR
+       */
+      temp = findSymbol(node, nodename);
+      temptable = temp.getTable();
+      try {
+        type = ((CommonTree)((LinkedList)temptable.get(nodename)).get(0)).getText();
+        return type;
+      }
+      catch (NullPointerException ne) {
+        throw new NoSuchIdfException();
+      }
+
+    }
+
+     //type = "INT";
   /*  if (nodename.equals("VAR")) {
       // CONTROLE SÉMANTIQUE : Vérifier que la variable a été déclarée.
       try {
@@ -1148,7 +1171,7 @@ public String findType(CommonTree tree, NodeTDS node) throws NoSuchIdfException 
 
     }*/
 
-    return type;
+    //return type;
   }
 
 
