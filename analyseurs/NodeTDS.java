@@ -148,27 +148,43 @@ public class NodeTDS {
       if (type.equals("METHOD")) {
         String returntype = infos.get(2).toString();
         LinkedList args = (LinkedList) infos.get(1);
-        System.out.println("Idf : " + key + " || Type : " + type + " || Type de retour : " + returntype + " || Arguments : " + args + " ||");
+        System.out.println("Idf : " + key + " || Type d'entité : " + type + " || Type de retour : " + returntype + " || Arguments : " + args + " ||");
       }
       else if (type.equals("CLASS")) {
         String herit = infos.get(1).toString();
-        System.out.println("Idf : " + key + " || Type : " + type + " || Herite de : " + herit + " ||");
+        System.out.println("Idf : " + key + " || Type d'entité : " + type + " || Herite de : " + herit + " ||");
       }
       else if (type.equals("IF")) {
         String cond = ((CommonTree) infos.get(1)).toStringTree();
-        System.out.println("Idf : " + key + " || Type : " + type + " || Condition : " + cond + " ||");
+        System.out.println("Idf : " + key + " || Type d'entité : " + type + " || Condition : " + cond + " ||");
       }
       else if (type.equals("FOR")) {
         String index = (String) infos.get(1);
         String min = ((CommonTree) infos.get(2)).toStringTree();
         String max = ((CommonTree) infos.get(3)).toStringTree();
-        System.out.println("Idf : " + key + " || Type : " + type + " || Index : " + index + " || Min : " + min + " || Max : " + max + " ||");
+        System.out.println("Idf : " + key + " || Type d'entité : " + type + " || Index : " + index + " || Min : " + min + " || Max : " + max + " ||");
       }
       else if (type.equals("ANOBLOCK")) {
-        System.out.println("Idf : " + key + " || Type : " + type + " ||");
+        System.out.println("Idf : " + key + " || Type d'entité : " + type + " ||");
       }
-      else { // C'est donc le cas d'une variable de tout type.
+      else if (type.equals("ARG")) {
+        String typestatic = infos.get(1).toString();
+        System.out.println("Idf : " + key + " || Type d'entité : " + type + " || Type : " + typestatic + " ||");
+      }
+      else if (type.equals("VAR")) {
+        String typestatic = infos.get(1).toString();
         String valeur;
+        try {
+          valeur = infos.get(2).toString();
+        }
+        catch (NullPointerException ne) {
+          valeur = "null"; // Différent de nil
+        }
+        System.out.println("Idf : " + key + " || Type d'entité : " + type + " || Type : " + typestatic + " || Valeur : " + valeur + " ||");
+      }
+      else { // Cas improbable :.
+        String valeur;
+
         try {
           valeur = infos.get(1).toString();
         }

@@ -201,7 +201,7 @@ public class TreeParser implements ITreeParser {
       try {
         nodefound = findSymbol(node, tree.getChild(0).getText());
         tablefound = nodefound.getTable();
-        type = ((CommonTree)tablefound.get(tree.getChild(0).getText()).get(0)).getText();
+        type = ((CommonTree)tablefound.get(tree.getChild(0).getText()).get(1)).getText();
         if (!type.equals("CLASS")) {
           System.err.println("ligne "  + tree.getLine() + " : Erreur : Le nom de " + tree.getChild(0) + " redéfinit une méthode ou une variable. ");
           nbError++;
@@ -391,55 +391,66 @@ public class TreeParser implements ITreeParser {
     if (nodename.equals("AFFECT")) {
 
       NodeTDS nodeleft = null;
+      HashMap<String,LinkedList> tableleft = null;
+      LinkedList infos = null;
       CommonTree memberleft = (CommonTree) tree.getChild(0);
       CommonTree memberright = (CommonTree) tree.getChild(1);
       String memberleftname = memberleft.getText();
+      String memberrightname = memberright.getText();
       String typeleft = null;
       boolean isDeclared = true;
 
       // CONTROLE SÉMANTIQUE : VERIFIE QU'UN IDF EXISTE BIEN POUR LUI FAIRE UN AFFECT (GAUCHE)
       try {
         nodeleft = findSymbol(node, memberleftname);
-        typeleft = ((CommonTree)((LinkedList)nodeleft.getTable().get(memberleftname)).get(0)).getText();
+        typeleft = ((CommonTree)((LinkedList)nodeleft.getTable().get(memberleftname)).get(1)).getText();
       }
       catch (NoSuchIdfException ne) {
-        System.err.println("ligne "  + tree.getLine() + " : Erreur : référence indéfinie vers la variable " + memberleftname);
+        System.err.println("ligne "  + tree.getLine() + " : Erreur : Référence indéfinie vers la variable " + memberleftname);
         nbError++;
         isDeclared = false;
       }
 
       // CONTROLE SÉMANTIQUE : VERIFIE L'EXPRESSION DE DROITE (DROITE)
       String typeright = null;
-      try {
-        typeright = calculator(memberright, node);
-      } catch(MismatchTypeException e) {
-        System.err.println("ligne "  + tree.getLine() + " : Erreur : problème de cohérence dans l'expression calculatoire du membre droit de l'affectation.");
-        nbError++;
-      } catch(NoSuchIdfException f) {
-        System.err.println("ligne "  + tree.getLine() + " : Erreur : Une variable dans l'expression du membre droit de l'affectation n'est pas déclarée.");
-        nbError++;
+      if (memberrightname.equals("nil")) { // Cas d'une initialisation à nil
+        tableleft = nodeleft.getTable();
+        infos = tableleft.get(memberleftname);
+        infos.set(2, "nil");
+        nodeleft.setTable(tableleft);
       }
-      /*if (isDeclared) {
-        // CONTROLE SEMANTIQUE : VERIFIE LA COHÉRENCE DES TYPES DANS L'AFFECTATION
-        if (!typeleft.equals(typeright)) {
-          System.err.println("ligne "  + tree.getLine() + " : Erreur : les types des membres de l'affectation sont incohérents.");
+      else {
+        try {
+          typeright = calculator(memberright, node);
+        } catch(MismatchTypeException e) {
+          System.err.println("ligne "  + tree.getLine() + " : Erreur : problème de cohérence dans l'expression calculatoire du membre droit de l'affectation.");
+          nbError++;
+        } catch(NoSuchIdfException f) {
+          System.err.println("ligne "  + tree.getLine() + " : Erreur : Une variable dans l'expression du membre droit de l'affectation n'est pas déclarée.");
           nbError++;
         }
-      }*/
+        /*if (isDeclared) {
+          // CONTROLE SEMANTIQUE : VERIFIE LA COHÉRENCE DES TYPES DANS L'AFFECTATION
+          if (!typeleft.equals(typeright)) {
+            System.err.println("ligne "  + tree.getLine() + " : Erreur : les types des membres de l'affectation sont incohérents.");
+            nbError++;
+          }
+        }*/
 
-      // On regarde s'il y a des appels de méthodes dans l'affectation, et si oui, on explore
-      for (int i=0; i<tree.getChildCount(); i++) {
-        if (tree.getChild(i).getText().equals("METHODCALLING")) {
-          NodeTDS childmethcall = new NodeTDS(node);
-          HashMap<String,LinkedList> soustablemethcall = new HashMap<String,LinkedList>();
+        // On regarde s'il y a des appels de méthodes dans l'affectation, et si oui, on explore
+        for (int i=0; i<tree.getChildCount(); i++) {
+          if (tree.getChild(i).getText().equals("METHODCALLING")) {
+            NodeTDS childmethcall = new NodeTDS(node);
+            HashMap<String,LinkedList> soustablemethcall = new HashMap<String,LinkedList>();
 
-          // Ajouter la sous-TDS à la TDS parente
-          childmethcall.setId(tree.getChild(i).getChild(0).getText());
-          childmethcall.setTable(soustablemethcall);
-          node.addChild(childmethcall);
+            // Ajouter la sous-TDS à la TDS parente
+            childmethcall.setId(tree.getChild(i).getChild(0).getText());
+            childmethcall.setTable(soustablemethcall);
+            node.addChild(childmethcall);
 
-          //Explore le block
-          explorer((CommonTree) tree.getChild(i), childmethcall);
+            //Explore le block
+            explorer((CommonTree) tree.getChild(i), childmethcall);
+          }
         }
       }
       return;
@@ -516,6 +527,11 @@ public class TreeParser implements ITreeParser {
 
       nbchlidofblock = block.getChildCount();
 
+      // Ajout à la TDS courante, avant d'explorer, pour les éventules new MyClass ...
+      infos.add("CLASS"); // Type d'entrée
+      infos.add(classinher); // Vide si pas d'inherit
+      table.put(classname,infos);
+
       // Ajouter la sous-TDS à la TDS parente
       child.setId(classname);
       child.setTable(soustable);
@@ -530,11 +546,6 @@ public class TreeParser implements ITreeParser {
       else {
         if (warn) System.out.println("ligne " + tree.getLine() + " : Warning : la classe " + classname + " est vide.");
       }
-
-      infos.add("CLASS"); // Type d'entrée
-      infos.add(classinher); // Vide si pas d'inherit
-
-      table.put(classname,infos);
 
       return;
     }
@@ -651,7 +662,7 @@ public class TreeParser implements ITreeParser {
         String argname = (String)((LinkedList)args.get(i)).get(0);
         infoargs.add("ARG");
         infoargs.add(argtypes.get(i));
-        soustable.put(argname,infos);
+        soustable.put(argname,infoargs);
       }
 
       // Ajouter la sous-TDS à la TDS parente
@@ -1063,7 +1074,7 @@ public String findType(CommonTree tree, NodeTDS node) throws NoSuchIdfException 
 
     // Récup les infos
     infos = table.get(symbol);
-    type = ((CommonTree)infos.get(0)).getText(); // Le type est toujours à cet emplacement normalement.
+    type = ((CommonTree)infos.get(1)).getText(); // Le type est toujours à cet emplacement normalement.
 
     // Verification :
     if (!type.equals(typetocheck)) {
@@ -1198,7 +1209,7 @@ public String findType(CommonTree tree, NodeTDS node) throws NoSuchIdfException 
       temp = findSymbol(node, nodename);
       temptable = temp.getTable();
       try {
-        type = ((CommonTree)((LinkedList)temptable.get(nodename)).get(0)).getText();
+        type = ((CommonTree)((LinkedList)temptable.get(nodename)).get(1)).getText();
         return type;
       }
       catch (NullPointerException ne) {
