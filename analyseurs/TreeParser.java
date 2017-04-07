@@ -1137,6 +1137,15 @@ public String findType(CommonTree tree, NodeTDS node) throws NoSuchIdfException 
      * THIS
      */
     if (nodename.equals("THIS")) {
+      varname = expr.getChild(0).getChild(0);
+
+      try {
+        temp = findSymbol(node, varname);
+        temptable = temp.getTable();
+      }
+      catch (NoSuchIdfException e) {
+        throw new NoSuchIdfException();
+      }
 
       return "";
     }
@@ -1145,6 +1154,15 @@ public String findType(CommonTree tree, NodeTDS node) throws NoSuchIdfException 
      * SUPER
      */
     if (nodename.equals("SUPER")) {
+      varname = expr.getChild(0).getChild(0);
+
+      try {
+        temp = findSymbol(node, varname);
+        temptable = temp.getTable();
+      }
+      catch (NoSuchIdfException e) {
+        throw new NoSuchIdfException();
+      }
       return "";
     }
 
@@ -1158,7 +1176,12 @@ public String findType(CommonTree tree, NodeTDS node) throws NoSuchIdfException 
       /*
        * VAR
        */
-      temp = findSymbol(node, nodename);
+      try  {
+        temp = findSymbol(node, nodename);
+      }
+      catch (NoSuchIdfException e) {
+        throw new NoSuchIdfException();
+      }
       temptable = temp.getTable();
       try {
         type = ((CommonTree)((LinkedList)temptable.get(nodename)).get(0)).getText();
