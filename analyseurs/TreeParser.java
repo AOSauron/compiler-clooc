@@ -206,6 +206,7 @@ public class TreeParser implements ITreeParser {
         if (!type.equals("CLASS")) {
           System.err.println("ligne "  + tree.getLine() + " : Erreur : Le nom de " + tree.getChild(0) + " redéfinit une méthode ou une variable. ");
           nbError++;
+          return;
         }
       } catch(NoSuchIdfException e) {
 
@@ -866,7 +867,11 @@ public class TreeParser implements ITreeParser {
 
     //retour do
 
+<<<<<<< HEAD
     if (nodename.equals("METHODCALLING")) {
+=======
+    /*if (nodename.equals("METHODCALLING")) {
+>>>>>>> 52b738321dfefa39cfb11292536e14275d532330
       CommonTree metName;
       metName = (CommonTree) tree.getChild(0);
       String metNameStr = metName.getText();
@@ -911,7 +916,7 @@ public class TreeParser implements ITreeParser {
       }
       // CONTROLE SÉMANTIQUE : On déclenche un warning si une classe vide est déclarée.
       else {
-        if (warn) System.out.println("ligne " + tree.getLine() + " : Warning : Le bloc anonyme " + anoname + " est vide.");
+        if (warn) System.out.println("ligne " + tree.getLine() + " : Warning : Le bloc anonyme est vide.");
       }
 
       infos.add("ANOBLOCK"); // Type d'entrée
@@ -1140,14 +1145,41 @@ public String findType(CommonTree tree, NodeTDS node) throws NoSuchIdfException 
      * THIS
      */
     if (nodename.equals("THIS")) {
+<<<<<<< HEAD
       return "CLASS";
+=======
+      varname = expr.getChild(0).getChild(0);
+
+      try {
+        temp = findSymbol(node, varname);
+        temptable = temp.getTable();
+      }
+      catch (NoSuchIdfException e) {
+        throw new NoSuchIdfException();
+      }
+
+      return "";
+>>>>>>> 52b738321dfefa39cfb11292536e14275d532330
     }
 
     /*
      * SUPER
      */
     if (nodename.equals("SUPER")) {
+<<<<<<< HEAD
       return "CLASS";
+=======
+      varname = expr.getChild(0).getChild(0);
+
+      try {
+        temp = findSymbol(node, varname);
+        temptable = temp.getTable();
+      }
+      catch (NoSuchIdfException e) {
+        throw new NoSuchIdfException();
+      }
+      return "";
+>>>>>>> 52b738321dfefa39cfb11292536e14275d532330
     }
 
     /*
@@ -1158,9 +1190,14 @@ public String findType(CommonTree tree, NodeTDS node) throws NoSuchIdfException 
       return "INT";
     } catch (Exception e) {
       /*
-       * INT_VAR
+       * VAR
        */
-      temp = findSymbol(node, nodename);
+      try  {
+        temp = findSymbol(node, nodename);
+      }
+      catch (NoSuchIdfException e) {
+        throw new NoSuchIdfException();
+      }
       temptable = temp.getTable();
       try {
         type = ((CommonTree)((LinkedList)temptable.get(nodename)).get(0)).getText();
