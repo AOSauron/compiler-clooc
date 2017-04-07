@@ -281,6 +281,7 @@ public class TreeParser {
       try {
         nodeindex = findSymbol(node, index);
       }
+      
       // CONTROLE SEMANTIQUE : Vérifie que l'indice a été déclaré au préalable
       catch (NoSuchIdfException e) {
         System.err.println("ligne "  + tree.getLine() + " : Erreur : Référence indéfinie vers la variable " + index + " (indice de la boucle for).");
@@ -668,9 +669,16 @@ public class TreeParser {
 
       } else {
         // CONTROLE SÉMANTIQUE : ABSENCE DE VALEUR RENVOYÉE POUR UNE MÉTHODE DE TYPE VOID
-        if (!(find(block, "RETURN", 1))) {
-          System.err.println("ligne "  + tree.getLine() + " : Erreur : La méthode " + methodname + " est de type void, elle n'est pas censée retourner quoique ce soit.");
-          nbError++;
+        try {
+          System.out.println("pppppppppppppppppppp");
+          CommonTree returnTree = searchChild(block, "RETURN");
+          System.out.println("aaaaaaaaaaa: " +returnTree.getText());
+          if (returnTree.getChildCount() > 0) {
+            System.err.println("ligne "  + tree.getLine() + " : Erreur : La méthode " + methodname + " est de type void, elle n'est pas censée retourner quoique ce soit.");
+            nbError++;
+          }
+        } catch (NoSuchNodeException e) {
+          // Cas où la méthode de tupe void ne retourne rien
         }
       }
 
@@ -1112,6 +1120,34 @@ public String findType(CommonTree tree, NodeTDS node) throws NoSuchIdfException 
       }
     }
     return (CommonTree) tree.getParent();
+
+  }
+
+
+  /*
+   * Cherche un noeud dans les enfants d'un arbre (AST)
+   * Retourne le premier sous arbre dont le root est ce noeud
+   */
+  public CommonTree searchChild(CommonTree tree, String target) throws NoSuchNodeException {
+
+    CommonTree currentTree = tree;
+    for (int i=0; i<tree.getChildCount(); i++) {
+
+      System.out.println("NODE: "+ currentTree.getText());
+      for (int k=0; k<currentTree.getChildCount(); k++) {
+        if (currentTree.getChild(k).getText().equals(target)) {
+          System.out.println("RETURN");
+          return (CommonTree)currentTree.getChild(k);
+        }
+        for (int j=0; j<currentTree.getChild(k).getChildCount(); j++) {
+          if (currentTree.getChild(k).getChild(j).getText().equals(target)) {
+            System.out.println("RETURN");
+            return (CommonTree)currentTree.getChild(k).getChild(j);
+          }
+        }
+      }
+    }
+    throw new NoSuchNodeException();
 
   }
 
