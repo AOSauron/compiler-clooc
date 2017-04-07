@@ -842,6 +842,14 @@ public class TreeParser {
      if (nodename.equals("RETURN")) {
         CommonTree returnExp;
         returnExp = (CommonTree) tree.getChild(0);
+        type = calculator((CommonTree) returnExp, node);
+        String returnType;
+        returnType = tree.getParent().getParent().getChild(1).getText();
+        try {
+          if(!type.equals(returnType)) {
+            System.err.println("ligne" + tree.getLine() + " : Erreur : Le type de retour n'est pas celui de la méthode ");
+          }
+        }
 
      }
 
