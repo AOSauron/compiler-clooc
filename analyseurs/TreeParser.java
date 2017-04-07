@@ -780,11 +780,15 @@ public class TreeParser {
    if (nodename.equals("READ")) {
      CommonTree readNb;
      readNb = (CommonTree) tree.getChild(0);
-     type = calculator((CommonTree) readNb, node);
      try {
+       type = calculator((CommonTree) readNb, node);
        if (!type.equals("INT")) {
-         System.err.println("ligne "  + tree.getLine() + " : Erreur : L'argument de read n'est pas un entier ");
          nbError++;
+         System.err.println("ligne" + tree.getLine() + " : Erreur : L'argument de read n'est pas un entier ou une chaîne de caractères ");
+       }
+     }
+     catch(MismatchTypeException e) {
+        System.err.println("ligne" + tree.getLine() + " : Erreur : L'argument de read n'est pas un entier ou une chaîne de caractères ");
      }
    }
 
@@ -795,12 +799,15 @@ public class TreeParser {
    if (nodename.equals("WRITE")) {
       CommonTree writeValue;
       writeValue = (CommonTree) tree.getChild(0);
-      type = calculator((CommonTree) writeValue, node);
       try {
+        type = calculator((CommonTree) writeValue, node);
         if (!type.equals("STRING") && !type.equals("INT")) {
-          System.err.println("ligne" + tree.getLine() + " : Erreur : L'argument de read n'est pas un entier ou une chaîne de caractères ");
           nbError++;
+          System.err.println("ligne" + tree.getLine() + " : Erreur : L'argument de read n'est pas un entier ou une chaîne de caractères ");
         }
+      }
+      catch(MismatchTypeException e) {
+        System.err.println("ligne" + tree.getLine() + " : Erreur : L'argument de read n'est pas un entier ou une chaîne de caractères ");
       }
    }
 
@@ -811,7 +818,6 @@ public class TreeParser {
    if (nodename.equals("RETURN")) {
       CommonTree returnExp;
       returnExp = (CommonTree) tree.getChild(0);
-      type = calculator((CommonTree) returnExp, node);
       CommonTree returnType;
       returnType = tree.getParent();
       while (!returnType.getText().equals("METHODDEC")) {
@@ -819,9 +825,14 @@ public class TreeParser {
       }
       returnType = returnType.getChild(1);
       try {
+        type = calculator((CommonTree) returnExp, node);
         if(!type.equals(returnType.getText())) {
+          nbError++;
           System.err.println("ligne" + tree.getLine() + " : Erreur : Le type de retour n'est pas celui de la méthode ");
         }
+      }
+      catch(MismatchTypeException e) {
+        System.err.println("ligne" + tree.getLine() + " : Erreur : Le type de retour n'est pas celui de la méthode ");
       }
     }
 
