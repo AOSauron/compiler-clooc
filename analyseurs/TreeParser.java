@@ -1135,7 +1135,6 @@ public String findType(CommonTree tree, NodeTDS node) throws NoSuchIdfException 
      * THIS
      */
     if (nodename.equals("THIS")) {
-
       varname = expr.getChild(0).getChild(0);
 
       try {
@@ -1152,7 +1151,7 @@ public String findType(CommonTree tree, NodeTDS node) throws NoSuchIdfException 
     /*
      * SUPER
      */
-    if (nodename.equals("SUPER")) 
+    if (nodename.equals("SUPER"))
       varname = expr.getChild(0).getChild(0);
 
       try {
