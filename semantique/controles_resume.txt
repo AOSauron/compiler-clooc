@@ -33,7 +33,7 @@ Nicolas :
 1 - (Erreur) Vérifier le type des arguments de write
 2 - (Erreur) Vérifier le type des arguments de read
 3 - (Erreur) Vérifie la cohérence des types sur un return
-
+4 - (Erreur) Vérifier qu'un appel à une méthode sans type de retour se fait par le mot-clé "do" : do n.foo()
 
 
 
@@ -52,7 +52,6 @@ A FAIRE :
 - (Erreur) Utilisation d'un autre symbole comme une methode (exemple : un int est utilisé 'comme' une methode)
 - (Warning) Lance un warning si une méthode est déclarée à la fois dans une classe et en dehors. (pas si mm méthode dans 2 classes.)
 - (Warning) Lance un warning si une classe fille surcharge/redéfini un symbole (methode, attributs) de la classe mère dans le cas d'un inherit. Surcharge autorisée.
-- (Erreur) Vérifier qu'un appel à une méthode sans type de retour se fait par le mot-clé "do" : do n.foo();
 - (Erreur) Une classe ne peut référencer que des classes déjà définies
 - (Warning) Variable set but not used
 - (Warning) Instruction inatteignable (après un return) (may never be reached)
