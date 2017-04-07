@@ -445,7 +445,7 @@ public class TreeParser {
           childmethcall.setTable(soustablemethcall);
           node.addChild(childmethcall);
 
-          //Explore le block 
+          //Explore le block
           explorer((CommonTree) tree.getChild(i), childmethcall);
         }
       }
@@ -851,6 +851,14 @@ public class TreeParser {
      if (nodename.equals("RETURN")) {
         CommonTree returnExp;
         returnExp = (CommonTree) tree.getChild(0);
+        type = calculator((CommonTree) returnExp, node);
+        String returnType;
+        returnType = tree.getParent().getParent().getChild(1).getText();
+        try {
+          if(!type.equals(returnType)) {
+            System.err.println("ligne" + tree.getLine() + " : Erreur : Le type de retour n'est pas celui de la méthode ");
+          }
+        }
 
      }
 
