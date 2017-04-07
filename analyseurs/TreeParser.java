@@ -729,7 +729,15 @@ public class TreeParser {
         } catch (NoSuchNodeException e) {
           // Normalement, on a déjà vérifié que le this était bien dans une classe
         }
+      } else if (parent.getText().equals("SUPER")) {
+        try {
+          CommonTree classTree = searchParent(tree, "CLASS");
+          type = classTree.getChild(0).getText();
+        } catch (NoSuchNodeException e) {
+          // Normalement, on a déjà vérifié que le this était bien dans une classe
+        }
       }
+
       HashMap<String,LinkedList> classTable = null;
       LinkedList requiredargs = null;
       int requiredargnum = 0;
@@ -756,7 +764,7 @@ public class TreeParser {
           childmethcall.setTable(soustablemethcall);
           node.addChild(childmethcall);
 
-          //Explore le block THEN
+          //Explore le block
           explorer((CommonTree) tree.getChild(i), childmethcall);
         }
       }
