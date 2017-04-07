@@ -363,11 +363,6 @@ public class TreeParser {
         explorer((CommonTree) tree.getChild(2), childelse);
       }
 
-      infos.add("IF"); // Type d'entrée
-      infos.add(cond); // Condition (sous-arbre)
-
-      table.put(ifname,infos);
-
       // CONTROLE SEMANTIQUE : VERIFIE QU'IL N'Y A PAS DE VARIABLES NON DEFINIES DANS LA CONDITION ET QUE PAS DE MISMATCH DE TYPES
       String type = null;
       try {
@@ -375,15 +370,23 @@ public class TreeParser {
       } catch(MismatchTypeException e){ // Mismatch de type dans les expressions calc string*int
         System.err.println("ligne "  + tree.getLine() + " : Erreur : Problème de concordance de types dans l'expression calculatoire de la condition. ");
         nbError++;
+        return;
       } catch(NoSuchIdfException f) { // Variable non déclarée
         System.err.println("ligne "  + tree.getLine() + " : Erreur : Une variable n'est pas définie dans la condition. ");
         nbError++;
+        return;
       }
       // CONTROLE SEMANTIQUE : VERIFIE QUE LA CONDITION EST UN ENTIER OU NIL
       if (!type.equals("INT") && !type.equals("nil")) {
         System.err.println("ligne "  + tree.getLine() + " : Erreur : Une variable n'est ni un eniter ni nil. ");
         nbError++;
+        return;
       }
+
+      infos.add("IF"); // Type d'entrée
+      infos.add(cond); // Condition (sous-arbre)
+
+      table.put(ifname,infos);
 
       return;
     }
@@ -412,6 +415,7 @@ public class TreeParser {
       }
       System.out.println(nodeleft);
 
+      // CONTROLE SÉMANTIQUE : VERIFIE L'EXPRESSION DE DROITE (DROITE)
       String typeright = null;
       try {
         typeright = calculator(memberright, node);
@@ -430,44 +434,7 @@ public class TreeParser {
         }
       }
 
-/*
-      // CONTROLE SEMTANTIQUE : PARSE L'EXPRESSION DE DROITE, VERIFIE SI LES SYMBOLE UTILISES SONT DECLARES (DROITE)
-      try {
-        calculator(memberright, node); // calculator effectue les controles sémantiques
-      }
-      catch (NoSuchIdfException ne) {
-
-      }*/
-      /*
-      // Cas d'un int, on parse directement en int
-      if (infos.getFirst().toString().equals("INT")) {
-        // Cas d'une expression arithm/logique
-        try {
-          value = (int) calculator((CommonTree) memberright, table);
-        }
-        // CONTROLE SÉMANTIQUE : VERIFIE QU'UN IDF EXISTE BIEN DANS LE MEMBRE DE DROITE
-        catch (NoSuchIdfException e) {
-          System.err.println("ligne "  + tree.getLine() + " : Erreur : référence indéfinie vers la variable " + tree.getChild(0));
-          nbError++;
-        }
-        // Cas d'une variable abstraite qui sera définie à l'exécution
-        catch (NullPointerException ne) {
-          value = (CommonTree) memberright;
-        }
-      }
-
-      // Les autres cas, on parse en String.
-      else if (nbchlidnode > 0) { // Cas d'un New : Crée une TDS pour chaque new ?
-        value = (String) memberright.getChild(0).getText();
-      }
-      else {
-        value = (String) memberright.getText();
-      }
-
-      infos.set(1, value);
-*/
-
-  // On regarde s'il y a des appels de méthodes dans l'affectation, et si oui, on explore
+      // On regarde s'il y a des appels de méthodes dans l'affectation, et si oui, on explore
       for (int i=0; i<tree.getChildCount(); i++) {
         if (tree.getChild(i).getText().equals("METHODCALLING")) {
           NodeTDS childmethcall = new NodeTDS(node);
@@ -478,7 +445,7 @@ public class TreeParser {
           childmethcall.setTable(soustablemethcall);
           node.addChild(childmethcall);
 
-          //Explore le block THEN
+          //Explore le block 
           explorer((CommonTree) tree.getChild(i), childmethcall);
         }
       }
