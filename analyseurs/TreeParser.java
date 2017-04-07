@@ -812,6 +812,41 @@ public class TreeParser {
         explorer((CommonTree) tree.getChild(k), node);
       }
     }
+
+    // CONTROLE SEMANTIQUE : Vérifier le type des arguments de read
+     if (nodename.equals("READ")) {
+       CommonTree readNb;
+       readNb = (CommonTree) tree.getChild(0);
+       type = calculator((CommonTree) readNb, node);
+       try {
+         if (!type.equals("INT")) {
+           System.err.println("ligne "  + tree.getLine() + " : Erreur : L'argument de read n'est pas un entier ");
+           nbError++;
+       }
+     }
+
+     // CONTROLE SEMANTIQUE : Vérifier le type des arguments de write
+     if (nodename.equals("WRITE")) {
+        CommonTree writeValue;
+        writeValue = (CommonTree) tree.getChild(0);
+        type = calculator((CommonTree) writeValue, node);
+        try {
+          if (!type.equals("STRING") && !type.equals("INT")) {
+            System.err.println("ligne" + tree.getLine() + " : Erreur : L'argument de read n'est pas un entier ou une chaîne de caractères ");
+            nbError++;
+          }
+        }
+     }
+
+
+     // CONTROLE SEMANTIQUE : Vérifie la cohérence des types sur un return
+     if (nodename.equals("RETURN")) {
+        CommonTree returnExp;
+        returnExp = (CommonTree) tree.getChild(0);
+
+     }
+
+
   }
 
 
