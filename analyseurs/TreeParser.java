@@ -97,9 +97,9 @@ public class TreeParser {
    * Retourne la TDS root
    *
    */
-   public HashMap<String,LinkedList> getTable() {
+  public HashMap<String,LinkedList> getTable() {
      return tableroot;
-   }
+  }
 
   /*
    * Retourne le nombre d'erreurs sémantiques détectées
@@ -405,7 +405,6 @@ public class TreeParser {
         nbError++;
         isDeclared = false;
       }
-      System.out.println(nodeleft);
 
       // CONTROLE SÉMANTIQUE : VERIFIE L'EXPRESSION DE DROITE (DROITE)
       String typeright = null;
@@ -694,7 +693,7 @@ public class TreeParser {
       try {
         String methodClass = findType((CommonTree) tree.getChild(0), node);
       } catch (NoSuchIdfException e) {
-        System.out.println("ligne "  + tree.getLine() + " : Erreur : La méthode " + methodname + " n'est pas définie.");
+        System.err.println("ligne "  + tree.getLine() + " : Erreur : La méthode " + methodname + " n'est pas définie.");
         nbError++;
         return;
       }
@@ -743,7 +742,7 @@ public class TreeParser {
 
       if (givenArguments.size() != requiredargnum) {
         // CONTROLE SÉMANTIQUE : VÉRIFIE LE NOMBRE D'ARGUMENTS D'UNE MÉTHODE
-        System.out.println("ligne "  + tree.getLine() + " : Erreur : La méthode " + methodname + " prend " + requiredargnum + " (" + givenArguments.size() + " donné(s)).");
+        System.err.println("ligne "  + tree.getLine() + " : Erreur : La méthode " + methodname + " prend " + requiredargnum + " (" + givenArguments.size() + " donné(s)).");
         nbError++;
       }
 
