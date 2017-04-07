@@ -40,6 +40,14 @@ class MyClass = (
 
 )
 
+
+class Animal inherit Animal = (
+
+)
+
+
+
+
 class MyClassic inherit MyClass =
 (
   method myMethHerit() {
@@ -56,6 +64,10 @@ class MyClassic inherit MyClass =
 class MyClass = (
 
 )
+
+{
+/*bloc vide*/
+}
 
 var variable : MyClass;
 
@@ -81,8 +93,14 @@ for ind in ent..entier do
   variable := new MyClass;
 end
 
+for i in ent..entier do
+  variable := new MyClass;
+end
+
 write "Salut";
 write variable;
+
+test := 3;
 
 read variable;
 
