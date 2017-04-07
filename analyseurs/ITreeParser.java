@@ -40,6 +40,11 @@
    public NodeTDS getTDS();
 
    /*
+    * Explore l'arbre sur chaque noeud et effectue quelques contrôles sémantiques.
+    */
+   public void explorerspec();
+
+   /*
     * Explorateur récursif de sous-arbre. Effectue des contrôles sémantiques !
     * Range les données dans la TDS du node passé en paramètre.
     */
