@@ -522,6 +522,11 @@ public class TreeParser implements ITreeParser {
       child.setTable(soustable);
       node.addChild(child);
 
+      // AJOUT PREALABLE POUR LES NEW CLASS INTERNES
+      infos.add("CLASS"); // Type d'entrée
+      infos.add(classinher); // Vide si pas d'inherit
+      table.put(classname,infos);
+
       // Remplie la sous-TDS en explorant le corps de la classe s'il est non vide
       if (nbchlidofblock > 0) {
         explorer((CommonTree) block, child);
@@ -531,11 +536,6 @@ public class TreeParser implements ITreeParser {
       else {
         if (warn) System.out.println("ligne " + tree.getLine() + " : Warning : la classe " + classname + " est vide.");
       }
-
-      infos.add("CLASS"); // Type d'entrée
-      infos.add(classinher); // Vide si pas d'inherit
-
-      table.put(classname,infos);
 
       return;
     }
@@ -865,7 +865,7 @@ public class TreeParser implements ITreeParser {
     }*/
 
     //retour do
-    
+
     /*if (nodename.equals("METHODCALLING")) {
       CommonTree metName;
       metName = (CommonTree) tree.getChild(0);
@@ -1136,14 +1136,14 @@ public String findType(CommonTree tree, NodeTDS node) throws NoSuchIdfException 
      * THIS
      */
     if (nodename.equals("THIS")) {
-
+      return "CLASS";
     }
 
     /*
      * SUPER
      */
     if (nodename.equals("SUPER")) {
-
+      return "CLASS";
     }
 
     /*
