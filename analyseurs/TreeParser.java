@@ -22,12 +22,25 @@ public class TreeParser implements ITreeParser {
   private HashMap<String,LinkedList> tableroot;
   private NodeTDS root;
   private static int nbError;
+  private static ArrayList<String> operateurs = new ArrayList<String>();
+
 
 
   public TreeParser(CommonTree ast) {
     this.ast=ast;
     warn = false;
     nbError = 0;
+
+    operateurs.add("+");
+    operateurs.add("-");
+    operateurs.add("*");
+    operateurs.add("==");
+    operateurs.add("!=");
+    operateurs.add("<=");
+    operateurs.add(">=");
+    operateurs.add("<");
+    operateurs.add(">");
+
   }
 
 
@@ -1161,6 +1174,13 @@ public class TreeParser implements ITreeParser {
       catch (NoSuchIdfException e) {
         throw new NoSuchIdfException();
       }
+      return "";
+    }
+
+    /*
+     * Opérateurs   ("+","-","*","==","!=","<=",">=","<",">")
+     */
+    if (operateurs.contains(nodename)) {
       return "";
     }
 

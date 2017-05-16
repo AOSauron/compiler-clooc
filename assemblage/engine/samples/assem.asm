@@ -43,5 +43,13 @@ TRP #66
 LDW R0, #CAR
 TRP #66
 
+
+SP EQU R15
+
+STW "salut", SP
+LDW R0, SP
+TRP #66
+
+
 // Exit 0
 TRP #64

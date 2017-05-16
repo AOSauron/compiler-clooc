@@ -1,5 +1,6 @@
 import org.antlr.runtime.tree.*;
 import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.HashMap;
 import java.io.File;
@@ -25,6 +26,9 @@ public class AsmGenerator {
   private boolean optiond;
   private CommonTree ast;
   private NodeTDS tds;
+  private HashMap<String,int> offsetIntegers = new HashMap<String,int>();
+  private int currentOffset;
+
 
   public AsmGenerator(CommonTree ast, NodeTDS tds) {
     this.ast = ast;
@@ -32,6 +36,8 @@ public class AsmGenerator {
     tab = "\t";
     nline = "\n";
     optiond = false;
+
+    currentOffset = 0;
   }
 
 
@@ -113,7 +119,7 @@ public class AsmGenerator {
   public void closeFile() throws IOException {
 
     // Ajout de l'exit 0 à la fin du fichier
-    printWriter.print(tab + "TRP #64");
+    printWriter.print(tab + "TRP #64\n");
 
     try {
       fileWriter.flush();
@@ -136,12 +142,14 @@ public class AsmGenerator {
     // Directives de préassemblage
     String sp = "SP EQU R15"; // Alias du stack pointer
     String org = "ORG 0x2000"; // Charge le programme d'assemblage à l'adresse 0x2000
+    String definitions = "INT_SIZE EQU 2";  // Un entier fait 2 octets
     String start = "START 0x2000"; // Lance le programme à l'adresse 0x2000
     String newline = "NEWLINE RSW 1\n" + tab + "LDW R0, #0x0a00\n" + tab + "STW R0, @NEWLINE"; // Le caractère de retour à la ligne est desormais stocké dans l'etiquette NEWLINE
     printWriter.print(sp + nline);
-    printWriter.print(org);
-    printWriter.print(start);
-    printWriter.print(nline + newline);
+    printWriter.print(org + nline);
+    printWriter.print(nline + definitions + nline + nline);
+    printWriter.print(start + nline);
+    printWriter.print(newline + nline);
 
     // Reste du progamme
     exploreAndGen(ast, tds);
@@ -174,13 +182,18 @@ public class AsmGenerator {
 
         // Les string seront déclarées à l'affectation ou lors d'un READ. (OK puisque controle sem passé avant)
         if (type.equals("INT")) {
-          instruction = varname + " RSW 1";
+          //instruction = varname + " RSW 1\n";
+          instruction = "ADQ -INT_SIZE, SP";
+          currentOffset -= 2;
+          offsetIntegers.add(varname, currentOffset);
         }
         else if (type.equals("NEW")) {
           // A FAIRE
         }
 
-        printWriter.print(instruction);
+        if (instruction != null) {
+          printWriter.print(instruction);
+        }
         break;
 
       case "AFFECT":
@@ -192,23 +205,34 @@ public class AsmGenerator {
 
         if (type.equals("INT")){
           if (subtree.getChildCount() == 0) {
-            instruction = tab + "LDW R0, #" + subtree.getText() + nline + "STW R0, @" + varname;
+            instruction = tab + "LDW R0, #" + subtree.getText() + nline + "STW R0, @" + varname + "\n";
           }
           else { // Cas d'une opération arithmétique ou logique : résultat stocké dans R1 par calculatorInstr()
-            instruction = tab + calculatorInstr((CommonTree) subtree) + nline + "STW R1, @" +varname;
+            instruction = tab + calculatorInstr((CommonTree) subtree) + nline + "STW R1, @" + varname + "\n";
           }
         }
         else if (type.equals("STRING")) {
-          instruction = varname + " STRING " + subtree.getText();
+          instruction = varname + " STRING " + subtree.getText() + "\n";
         }
         else { // Cas d'un type classe
           //A FAIRE
         }
 
-        printWriter.print(instruction);
+        if (instruction != null) {
+          printWriter.print(instruction);
+        }
         break;
 
       case "WRITE":
+      /*
+        ldw ro, #nomVar
+        trp #66
+      */
+      /*  CommonTree toBePrinted = (CommonTree) treeToConvert.getChild(0);
+        String childNodeName = toBePrinted.getText();
+        if (childNodeName.charAt(0) == '\"') {
+          instruction = tab + "LDW SP, "+ childNodeName + "\n" + tab + "LDW R0, #" +
+        }*/
         break;
 
       case "READ":
