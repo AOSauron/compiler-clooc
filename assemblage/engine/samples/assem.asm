@@ -46,9 +46,9 @@ TRP #66
 
 SP EQU R15
 
-STW "salut", SP
-LDW R0, SP
-TRP #66
+//STW "salut", SP
+//LDW R0, SP
+//TRP #66
 
 
 // Exit 0

@@ -6,4 +6,6 @@ sum := 7;
 
 sum := sum + entier;
 
+write "Testing...";
 write sum;
+write "Terminated";

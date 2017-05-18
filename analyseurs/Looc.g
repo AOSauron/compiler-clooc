@@ -49,12 +49,19 @@ Maj : 09/03/17   14:55
    CSTE_INT;
 }
 
+/* Template:
+regle: (^regex+ | regex?)*
+       -> ^(Reecriture eventuelle en arbre) ;
+*/
 
-program:   (class_decl)* decl_ins* -> ^(PROGRAM (class_decl)* decl_ins*);
+program:   (class_decl)* decl_ins*
+           -> ^(PROGRAM (class_decl)* decl_ins*);
 
-class_decl:   'class' IDFC ('inherit' IDFC)? '=' '(' class_item_decl ')' -> ^(CLASS IDFC (IDFC)? class_item_decl);
+class_decl:   'class' IDFC ('inherit' IDFC)? '=' '(' class_item_decl ')'
+              -> ^(CLASS IDFC (IDFC)? class_item_decl);
 
-class_item_decl:   decl* -> ^(BLOCK decl*);
+class_item_decl:   decl*
+                   -> ^(BLOCK decl*);
 
 decl:   var_decl
     |   method_decl
@@ -64,23 +71,35 @@ decl_ins:   var_decl
         |   instruction
         ;
 
-var_decl:   'var' IDF ':' type ';' -> ^(VARDEC IDF type);
+var_decl:   'var' IDF ':' type ';'
+            -> ^(VARDEC IDF type);
 
-type:   IDFC -> ^(IDFC)
-    |   'int' -> ^(INT)
-    |   'string' -> ^(STRING)
+type:   IDFC
+        -> ^(IDFC)
+    |   'int'
+        -> ^(INT)
+    |   'string'
+        -> ^(STRING)
     ;
 
-method_decl:   'method' IDF '(' method_args? ')' (':' type)? '{' decl_ins* '}' -> ^(METHODDEC IDF method_args? type? ^(BLOCK decl_ins*));
+method_decl:   'method' IDF '(' method_args? ')' (':' type)? '{' decl_ins* '}'
+               -> ^(METHODDEC IDF method_args? type? ^(BLOCK decl_ins*));
 /* On autorise syntaxiquement la déclaration de méthode vide, mais un warning (sémantique) sera renvoyé */
 
-method_args:   IDF ':' type (',' IDF ':' type)* -> ^(METHODARGS ^(ARG IDF type) ^(ARG IDF type)*);
+method_args:   IDF ':' type (',' IDF ':' type)*
+               -> ^(METHODARGS ^(ARG IDF type) ^(ARG IDF type)*);
 
-instruction:   IDF ':=' affectation ';' -> ^(AFFECT IDF affectation)
-           |   'if' expression 'then' a+=instruction+ ('else' b+=instruction+)? 'fi' -> ^(IF expression ^(THEN $a+) ^(ELSE $b+)?)
-           |   'for' IDF 'in' expression '..' expression 'do' instruction+ 'end' -> ^(FOR IDF expression expression ^(DO instruction+))
-           |   '{' decl_ins* '}' -> ^(ANONYMOUSBLOCK decl_ins*)  /* On autorise syntaxiquement la déclaration de blocs vides, mais un warning (sémantique) sera renvoyé */
-           |   'do' expression ';' -> ^( DO  expression )
+instruction:   IDF ':=' affectation ';'
+               -> ^(AFFECT IDF affectation)
+           |   'if' expression 'then' a+=instruction+ ('else' b+=instruction+)? 'fi'
+               -> ^(IF expression ^(THEN $a+) ^(ELSE $b+)?)
+           |   'for' IDF 'in' expression '..' expression 'do' instruction+ 'end'
+               -> ^(FOR IDF expression expression ^(DO instruction+))
+           |   '{' decl_ins* '}'
+                -> ^(ANONYMOUSBLOCK decl_ins*)
+/* On autorise syntaxiquement la déclaration de blocs vides, mais un warning (sémantique) sera renvoyé */
+           |   'do' expression ';'
+               -> ^( DO  expression )
            |   print
            |   read
            |   returnstate
@@ -90,17 +109,25 @@ affectation:   expression
            |   'nil'
            ;
 
-print:   'write' expression ';' -> ^(WRITE expression);
+print:   'write' expression ';'
+         -> ^(WRITE expression);
 
-read:   'read' IDF ';' -> ^(READ IDF);
+read:   'read' IDF ';'
+        -> ^(READ IDF);
 
-returnstate:   'return' '(' expression? ')' ';' -> ^(RETURN expression?);
+returnstate:   'return' '(' expression? ')' ';'
+               -> ^(RETURN expression?);
 
-expression:   'this' expressionbis -> ^(THIS expressionbis?)
-          |   'super' expressionbis -> ^(SUPER expressionbis?)
-          |   STRING_CST expressionbis -> ^(STRING_AFF STRING_CST expressionbis?)
-          |   'new' IDFC expressionbis -> ^(NEW IDFC)
-          |   exprio1 expressionbis -> exprio1 expressionbis?
+expression:   'this' expressionbis
+              -> ^(THIS expressionbis?)
+          |   'super' expressionbis
+              -> ^(SUPER expressionbis?)
+          |   STRING_CST expressionbis
+              -> ^(STRING_AFF STRING_CST expressionbis?)
+          |   'new' IDFC expressionbis
+              -> ^(NEW IDFC)
+          |   exprio1 expressionbis
+              -> exprio1 expressionbis?
           ;
 
 exprio1 : exprio2 ( '+'^ exprio2 | '-'^ exprio2)* ;
@@ -111,12 +138,15 @@ exprio4 : exprio7 ( '=='^ exprio7 | '!='^ exprio7 | '<'^ exprio7 | '<='^ exprio7
 
 exprio7 : ('-'^)? exprio8 ;
 
-exprio8 : INT_CST -> ^(INT_CST)
-        | IDF -> ^(IDF)
+exprio8 : INT_CST
+          -> ^(INT_CST)
+        | IDF
+          -> ^(IDF)
         | '(' expression ')' -> expression
         ;
 
-expressionbis:   '.'  IDF '(' (expression)? (',' expression)* ')' expressionbis -> ^(METHODCALLING IDF ^( METHODARGS (expression)*)? (expressionbis)?)
+expressionbis:   '.'  IDF '(' (expression)? (',' expression)* ')' expressionbis
+                 -> ^(METHODCALLING IDF ^( METHODARGS (expression)*)? (expressionbis)?)
               |   /*Le mot vide*/
               ;
 
