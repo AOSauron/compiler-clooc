@@ -29,6 +29,7 @@ public class AsmGenerator {
   private HashMap<String,Integer> offsetIntegers = new HashMap<String,Integer>();
   private int currentOffset;
   private int nbStringCste;
+  private int nbRead;
 
 
   public AsmGenerator(CommonTree ast, NodeTDS tds) {
@@ -127,7 +128,7 @@ public class AsmGenerator {
   public void closeFile() throws IOException {
 
     // Ajout de l'exit 0 à la fin du fichier
-    printWriter.print(nline + tab + "LDW WR, #EXIT_EXC\n");
+    printWriter.print(tab + "LDW WR, #EXIT_EXC\n");
     printWriter.print(tab + "TRP WR\n");
 
     try {
@@ -299,6 +300,11 @@ public class AsmGenerator {
         break;
 
       case "READ":
+        // TODO : associer le READINTx à la variable read y;
+        instruction = "READINT" + nbRead + " RSB 4" + nline; //Buff de 4 bytes
+        instruction = instruction + "\tLDW R1, #READINT" + nbRead + nline + tab + "STW R1, -(SP)\n" + "\tJSR @read_\n\n";
+        nbRead++;
+        printWriter.print(instruction);
         break;
 
       case "FOR":
