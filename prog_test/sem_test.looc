@@ -30,10 +30,6 @@ class MyClass = (
     do this.myMeth6(8).myMeth3(a,9);
   }
 
-  /*method myMeth() {
-    return(5);
-  }*/
-
   method retourneRien() : int {
     var a : int;
   }
@@ -46,14 +42,11 @@ class Animal inherit Animal = (
 )
 
 
-
-
 class MyClassic inherit MyClass =
 (
   method myMethHerit() {
     test := 4;
     test := super.getNb();
-    /*do this.myMeth();*/
   }
 
   method myMethHerit() {
@@ -80,7 +73,6 @@ do variable.getNb();
 
 variable := "gdfgdf";
 variable := (32+1)*variable;
-/*variable := 6+9*(this.getNb());*/
 
 var variable : int;
 var ent : int;
@@ -108,14 +100,3 @@ write variable;
 test := 3;
 
 read variable;
-
-
-/*
-do variable.myMeth(1);
-do variable.myMeth();
-do variable.myMeth2(1);
-do variable.myMeth2();
-do variable.myMeth3(1);
-do variable.myMeth3();
-do variable.myMeth3(2,1);
-do variable.myMeth3(1,2,3); */
