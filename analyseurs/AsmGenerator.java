@@ -265,19 +265,19 @@ public class AsmGenerator {
         type = infos.getFirst().toString();
         subtree = (CommonTree) treeToConvert.getChild(1);
 
-        if (type.equals("INT")){
-          if (subtree.getChildCount() == 0) {
-            instruction = tab + "LDW R0, #" + subtree.getText() + nline + "STW R0, @" + varname + "\n";
-          }
-          else { // Cas d'une opération arithmétique ou logique : résultat stocké dans R1 par calculatorInstr()
-            instruction = tab + calculatorInstr((CommonTree) subtree) + nline + "STW R1, @" + varname + "\n";
-          }
+        if (subtree.getText().equals("NEW")) { // Cas d'un type classe
+
         }
-        else if (type.equals("STRING")) {
+        else if (subtree.getText().equals("STRING_AFF")) { // Cas d'une chaîne de caractères
           instruction = varname + " STRING " + subtree.getText() + "\n";
         }
-        else { // Cas d'un type classe
-          //A FAIRE
+        else {  // Cas d'un entier ou d'une expression
+          if (subtree.getChildCount() == 0) { // Cas d'un entier
+            instruction = tab + "LDW R0, #" + subtree.getText() + nline + "\tSTW R0, @" + varname + "\n";
+          }
+          else { // Cas d'une opération arithmétique ou logique : résultat stocké dans R1 par calculatorInstr()
+            instruction = calculatorInstr((CommonTree) subtree) + nline + "\tSTW R1, @" + varname + "\n";
+          }
         }
 
         if (instruction != null) {
@@ -309,6 +309,7 @@ public class AsmGenerator {
 
       case "FOR":
         // METTRE UNE CONDITION SUR LES BORNES, SI BORNE INF > BORNE SUP ON JUMP DIRECTEMENT A LA SUITE SANS RENTRER DASN LA BOUCLE
+
         break;
 
       default:
@@ -350,13 +351,13 @@ public class AsmGenerator {
           memberA = calculatorInstr((CommonTree) treeCalc.getChild(0));
           try {
             Integer.parseInt(memberA);
-            instruction = "LDW R1, #" + memberA;
+            instruction = "\tLDW R1, #" + memberA;
           }
           catch (Exception e) {
-            instruction = "LDW R1, @" + memberA;
+            instruction = "\tLDW R1, @" + memberA;
           }
           instruction = instruction + nline;
-          instruction = instruction + tab + "NEG R1, R1";
+          instruction = instruction + tab + "\tNEG R1, R1";
           break;
         default:
           System.out.println("Pas de tel opérateur : " + treename);
@@ -371,21 +372,44 @@ public class AsmGenerator {
 
       switch (treename) {
         case "+":
-          memberA = calculatorInstr((CommonTree) treeCalc.getChild(0));
-          memberB = calculatorInstr((CommonTree) treeCalc.getChild(1));
+          /*memberA = calculatorInstr((CommonTree) treeCalc.getChild(0));
+          memberB = calculatorInstr((CommonTree) treeCalc.getChild(1));*/
+
+
+          if (treeCalc.getChild(0).getChildCount() > 0) {  //Cas où on a une expression à gauche
+            memberA = calculatorInstr((CommonTree)treeCalc.getChild(0)) + "\n\tADD R1, R2, R1\n" + memberA;
+          } else {
+            if (isInteger(treeCalc.getChild(0).getText())) {
+              memberA = "\tLDW R1, #" + ((CommonTree)treeCalc.getChild(0)).getText() + "\n" + memberA;
+            } else {
+              memberA = "\tLDW R1, @" + ((CommonTree)treeCalc.getChild(0)).getText() + "\n" + memberA;
+            }
+          }
+
+          if (treeCalc.getChild(1).getChildCount() > 0) {  //Cas où on a une expression à droite
+            memberB = calculatorInstr((CommonTree)treeCalc.getChild(1)) + "\n\tADD R1, R2, R1\n" + memberB;
+          } else {
+            if (isInteger(treeCalc.getChild(1).getText())) {
+              memberB = "\tLDW R2, #" + ((CommonTree)treeCalc.getChild(1)).getText() + "\n" + memberB;
+            } else {
+              memberB = "\tLDW R2, @" + ((CommonTree)treeCalc.getChild(1)).getText() + "\n" + memberB;
+            }
+          }
+          return memberA + memberB;
 
           // Cas d'un int pur
-          try {
+          /*try {
             member1 = Integer.parseInt(treeCalc.getText());
             //memberA = member1.toString();
-            memberA = "LDW R1, #" + memberA;
+            memberA = "\tLDW R1, #" + memberA;
             return memberA;
           }
           // Cas d'une variable nommée
           catch (Exception e) {
-            memberA = "LDW R1, #" + treename;
+            memberA = "\tLDW R1, #" + treename;
             return memberA;
-          }
+          }*/
+
 
           //break;
         case "-":
@@ -402,6 +426,20 @@ public class AsmGenerator {
 
     return "";
 
+  }
+
+  /*
+   * Détermine si une chaîne de caractères est un entier
+   */
+  public static boolean isInteger(String s) {
+    try {
+        Integer.parseInt(s);
+    } catch(NumberFormatException e) {
+        return false;
+    } catch(NullPointerException e) {
+        return false;
+    }
+    return true;
   }
 
 

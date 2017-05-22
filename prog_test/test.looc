@@ -1,0 +1,16 @@
+class Classe = ()
+
+var entier : int;
+var sum : int;
+
+entier := 1;
+sum := 7;
+
+sum := 2 + (sum + entier + 7) + 3 + 8 + 9;
+
+var variable : Classe;
+
+variable := new Classe;
+var chaine : string;
+
+chaine := "salut";
