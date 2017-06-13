@@ -11,6 +11,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.io.FileOutputStream;
 import java.io.FileNotFoundException;
+import java.util.concurrent.TimeUnit;
 
 /*
  * Compilateur Clooc. Classe Main.
@@ -47,6 +48,8 @@ public class Clooc {
         CommonTree tree = null;
         NodeTDS tds = null;
         AsmGenerator asmgen = null;
+
+        Runtime runtime = Runtime.getRuntime();
 
         nargs = args.length;
         index = -1;
@@ -335,7 +338,6 @@ public class Clooc {
           fileWriter.flush();
           fileWriter.close();
           System.out.println("Fin de la construction. L'AST a été produit dans le fichier " + purename + " au format DOT.");
-          Runtime runtime = Runtime.getRuntime();
           System.out.println("Exportation de l'arbre au format PNG ...");
           try {
             runtime.exec(new String[] {"dot", "-Tpng", purename, "-o", purenamepng, "&>", "/dev/null"});
@@ -368,7 +370,7 @@ public class Clooc {
         if (verbose) System.out.println(" Etape 3 - Génération de code source ASM/microPIUP");
 
         // Génération r de code en Assembleur microPIUP si aucune erreur sémantique n'est détectée
-        if (tablor.getNbError() == 0) { /*
+        if (tablor.getNbError() == 0) {
           tds = tablor.getTDS();
           asmgen = new AsmGenerator(tree, tds);
 
@@ -385,7 +387,7 @@ public class Clooc {
           asmgen.initGen();
 
           // Fermeture du fichier
-          asmgen.closeFile(); */
+          asmgen.closeFile();
         }
         else if (tablor.getNbError() > 0) {
           System.err.println(tablor.getNbError() + " erreur(s) dans le fichier " + filename + ".");
@@ -394,7 +396,18 @@ public class Clooc {
 
         //Compilation du fichier source :
         if (!src) {
-          if (verbose) System.out.println(" Etape 4 - Compilation du code source assmebleur en exécutable ASM/microPIUP");
+          String pathname = asmgen.getPathname();
+          if (verbose) System.out.println(" Etape 4 - Compilation du code source assembleur en exécutable ASM/microPIUP");
+          try {
+            Process p = runtime.exec(new String[] {"java", "-jar", "microPIUPK.jar", "-ass", pathname});
+            // Wait for ending process 
+            p.waitFor();
+            runtime.exec(new String[] {"rm", pathname});
+          }
+          catch (IOException e) {
+            System.err.println("Le compilateur microPIUPK.jar doit être présent dans le meme dossier que clooc.jar pour la compilation du code source en code iup.");
+            System.exit(1);
+          }
         }
     }
 }

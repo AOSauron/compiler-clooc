@@ -1,5 +1,8 @@
 #!/bin/bash
 #Lance un jeu de test pour stresser le compilateur.
+cd analyseurs/
+./generateJar.sh
+exit
 fullname="prog_test/progtestlvl2.looc"
 filelooc=$(basename $fullname)
 filename=${filelooc%.*}

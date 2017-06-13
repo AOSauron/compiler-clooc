@@ -1,5 +1,6 @@
 import org.antlr.runtime.tree.*;
 import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.HashMap;
 import java.io.File;
@@ -25,6 +26,11 @@ public class AsmGenerator {
   private boolean optiond;
   private CommonTree ast;
   private NodeTDS tds;
+  private HashMap<String,Integer> offsetIntegers = new HashMap<String,Integer>();
+  private int currentOffset;
+  private int nbStringCste;
+  private int nbRead;
+
 
   public AsmGenerator(CommonTree ast, NodeTDS tds) {
     this.ast = ast;
@@ -32,6 +38,9 @@ public class AsmGenerator {
     tab = "\t";
     nline = "\n";
     optiond = false;
+
+    currentOffset = 0;
+    nbStringCste = 0;
   }
 
 
@@ -106,6 +115,12 @@ public class AsmGenerator {
     this.path = path;
   }
 
+  /*
+   * Retourne le nom complet du fichier source a sm
+   */
+  public String getPathname() {
+    return asmname;
+  }
 
   /*
    * Fermeture du fichier et des writer.
@@ -113,7 +128,8 @@ public class AsmGenerator {
   public void closeFile() throws IOException {
 
     // Ajout de l'exit 0 à la fin du fichier
-    printWriter.print(tab + "TRP #64");
+    printWriter.print(tab + "LDW WR, #EXIT_EXC\n");
+    printWriter.print(tab + "TRP WR\n");
 
     try {
       fileWriter.flush();
@@ -134,18 +150,72 @@ public class AsmGenerator {
   public void initGen() {
 
     // Directives de préassemblage
+    String exit = "EXIT_EXC EQU 64";
+    String reads = "READ_EXC EQU 65";
+    String writes = "WRITE_EXC EQU 66";
+    String stackad = "STACK_ADRS EQU 0x1000"; // Base de pile
+    String loadad = "LOAD_ADRS EQU 0xF000"; // Adresse de chargement de l'exécutable
+    String nils = "NIL EQU 0"; // fin de liste, contenu initla de BP
     String sp = "SP EQU R15"; // Alias du stack pointer
-    String org = "ORG 0x2000"; // Charge le programme d'assemblage à l'adresse 0x2000
-    String start = "START 0x2000"; // Lance le programme à l'adresse 0x2000
-    String newline = "NEWLINE RSW 1\n" + tab + "LDW R0, #0x0a00\n" + tab + "STW R0, @NEWLINE"; // Le caractère de retour à la ligne est desormais stocké dans l'etiquette NEWLINE
+    String wr = "WR EQU R14"; // Working register
+    String bp = "BP EQU R13"; // Base pointer
+    String org = "ORG LOAD_ADRS"; // Charge le programme d'assemblage à l'adresse 0x2000
+    String definitions = "INT_SIZE EQU 2";  // Un entier fait 2 octets
+    String start = "START main_"; // Lance le programme à l'adresse 0x2000
+    String newline = "NEWLINE RSW 1\n" + tab + "LDW R3, #0x0a00\n" + tab + "STW R3, @NEWLINE"; // Le caractère de retour à la ligne est desormais stocké dans l'etiquette NEWLINE
+    String ldwstack = "main_" + tab + "LDW SP, #STACK_ADRS"; // charge SP avec STACK_ADRS
+    String ldnil = tab + "LDQ NIL, BP"; // charge BP avec NIL=0
+    String spsave = "\tADQ -2, SP\n \tSTW BP, (SP)\n \tLDW BP, SP\n";
+
+    printWriter.print(exit + nline);
+    printWriter.print(reads + nline);
+    printWriter.print(writes + nline);
+    printWriter.print(loadad + nline);
+    printWriter.print(nils + nline);
+    printWriter.print(stackad + nline + nline);
     printWriter.print(sp + nline);
-    printWriter.print(org);
-    printWriter.print(start);
-    printWriter.print(nline + newline);
+    printWriter.print(wr + nline);
+    printWriter.print(bp + nline);
+    printWriter.print(definitions + nline + nline);
+    printWriter.print(org + nline);
+    printWriter.print(start + nline + nline);
+
+    basicFunc();
+
+    printWriter.print(ldwstack + nline);
+    printWriter.print(ldnil + nline);
+    printWriter.print("\tLDQ 0, R1\n");
+    printWriter.print(spsave);
+    printWriter.print("\tSUB SP, R1, SP\n\n");
+    printWriter.print(newline + nline + nline);
+
 
     // Reste du progamme
     exploreAndGen(ast, tds);
 
+  }
+
+  /*
+   * Ecrit les fonctions natives write et read par défaut (lib chargée par défaut)
+   */
+  public void basicFunc() {
+
+    /*
+     * Fonction WRITE
+     */
+     printWriter.print("write_\tLDQ 0, R1\n\tADQ -2, SP\n\tSTW BP, (SP)\n\tLDW BP, SP\n\tSUB SP, R1, SP\n\n"); // 0 : taille données locales
+     printWriter.print("\tLDW R0, BP\n\tADQ 4, R0\n\tLDW R0, (R0)\n\n"); // Déplacement de 4 du paramètre
+     printWriter.print("\tLDW WR, #WRITE_EXC\n\tTRP WR\n\n"); // print String
+     printWriter.print("\tLDW R0, #NEWLINE\n\tLDW WR, #WRITE_EXC\n\tTRP WR\n\n"); // Print Carriage return
+     printWriter.print("\tLDW SP, BP\n\tLDW BP, (SP)\n\tADQ 2, SP\n\tLDW WR, (SP)\n\tADQ 2, SP\n\tJEA (WR)\n\n"); //Return
+
+    /*
+     * Fonction READ
+     */
+     printWriter.print("read_\tLDQ 0, R1\n\tADQ -2, SP\n\tSTW BP, (SP)\n\tLDW BP, SP\n\tSUB SP, R1, SP\n\n"); // 0 : taille données locales
+     printWriter.print("\tLDW R0, BP\n\tADQ 4, R0\n\tLDW R0, (R0)\n\n");
+     printWriter.print("\tLDW WR, #READ_EXC\n\tTRP WR\n\n");
+     printWriter.print("\tLDW SP, BP\n\tLDW BP, (SP)\n\tADQ 2, SP\n\tLDW WR, (SP)\n\tADQ 2, SP\n\tJEA (WR)\n\n"); //Return
   }
 
 
@@ -174,13 +244,18 @@ public class AsmGenerator {
 
         // Les string seront déclarées à l'affectation ou lors d'un READ. (OK puisque controle sem passé avant)
         if (type.equals("INT")) {
-          instruction = varname + " RSW 1";
+          //instruction = varname + " RSW 1\n";
+          instruction = tab + "ADQ -INT_SIZE, SP\n";
+          currentOffset -= 2;
+          offsetIntegers.put(varname, new Integer(currentOffset));
         }
         else if (type.equals("NEW")) {
           // A FAIRE
         }
 
-        printWriter.print(instruction);
+        if (instruction != null) {
+          printWriter.print(instruction);
+        }
         break;
 
       case "AFFECT":
@@ -192,26 +267,44 @@ public class AsmGenerator {
 
         if (type.equals("INT")){
           if (subtree.getChildCount() == 0) {
-            instruction = tab + "LDW R0, #" + subtree.getText() + nline + "STW R0, @" + varname;
+            instruction = tab + "LDW R0, #" + subtree.getText() + nline + "STW R0, @" + varname + "\n";
           }
           else { // Cas d'une opération arithmétique ou logique : résultat stocké dans R1 par calculatorInstr()
-            instruction = tab + calculatorInstr((CommonTree) subtree) + nline + "STW R1, @" +varname;
+            instruction = tab + calculatorInstr((CommonTree) subtree) + nline + "STW R1, @" + varname + "\n";
           }
         }
         else if (type.equals("STRING")) {
-          instruction = varname + " STRING " + subtree.getText();
+          instruction = varname + " STRING " + subtree.getText() + "\n";
         }
         else { // Cas d'un type classe
           //A FAIRE
         }
 
-        printWriter.print(instruction);
+        if (instruction != null) {
+          printWriter.print(instruction);
+        }
         break;
 
       case "WRITE":
+        CommonTree toBePrinted = (CommonTree) treeToConvert.getChild(0);
+        String childNodeName = toBePrinted.getText();
+        if (childNodeName.equals("STRING_AFF")) {
+          childNodeName = ((CommonTree) toBePrinted.getChild(0)).getText();
+        }
+        if (childNodeName.charAt(0) == '\"') {
+          instruction = "STRING" + nbStringCste + " string " + childNodeName + nline;
+          instruction = instruction + "\tLDW R1, #STRING" + nbStringCste + nline + tab + "STW R1, -(SP)\n" + "\tJSR @write_\n\n";
+          nbStringCste++;
+          printWriter.print(instruction);
+        }
         break;
 
       case "READ":
+        // TODO : associer le READINTx à la variable read y;
+        instruction = "READINT" + nbRead + " RSB 4" + nline; //Buff de 4 bytes
+        instruction = instruction + "\tLDW R1, #READINT" + nbRead + nline + tab + "STW R1, -(SP)\n" + "\tJSR @read_\n\n";
+        nbRead++;
+        printWriter.print(instruction);
         break;
 
       case "FOR":

@@ -3,11 +3,23 @@ var w : int;
 var z : int;
 
 v := -1+4*7*2-5;
-w:=(-1+4)*7*2-5;
+w := (-1+4)*7*2-5;
 
 z := 2*v+w;
 
 write v;
 write w;
 
-write z;
+
+if (v > w) {
+  write z;
+}
+
+
+class ntm inherit mere =
+(
+  method ntmdeux(int : 3) {
+    return (x);
+  }
+
+)

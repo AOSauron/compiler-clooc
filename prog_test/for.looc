@@ -13,5 +13,5 @@ end
 
 
 /*
-(PROGRAM (VARDEC a INT) (VARDEC i INT) (VARDEC variable INT) (AFFECT a 89) (AFFECT i 0) (FOR i (+ 5 6) a (DO (WRITE "Ceci est une boucle for.") (AFFECT variable (- (== a 90))))))*/
+(PROGRAM (VARDEC a INT) (VARDEC i INT) (VARDEC variable INT) (AFFECT a 89) (AFFECT i 0) (FOR i (+ 5 6) a (DO (WRITE "Ceci est une boucle for.") (AFFECT variable (- (== a 90))))))
 */

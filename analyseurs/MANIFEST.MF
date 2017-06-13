@@ -1,5 +1,4 @@
 Main-Class: Clooc
-Class-Path: ../ANTLR/antlr-3.3-complete.jar ../assemblage/engine/microPIUP.jar
+Class-Path: ../ANTLR/antlr-3.3-complete.jar
 Name: analyseurs/
 sealed: true
-
